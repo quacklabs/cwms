@@ -4,10 +4,22 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserPolicy
 {
     use HandlesAuthorization;
+
+    protected Role $admin;
+    protected Role $manager;
+    protected Role $staff;
+
+    public function __construct() {
+        $this->admin = Role::findByName('admin');
+        $this->manager = Role::findByName('manager');
+        $this->staff = Role::findByName('staff');
+    }
 
     /**
      * Determine whether the user can view any models.
@@ -18,6 +30,7 @@ class UserPolicy
     public function viewAny(User $user)
     {
         //
+        return false;
     }
 
     /**
@@ -30,6 +43,18 @@ class UserPolicy
     public function view(User $user, User $model)
     {
         //
+        if($user->hasRole('admin')){
+            return true;
+        }
+        
+        if($user->hasRole('manager')) {
+            if($user->hasRole() && $model->hasRole('admin')) {
+                return false;
+            }
+            return true;
+        }
+
+        return $user->id == $model->id;
     }
 
     /**
@@ -41,6 +66,7 @@ class UserPolicy
     public function create(User $user)
     {
         //
+        return $user->hasRole('admin') || $user->hasRole('manager');
     }
 
     /**
@@ -53,6 +79,22 @@ class UserPolicy
     public function update(User $user, User $model)
     {
         //
+        if($user->hasRole('admin')){
+            return true;
+        }
+        
+        if($user->hasRole('manager')) {
+            if($user->hasRole() && $model->hasRole('admin')) {
+                return false;
+            }
+
+            if($user->hasRole() && $model->hasRole('manager')) {
+                return false;
+            }
+            return true;
+        }
+
+        return $user->id == $model->id;
     }
 
     /**
@@ -77,6 +119,7 @@ class UserPolicy
     public function restore(User $user, User $model)
     {
         //
+        return $user->hasRole('admin');
     }
 
     /**
@@ -89,5 +132,6 @@ class UserPolicy
     public function forceDelete(User $user, User $model)
     {
         //
+        return false;
     }
 }
