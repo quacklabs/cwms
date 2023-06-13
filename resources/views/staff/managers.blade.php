@@ -14,9 +14,9 @@
             {{ Breadcrumbs::render('staff.managers') }}
           </div>
           <div class="section-body">
-            <h2 class="section-title">Posts</h2>
+            <h2 class="section-title">Authorize Managers</h2>
             <p class="section-lead">
-              You can manage all posts, such as editing, deleting and more.
+              Each manager must be assigned to a warehouse
             </p>
 
             <div class="row">
