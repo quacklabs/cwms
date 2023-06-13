@@ -18,9 +18,32 @@ class RolesSeeder extends Seeder
         //
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'manager']);
-        Role::create(['name' => 'staff']);
 
+        $list = $this->defaultPermissions();
+        
+        foreach($list as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+
+        $admin_role = Role::create(['name' => 'admin']);
+        $admin_role->syncPermissions(Permission::all());
+        
+        $manager_role = Role::create(['name' => 'manager']);
+        $manager_role->syncPermissions([
+            'create-user', 'create-store', 'grant-product-permission'
+        ]);
+        
+        Role::create(['name' => 'staff']);
+    }
+
+    private function defaultPermissions(): array {
+        return [
+            'create-user',
+            'grant-user-permission',
+            'grant-product-permission',
+            'create-warehouse',
+            'create-store',
+            'create-manager'
+        ];
     }
 }

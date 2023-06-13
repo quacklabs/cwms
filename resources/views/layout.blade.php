@@ -5,14 +5,13 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
         <title>@yield('title')</title>
 
-        <!-- General CSS Files -->
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+        <!-- General CSS Files -->       
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"> 
         <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
-
-
-        <!-- Template CSS -->
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+
+        @yield('css')
     
     </head>
     <body>
@@ -54,13 +53,6 @@
         <script src="{{ asset('js/scripts.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}"></script>
     </body>
-
-    
-
-    
-
-
-
 </html>
 
 

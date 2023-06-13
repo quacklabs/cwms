@@ -28,5 +28,18 @@ class UserSeeder extends Seeder
         $admin = User::create($admin_data);
         $admin_role = Role::findByName('admin');
         $admin->assignRole($admin_role);
+
+
+        $manager_data = [
+            "name" => "Manager",
+            "email" => "manager@celdongroup.com",
+            "password" => "12345678",
+            "username" => "manager1",
+            "mobile" => "+1223445566"
+        ];
+
+        $manager = User::create($manager_data);
+        $manager_role = Role::findByName('manager');
+        $admin->assignRole($manager_role);
     }
 }
