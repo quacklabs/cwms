@@ -13,6 +13,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['namespace' => 'App\Http\Controllers'], function(){
+    Route::middleware(['auth'])->group(function () {
+        // Define your routes here
+        Route::get('/', 'DashboardController@index')->name('dashboard');
+        Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+        
+        Route::group(['middleware' => ['role:admin|manager']], function () {
+
+
+            //
+            Route::prefix('personnel')->name('staff.')->group(function() {
+                Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
+                Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+            });
+            
+
+            Route::match(['get', 'post'], 'control', 'AccessController@control')
+            ->middleware(['can:grant-user-permission|grant-product-permission'])
+            ->name('control');
+        });
+        
+        
+        
+    });
+
+    Route::match(['get', 'post'], '/login', 'AuthController@login')->name('login');
+    Route::match(['get','post'], '/forgot', 'AuthController@forgot_password')->name('forgot_password');
+    Route::get('/logout', 'AuthController@logout')->name('logout');
 });
