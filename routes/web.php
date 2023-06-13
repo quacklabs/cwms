@@ -20,9 +20,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
         Route::get('dashboard', 'DashboardController@index')->name('dashboard');
         
         Route::group(['middleware' => ['role:admin|manager']], function () {
+
+
             //
-            Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
-            Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+            Route::prefix('personnel')->name('staff.')->group(function() {
+                Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
+                Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+            });
+            
 
             Route::match(['get', 'post'], 'control', 'AccessController@control')
             ->middleware(['can:grant-user-permission|grant-product-permission'])

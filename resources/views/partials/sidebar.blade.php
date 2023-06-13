@@ -13,8 +13,8 @@
             
             <!-- <li class="menu-header">User Management</li> -->
             @role('admin')
-            <li class="{{ request()->routeIs('managers') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('managers') }}">
+            <li class="{{ request()->routeIs('staff.managers') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('staff.managers') }}">
                 <i class="fas fa-briefcase"></i> <span>Managers</span>
                 </a>
             </li>
@@ -22,8 +22,8 @@
 
 
             @hasanyrole('manager|admin')
-            <li class="{{ request()->routeIs('staff') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('staff') }}">
+            <li class="{{ request()->routeIs('staff.staff') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('staff.staff') }}">
                 <i class="fas fa-people-carry"></i> <span>Staff</span>
                 </a>
             </li> 
