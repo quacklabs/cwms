@@ -26,14 +26,13 @@ class RolesSeeder extends Seeder
         }
 
         $admin_role = Role::create(['name' => 'admin']);
-        $admin_role->syncPermissions(Permission::all());
+        $admin_role->givePermissionTo($list);
         
         $manager_role = Role::create(['name' => 'manager']);
-        $manager_role->syncPermissions([
-            'create-user', 'create-store', 'grant-product-permission'
-        ]);
+        $manager_role->givePermissionTo(['create-user', 'grant-product-permission']);
         
-        Role::create(['name' => 'staff']);
+        $staff_role = Role::create(['name' => 'staff']);
+
     }
 
     private function defaultPermissions(): array {

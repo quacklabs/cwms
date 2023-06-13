@@ -28,6 +28,7 @@ class UserSeeder extends Seeder
         $admin = User::create($admin_data);
         $admin_role = Role::findByName('admin');
         $admin->assignRole($admin_role);
+        $admin->save();
 
 
         $manager_data = [
@@ -40,6 +41,18 @@ class UserSeeder extends Seeder
 
         $manager = User::create($manager_data);
         $manager_role = Role::findByName('manager');
-        $admin->assignRole($manager_role);
+        $manager->assignRole($manager_role);
+
+
+        $staff_data = [
+            "name" => "Staff",
+            "email" => "staff@celdongroup.com",
+            "password" => "12345678",
+            "username" => "staff1",
+            "mobile" => "+1223445566"
+        ];
+        $staff = User::create($staff_data);
+        $role = Role::findByName('staff');
+        $staff->assignRole($role);
     }
 }

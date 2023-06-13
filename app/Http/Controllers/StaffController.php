@@ -13,6 +13,15 @@ class StaffController extends Controller
     }
 
     public function manager() {
-        
+        $data = [
+            "title" => "Managers"
+        ];
+
+        return $this->render($data, 'staff/managers');
+    }
+
+    private function render(array $data, string $page) {
+        // you can add other data to be used on admin before rendering
+        return view($page, $data);
     }
 }

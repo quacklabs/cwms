@@ -16,12 +16,14 @@
     </head>
     <body>
         <div id="app">
+            @auth
+            <div class="main-wrapper main-wrapper-1">
+                <!-- Content for authenticated users -->
+                @include('partials.header')
+                @include('partials.sidebar')
+            @else
             <div class="">
-                @auth
-                    <!-- Content for authenticated users -->
-                    @include('partials.header')
-                    @include('partials.sidebar')
-                @endauth
+            @endauth
 
                 @yield('content')
 

@@ -1,6 +1,6 @@
-<div class="main-sidebar">
+<div class="main-sidebar sidebar-style-2 bg-dark">
     <aside id="sidebar-wrapper">
-        <div class="sidebar-brand sidebar-gone-show mb-4">
+        <div class="sidebar-brand mb-4 mt-4">
             <a href="{{ route('dashboard') }}">
                 <img src="{{ asset('img/logo.png') }}" style="max-height: 4em !important;">
             </a>
@@ -20,24 +20,24 @@
             </li>
             @endrole
 
-            @can('create-user', auth()->user())
+
+            @hasanyrole('manager|admin')
             <li class="{{ request()->routeIs('staff') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('staff') }}">
                 <i class="fas fa-people-carry"></i> <span>Staff</span>
                 </a>
             </li> 
-            @endcan
-
-            @canany(['permission:grant-user-permission', 'permission:grant-product-permission'])
             <li class="{{ request()->routeIs('access') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('control') }}">
                 <i class="fas fa-universal-access"></i> <span>Access Control</span>
                 </a>
             </li>
-            @endcanany
+            @endhasanyrole
+
+            
 
             <!-- <li class="menu-header">Locations</li> -->
-            <li class="dropdown">
+            <!-- <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i> <span>Components</span></a>
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="dist/components_article">Article</a></li>
@@ -60,10 +60,7 @@
                     <li><a class="nav-link beep beep-sidebar"
                             href="dist/components_wizard">Wizard</a></li>
                 </ul>
-            </li>
-            
-            
-            
+            </li> -->
         </ul>
     </aside>
 </div>
