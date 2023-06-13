@@ -7,7 +7,7 @@
 
         <!-- General CSS Files -->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/fontawesome.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
 
 
         <!-- Template CSS -->
@@ -17,12 +17,42 @@
     </head>
     <body>
         <div id="app">
-            @auth
-                <!-- Content for authenticated users -->
-            @endauth
+            <div class="">
+                @auth
+                    <!-- Content for authenticated users -->
+                    @include('partials.header')
+                    @include('partials.sidebar')
+                @endauth
 
-            @yield('content')
+                @yield('content')
+
+                <footer class="main-footer">
+                    <div class="footer-left">
+                    Copyright &copy; {{ date('Y') }}
+                    </div>
+                    <div class="footer-right">
+                    All Rights Reserved
+                    </div>
+                </footer>
+
+
+            </div>
         </div>
+
+        <!-- General JS Scripts -->
+        <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/popper.js') }}"></script>
+        <script src="{{ asset('js/tooltip.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
+        <script src="{{ asset('js/jquery.nicescroll.js') }}"></script>
+        <script src="{{ asset('js/moment.min.js') }}"></script>
+        <script src="{{ asset('js/stisla.js') }}"></script>
+        
+        @yield('js')
+
+        <!-- Template JS File -->
+        <script src="{{ asset('js/scripts.js') }}"></script>
+        <script src="{{ asset('js/custom.js') }}"></script>
     </body>
 
     

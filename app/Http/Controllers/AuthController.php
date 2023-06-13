@@ -32,9 +32,19 @@ class AuthController extends Controller
         return $this->render($data, 'login');
     }
 
+    public function logout(Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
+
 
     private function render(array $data, string $page) {
         // you can add other data to be used on admin before rendering
         return view($page, $data);
     }
+
+
 }

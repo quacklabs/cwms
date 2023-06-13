@@ -57,4 +57,23 @@ class User extends Authenticatable
     public function setPasswordAttribute($value) {
         $this->attributes['password'] = bcrypt($value);
     }
+
+
+    /**
+     * Always encrypt the password when it is updated.
+     *
+     * @param $value
+    * @return string
+    */
+    public function getImageAttribute() {
+        $directory = public_path('uploads/avatars/'.$this->username.'.*');
+        $file = glob($directory);
+        if (!empty($files)) {
+            return '';
+        } else {
+            return asset('img/avatar-1.png');
+        }
+    }
+
+    
 }
