@@ -18,3 +18,8 @@ Breadcrumbs::for('staff.managers', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Managers');
 });
+
+Breadcrumbs::for('staff.staff', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Staff Management');
+});

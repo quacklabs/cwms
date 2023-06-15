@@ -21,6 +21,12 @@ class AuthController extends Controller
             
             if (Auth::attempt($credentials)) {
                 // Authentication successful
+                $user = Auth::user();
+                if($user->status === false) {
+                    return back()->withErrors([
+                        'message' => 'Account Suspended',
+                    ]);
+                }
                 return redirect()->route('dashboard');
             } else {
                 // Authentication failed

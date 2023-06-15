@@ -5,261 +5,189 @@
 @section('content')
 <!-- Main Content -->
 <div class="main-content">
-        <section class="section">
-          <div class="section-header">
-            <h1>{{$title }}</h1>
-            <div class="section-header-button">
-              <a href="#" class="btn btn-primary">Add New</a>
-            </div>
-            {{ Breadcrumbs::render('staff.managers') }}
-          </div>
-          <div class="section-body">
-            <h2 class="section-title">Authorize Managers</h2>
-            <p class="section-lead">
-              Each manager must be assigned to a warehouse
-            </p>
+    <section class="section">
+        <div class="section-header">
+        <h1>{{$title }}</h1>
+        <div class="section-header-button">
+            <button class="btn btn-primary" id="modal-5">Add New</button>
+            <!-- <a href="#" class="btn btn-primary">Add New</a> -->
+        </div>
+        {{ Breadcrumbs::render('staff.managers') }}
+        </div>
+        <div class="section-body">
+        <h2 class="section-title">Authorize Managers</h2>
+        <p class="section-lead">
+            Each manager must be assigned to a warehouse
+        </p>
 
-            <div class="row">
-              <div class="col-12">
-                <div class="card mb-0">
-                  <div class="card-body">
-                    <ul class="nav nav-pills">
-                      <li class="nav-item">
-                        <a class="nav-link active" href="#">All <span class="badge badge-white">5</span></a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Draft <span class="badge badge-primary">1</span></a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Pending <span class="badge badge-primary">1</span></a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#">Trash <span class="badge badge-primary">0</span></a>
-                      </li>
-                    </ul>
-                  </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                <h4>All Managers</h4>
                 </div>
-              </div>
-            </div>
-            <div class="row mt-4">
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4>All Posts</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="float-left">
-                      <select class="form-control selectric">
-                        <option>Action For Selected</option>
-                        <option>Move to Draft</option>
-                        <option>Move to Pending</option>
-                        <option>Delete Pemanently</option>
-                      </select>
-                    </div>
-                    <div class="float-right">
-                      <form>
-                        <div class="input-group">
-                          <input type="text" class="form-control" placeholder="Search">
-                          <div class="input-group-append">                                            
-                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
+                <div class="card-body">
+                <div class="clearfix mb-3"></div>
 
-                    <div class="clearfix mb-3"></div>
+                <div class="table-responsive">
+                      <table class="table table-striped" id="table-1">
+                        <thead>                                 
+                          <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>E-mail</th>
+                            <th>Assigned to</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>   
+                            @empty($managers)
 
-                    <div class="table-responsive">
-                      <table class="table table-striped">
-                        <tr>
-                          <th class="text-center pt-2">
-                            <div class="custom-checkbox custom-checkbox-table custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input" id="checkbox-all">
-                              <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </th>
-                          <th>Title</th>
-                          <th>Category</th>
-                          <th>Author</th>
-                          <th>Created At</th>
-                          <th>Status</th>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="custom-checkbox custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-2">
-                              <label for="checkbox-2" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </td>
-                          <td>Laravel 5 Tutorial: Introduction
-                            <div class="table-links">
-                              <a href="#">View</a>
-                              <div class="bullet"></div>
-                              <a href="#">Edit</a>
-                              <div class="bullet"></div>
-                              <a href="#" class="text-danger">Trash</a>
-                            </div>
-                          </td>
-                          <td>
-                            <a href="#">Web Developer</a>, 
-                            <a href="#">Tutorial</a>
-                          </td>
-                          <td>
-                            <a href="#">
-                              <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                            </a>
-                          </td>
-                          <td>2018-01-20</td>
-                          <td><div class="badge badge-primary">Published</div></td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="custom-checkbox custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-3">
-                              <label for="checkbox-3" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </td>
-                          <td>Laravel 5 Tutorial: Installing
-                            <div class="table-links">
-                              <a href="#">View</a>
-                              <div class="bullet"></div>
-                              <a href="#">Edit</a>
-                              <div class="bullet"></div>
-                              <a href="#" class="text-danger">Trash</a>
-                            </div>
-                          </td>
-                          <td>
-                            <a href="#">Web Developer</a>, 
-                            <a href="#">Tutorial</a>
-                          </td>
-                          <td>
-                            <a href="#">
-                              <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                            </a>
-                          </td>
-                          <td>2018-01-20</td>
-                          <td><div class="badge badge-primary">Published</div></td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="custom-checkbox custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-4">
-                              <label for="checkbox-4" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </td>
-                          <td>Laravel 5 Tutorial: MVC
-                            <div class="table-links">
-                              <a href="#">View</a>
-                              <div class="bullet"></div>
-                              <a href="#">Edit</a>
-                              <div class="bullet"></div>
-                              <a href="#" class="text-danger">Trash</a>
-                            </div>
-                          </td>
-                          <td>
-                            <a href="#">Web Developer</a>, 
-                            <a href="#">Tutorial</a>
-                          </td>
-                          <td>
-                            <a href="#">
-                              <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                            </a>
-                          </td>
-                          <td>2018-01-20</td>
-                          <td><div class="badge badge-primary">Published</div></td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="custom-checkbox custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-5">
-                              <label for="checkbox-5" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </td>
-                          <td>Laravel 5 Tutorial: CRUD
-                            <div class="table-links">
-                              <a href="#">View</a>
-                              <div class="bullet"></div>
-                              <a href="#">Edit</a>
-                              <div class="bullet"></div>
-                              <a href="#" class="text-danger">Trash</a>
-                            </div>
-                          </td>
-                          <td>
-                            <a href="#">Web Developer</a>, 
-                            <a href="#">Tutorial</a>
-                          </td>
-                          <td>
-                            <a href="#">
-                              <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                            </a>
-                          </td>
-                          <td>2018-01-20</td>
-                          <td><div class="badge badge-danger">Draft</div></td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="custom-checkbox custom-control">
-                              <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1">
-                              <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
-                            </div>
-                          </td>
-                          <td>Laravel 5 Tutorial: Deployment
-                            <div class="table-links">
-                              <a href="#">View</a>
-                              <div class="bullet"></div>
-                              <a href="#">Edit</a>
-                              <div class="bullet"></div>
-                              <a href="#" class="text-danger">Trash</a>
-                            </div>
-                          </td>
-                          <td>
-                            <a href="#">Web Developer</a>, 
-                            <a href="#">Tutorial</a>
-                          </td>
-                          <td>
-                            <a href="#">
-                              <img alt="image" src="assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="title" title=""> <div class="d-inline-block ml-1">Rizal Fakhri</div>
-                            </a>
-                          </td>
-                          <td>2018-01-20</td>
-                          <td><div class="badge badge-warning">Pending</div></td>
-                        </tr>
+                            @else
+                                @foreach($managers as $manager)
+                                
+                                <tr>
+                                    <td class="pricing-item">
+                                        @if($manager->status == true)
+                                        <div class="pricing-details">
+                                            <div class="pricing-item">
+                                                <div class="pricing-item-icon bg-success text-white">
+                                                    <i class="fas fa-check"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @else
+                                        <div class="pricing-item-icon bg-danger text-white">
+                                            <i class="fas fa-times"></i>
+                                        </div>
+                                        @endif
+                                    </td>
+                                    <td>{{ $manager->name }}</td>
+                                    <td>{{ $manager->username }}</td>
+                                    <td>{{ $manager->email }}</td>
+                                    <td>
+                                        {{ $manager->warehouse->first()->name }}
+                                    </td>
+                                    <td>
+                                    <div class="buttons">
+                                        @if($manager->status == true)
+                                        <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                        @else
+                                        <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                        @endif
+
+                                        <a href="#" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
+                                            <i class="far fa-edit"></i>
+                                        </a>
+
+                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
+                                            <i class="fas fa-lock"></i>
+                                        </a>
+
+                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Reset Password">
+                                            <i class="fas fa-key"></i>
+                                        </a>
+                                        
+
+
+                                        <!-- <a href="#" class="btn btn-icon btn-secondary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-user"></i></a>
+                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-info-circle"></i></a>
+                                        <a href="#" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-exclamation-triangle"></i></a>
+                                        <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-times"></i></a>
+                                        <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-check"></i></a>
+                                        <a href="#" class="btn btn-icon btn-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-star"></i></a>
+                                        <a href="#" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-file"></i></a> -->
+                                    </div>
+
+                                    </td>
+                                </tr>
+                                @endforeach
+
+                            @endempty
+                        </tbody>
                       </table>
                     </div>
-                    <div class="float-right">
-                      <nav>
-                        <ul class="pagination">
-                          <li class="page-item disabled">
-                            <a class="page-link" href="#" aria-label="Previous">
-                              <span aria-hidden="true">&laquo;</span>
-                              <span class="sr-only">Previous</span>
-                            </a>
-                          </li>
-                          <li class="page-item active">
-                            <a class="page-link" href="#">1</a>
-                          </li>
-                          <li class="page-item">
-                            <a class="page-link" href="#">2</a>
-                          </li>
-                          <li class="page-item">
-                            <a class="page-link" href="#">3</a>
-                          </li>
-                          <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Next">
-                              <span aria-hidden="true">&raquo;</span>
-                              <span class="sr-only">Next</span>
-                            </a>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
-                  </div>
+                <div class="float-right">
+                    {{ $managers->links() }}
                 </div>
-              </div>
+                </div>
             </div>
-          </div>
-        </section>
-      </div>
+            </div>
+        </div>
+        </div>
+    </section>
+</div>
 
+<style>
+.custom-modal {
+  width: 70%;
+}
+</style>
+
+
+<form class="modal-part" id="modal-login-part" action="{{ route('staff.managers') }}" method="post">
+          <p></p>
+    <div class="form-group">
+    <label>Username</label>
+    <div class="input-group">
+        <div class="input-group-prepend">
+        <div class="input-group-text">
+            <i class="fas fa-at"></i>
+        </div>
+        </div>
+        <input type="text" class="form-control" placeholder="username" name="username">
+    </div>
+    </div>
+    <div class="form-group">
+    <label>Password</label>
+    <div class="input-group">
+        <div class="input-group-prepend">
+        <div class="input-group-text">
+            <i class="fas fa-lock"></i>
+        </div>
+        </div>
+        <input type="password" class="form-control" placeholder="Password" name="password">
+    </div>
+    </div>
+    
+</form>
+
+@endsection
+
+@section('js')
+<script>
+    $(function() {
+
+        $("#modal-5").fireModal({
+            title: 'Create Manager',
+            body: $("#modal-login-part"),
+            footerClass: 'bg-whitesmoke',
+            autoFocus: false,
+            onFormSubmit: function(modal, e, form) {
+                return true
+            },
+            shown: function(modal, form) {
+                console.log(form)
+            },
+            buttons: [
+                {
+                text: 'Save',
+                submit: true,
+                class: 'btn btn-primary btn-shadow',
+                handler: function(modal) {
+                    $("#modal-login-part").submit();
+                }
+                }
+            ]
+        });
+    })
+</script>
 
 @endsection

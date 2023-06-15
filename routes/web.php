@@ -27,6 +27,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
                 Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
             });
+
+
+            Route::prefix('warehouse')->name('warehouse.')->group(function() {
+                Route::match(['get', 'post'], 'warehouses', 'WareHouseController@index')->name('manage');
+            });
             
 
             Route::match(['get', 'post'], 'control', 'AccessController@control')

@@ -10,10 +10,14 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Warehouse;
+use App\Policies\UserPolicy;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
+
+    protected $policy = UserPolicy::class;
 
     /**
      * The attributes that are mass assignable.
@@ -75,5 +79,7 @@ class User extends Authenticatable
         }
     }
 
-    
+    public function warehouse() {
+        return $this->belongsToMany(Warehouse::class);
+    }
 }
