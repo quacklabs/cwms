@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Warehouse;
 use App\Policies\UserPolicy;
+use App\Models\Store;
 
 class User extends Authenticatable
 {
@@ -81,5 +82,9 @@ class User extends Authenticatable
 
     public function warehouse() {
         return $this->belongsToMany(Warehouse::class);
+    }
+
+    public function store() {
+        return $this->belongsToMany(Store::class);
     }
 }

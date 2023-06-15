@@ -9,7 +9,7 @@
         <div class="section-header">
         <h1>{{$title }}</h1>
         <div class="section-header-button">
-            <button class="btn btn-primary" id="modal-5">Add New</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New</button>
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
         {{ Breadcrumbs::render('staff.managers') }}
@@ -126,68 +126,88 @@
 </div>
 
 <style>
-.custom-modal {
-  width: 70%;
+.modal-dialog {
+  max-width: 70%;
+  margin: 1.75rem auto;
 }
 </style>
 
 
-<form class="modal-part" id="modal-login-part" action="{{ route('staff.managers') }}" method="post">
-          <p></p>
-    <div class="form-group">
-    <label>Username</label>
-    <div class="input-group">
-        <div class="input-group-prepend">
-        <div class="input-group-text">
-            <i class="fas fa-at"></i>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Add Manager</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <hr>
+
+            <div class="modal-body">
+                <form method="post" action="{{ route('staff.managers') }}">
+
+                </form>
+            
+                  
+                  <div class="card-body">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="inputEmail4">Email</label>
+                        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="inputPassword4">Password</label>
+                        <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="inputAddress">Address</label>
+                      <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                    </div>
+                    <div class="form-group">
+                      <label for="inputAddress2">Address 2</label>
+                      <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="inputCity">City</label>
+                        <input type="text" class="form-control" id="inputCity">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="inputState">State</label>
+                        <select id="inputState" class="form-control">
+                          <option selected="">Choose...</option>
+                          <option>...</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="inputZip">Zip</label>
+                        <input type="text" class="form-control" id="inputZip">
+                      </div>
+                    </div>
+                    <div class="form-group mb-0">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="gridCheck">
+                        <label class="form-check-label" for="gridCheck">
+                          Check me out
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <button class="btn btn-primary">Submit</button>
+                  </div>
+                </div>
         </div>
-        </div>
-        <input type="text" class="form-control" placeholder="username" name="username">
     </div>
-    </div>
-    <div class="form-group">
-    <label>Password</label>
-    <div class="input-group">
-        <div class="input-group-prepend">
-        <div class="input-group-text">
-            <i class="fas fa-lock"></i>
-        </div>
-        </div>
-        <input type="password" class="form-control" placeholder="Password" name="password">
-    </div>
-    </div>
-    
-</form>
+</div>
+
+
 
 @endsection
 
 @section('js')
-<script>
-    $(function() {
 
-        $("#modal-5").fireModal({
-            title: 'Create Manager',
-            body: $("#modal-login-part"),
-            footerClass: 'bg-whitesmoke',
-            autoFocus: false,
-            onFormSubmit: function(modal, e, form) {
-                return true
-            },
-            shown: function(modal, form) {
-                console.log(form)
-            },
-            buttons: [
-                {
-                text: 'Save',
-                submit: true,
-                class: 'btn btn-primary btn-shadow',
-                handler: function(modal) {
-                    $("#modal-login-part").submit();
-                }
-                }
-            ]
-        });
-    })
-</script>
 
 @endsection

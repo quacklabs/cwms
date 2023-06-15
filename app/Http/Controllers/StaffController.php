@@ -21,14 +21,15 @@ class StaffController extends Controller
 
     }
 
-    public function manager() {
+    public function manager(Request $request) {
         $managerRole = Role::where('name', 'manager')->first();
         $data = [
             "title" => "Managers",
             "managers" => User::role($managerRole)->paginate(30)
         ];
-        // dd($breadcrumbs);
-       
+        if($request->method() == "POST") {
+
+        }
         return $this->render($data, 'staff/managers');
     }
 
