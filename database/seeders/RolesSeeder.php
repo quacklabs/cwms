@@ -42,7 +42,8 @@ class RolesSeeder extends Seeder
             'grant-product-permission',
             'create-warehouse',
             'create-store',
-            'create-manager'
+            'create-manager',
+            'suspend_user'
         ];
     }
 }

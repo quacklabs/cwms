@@ -18,4 +18,6 @@ class Warehouse extends Model
     public function staff() {
         return $this->belongsToMany(User::class);
     }
+
+
 }

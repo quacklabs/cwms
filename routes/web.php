@@ -24,8 +24,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             //
             Route::prefix('personnel')->name('staff.')->group(function() {
-                Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
+                Route::match(['get', 'post'],'staff', 'StaffController@staff')->middleware(['can:create-user'])->name('staff');
+                Route::match(['get', 'post'], 'staff/{id}/{action}', 'StaffController@edit_staff')->middleware(['can:create-user'])->name('edit_staff');
+
                 Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+                Route::match(['get','post'], 'edit-user/{id}', 'StaffController@edit_user')->middleware(['can:create-manager'])->name('edit_user');
+                Route::get('toggle-user/{id}/{action}', 'StaffController@toggle')->middleware(['role:admin|manager'])->name('toggle');
+                Route::get('delete-user/{id}', 'StaffController@delete_user')->middleware('can:delete-account')->name('delete_user');
+                Route::match(['get','post'], '/modify-permissions/{id}', 'StaffController@permissions')->middleware(['can:grant-user-permission'])->name('modify_permissions');
             });
 
 

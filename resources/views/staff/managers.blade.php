@@ -1,6 +1,10 @@
 @extends('layout')
 @section('title') {{ config('app.name') }} | {{ $title }} @endsection
 
+@section('css')
+<link rel="stylesheet" href="{{ asset('css/iziToast.css') }}">
+
+@endsection
 
 @section('content')
 <!-- Main Content -->
@@ -53,14 +57,14 @@
                                         @if($manager->status == true)
                                         <div class="pricing-details">
                                             <div class="pricing-item">
-                                                <div class="pricing-item-icon bg-success text-white">
+                                                <div class="pricing-item-icon bg-success text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
                                                     <i class="fas fa-check"></i>
                                                 </div>
                                             </div>
                                         </div>
 
                                         @else
-                                        <div class="pricing-item-icon bg-danger text-white">
+                                        <div class="pricing-item-icon bg-danger text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
                                             <i class="fas fa-times"></i>
                                         </div>
                                         @endif
@@ -69,31 +73,32 @@
                                     <td>{{ $manager->username }}</td>
                                     <td>{{ $manager->email }}</td>
                                     <td>
-                                        {{ $manager->warehouse->first()->name }}
+                                        {{ $manager->warehouse->first()->name ?? 'None' }}
                                     </td>
                                     <td>
                                     <div class="buttons">
                                         @if($manager->status == true)
-                                        <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
+                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
                                             <i class="fas fa-times"></i>
                                         </a>
                                         @else
-                                        <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
+                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
                                             <i class="fas fa-check"></i>
                                         </a>
                                         @endif
 
-                                        <a href="#" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
+                                        <a href="{{ route('staff.edit_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
                                             <i class="far fa-edit"></i>
                                         </a>
 
-                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
+                                        <a href="{{ route('staff.modify_permissions', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
                                             <i class="fas fa-lock"></i>
                                         </a>
-
-                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Reset Password">
-                                            <i class="fas fa-key"></i>
+                                        @can('delete-manager')
+                                        <a href="{{ route('staff.delete_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Account">
+                                            <i class="fas fa-trash"></i>
                                         </a>
+                                        @endrole
                                         
 
 
@@ -146,68 +151,97 @@
 
             <div class="modal-body">
                 <form method="post" action="{{ route('staff.managers') }}">
+                    @csrf
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Full Name</label>
+                                <input name="name" type="text" class="form-control" autocomplete="off" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Username</label>
+                                <input name="username" type="text" class="form-control" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Email</label>
+                                <input name="email" type="email" class="form-control" autocomplete="off" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Password</label>
+                                <input name="password" type="password" class="form-control"  autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Mobile No</label>
+                                <input name="mobile"type="text" class="form-control" autocomplete="off" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputState">Asigned To Warehouse</label>
+                                <select id="inputState" class="form-control">
+                                    <option>Choose...</option>
+                                    @empty($warehouses)
+
+                                    @else
+                                        @foreach($warehouses as $warehouse)
+
+
+
+                                        @endforeach
+                                    @endempty
+                                </select>
+                                <!-- <input type="password" class="form-control" id="inputPassword4" placeholder="Password"> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
 
                 </form>
-            
-                  
-                  <div class="card-body">
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="inputEmail4">Email</label>
-                        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="inputPassword4">Password</label>
-                        <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputAddress">Address</label>
-                      <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-                    </div>
-                    <div class="form-group">
-                      <label for="inputAddress2">Address 2</label>
-                      <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="inputCity">City</label>
-                        <input type="text" class="form-control" id="inputCity">
-                      </div>
-                      <div class="form-group col-md-4">
-                        <label for="inputState">State</label>
-                        <select id="inputState" class="form-control">
-                          <option selected="">Choose...</option>
-                          <option>...</option>
-                        </select>
-                      </div>
-                      <div class="form-group col-md-2">
-                        <label for="inputZip">Zip</label>
-                        <input type="text" class="form-control" id="inputZip">
-                      </div>
-                    </div>
-                    <div class="form-group mb-0">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gridCheck">
-                        <label class="form-check-label" for="gridCheck">
-                          Check me out
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                    <button class="btn btn-primary">Submit</button>
-                  </div>
-                </div>
+            </div>
         </div>
     </div>
 </div>
 
-
-
 @endsection
 
 @section('js')
+<script src="{{ asset('js/iziToast.js') }}"></script>
 
+<script>
+$(function() {
+
+});
+</script>
+
+@if(session('success'))
+<script>
+$(function() {
+    iziToast.success({
+        title: 'Action Successful',
+        message: "{{ session('success') }}",
+        position: 'topRight'
+    });
+})
+</script>
+@endif
+
+
+@if(session('error'))
+<script>
+$(function() {
+    iziToast.error({
+        title: 'Action failed',
+        message: "{{ session('error') }}",
+        position: 'topRight'
+    });
+})
+</script>
+@endif
 
 @endsection
