@@ -83,7 +83,8 @@ class RolesSeeder extends Seeder
             'delete-customer',
             'approve-user-transfer',
             'grant-user-permission',
-            'modify-warehouse'
+            'modify-warehouse',
+            'grant-product-permission',
         ])->get();
         
         // dd($managerProductPerms);
