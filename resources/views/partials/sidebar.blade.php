@@ -30,16 +30,19 @@
                 <i class="fas fa-people-carry"></i> <span>Staff</span>
                 </a>
             </li> 
-            <li class="{{ request()->routeIs('access') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('control') }}">
-                <i class="fas fa-universal-access"></i> <span>Access Control</span>
-                </a>
-            </li>
             @endhasanyrole
 
             @role('admin')
-            <li class="menu-header">WareHouse Management</li>
+            <li class="{{ request()->routeIs('access.byRole') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('access.byRole') }}">
+                <i class="fas fa-universal-access"></i> <span>Access Control</span>
+                </a>
+            </li>
             @endrole
+
+            @hasanyrole('admin|manager')
+            <li class="menu-header">WareHouse Management</li>
+            @endhasanyrole
 
             
 

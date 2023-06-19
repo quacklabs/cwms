@@ -35,7 +35,7 @@ class AuthController extends Controller
                 ]);
             }
         }
-        return $this->render($data, 'login');
+        return parent::render($data, 'login');
     }
 
     public function logout(Request $request) {
@@ -45,12 +45,5 @@ class AuthController extends Controller
 
         return redirect()->route('login');
     }
-
-
-    private function render(array $data, string $page) {
-        // you can add other data to be used on admin before rendering
-        return view($page, $data);
-    }
-
 
 }

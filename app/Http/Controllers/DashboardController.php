@@ -13,11 +13,11 @@ class DashboardController extends Controller {
             "title" => "Dashboard"
         ];
 
-        return $this->render($data, 'dashboard');
+        return parent::render($data, 'dashboard');
 
     }
-    private function render(array $data, string $page) {
-        // you can add other data to be used on admin before rendering
-        return view($page, $data);
-    }
+    // private function render(array $data, string $page) {
+    //     // you can add other data to be used on admin before rendering
+    //     return view($page, $data);
+    // }
 }

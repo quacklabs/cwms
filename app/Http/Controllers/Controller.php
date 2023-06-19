@@ -10,4 +10,13 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+
+    public function render(array $data, string $page) {
+        // you can add other data to be used on admin before rendering
+        return view($page)->with($data);
+    }
+
 }
+
+

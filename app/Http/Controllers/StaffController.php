@@ -20,7 +20,7 @@ class StaffController extends Controller
         if($request->method() == "POST") {
             $this->create_user($request, $staffRole);
         }       
-        return $this->render($data, 'staff/staff');
+        return parent::render($data, 'staff/staff');
     }
 
     public function manager(Request $request) {
@@ -33,7 +33,7 @@ class StaffController extends Controller
         if($request->method() == "POST") {
             $this->create_user($request, $managerRole);
         }
-        return $this->render($data, 'staff/managers');
+        return parent::render($data, 'staff/managers');
     }
 
     public function edit_user(Request $request) {
@@ -156,9 +156,9 @@ class StaffController extends Controller
         return redirect()->route('staff.staff');
     }
 
-    private function render(array $data, string $page) {
-        // you can add other data to be used on admin before rendering
+    // private function render(array $data, string $page) {
+    //     // you can add other data to be used on admin before rendering
         
-        return view($page, $data);
-    }
+    //     return view($page, $data);
+    // }
 }
