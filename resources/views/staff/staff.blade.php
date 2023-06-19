@@ -16,12 +16,12 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New</button>
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
-        {{ Breadcrumbs::render('staff.managers') }}
+        {{ Breadcrumbs::render('staff.staff') }}
         </div>
         <div class="section-body">
-        <h2 class="section-title">Authorize Managers</h2>
+        <h2 class="section-title">Authorize staff</h2>
         <p class="section-lead">
-            Each manager must be assigned to a warehouse
+            Each staff must be assigned to a warehouse
         </p>
 
         
@@ -29,7 +29,7 @@
             <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                <h4>All Managers</h4>
+                <h4>All staffs</h4>
                 </div>
                 <div class="card-body">
                 <div class="clearfix mb-3"></div>
@@ -47,14 +47,14 @@
                           </tr>
                         </thead>
                         <tbody>   
-                            @empty($managers)
+                            @empty($staffs)
 
                             @else
-                                @foreach($managers as $manager)
+                                @foreach($staffs as $staff)
                                 
                                 <tr>
                                     <td class="pricing-item">
-                                        @if($manager->status == true)
+                                        @if($staff->status == true)
                                         <div class="pricing-details">
                                             <div class="pricing-item">
                                                 <div class="pricing-item-icon bg-success text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
@@ -69,33 +69,33 @@
                                         </div>
                                         @endif
                                     </td>
-                                    <td>{{ $manager->name }}</td>
-                                    <td>{{ $manager->username }}</td>
-                                    <td>{{ $manager->email }}</td>
+                                    <td>{{ $staff->name }}</td>
+                                    <td>{{ $staff->username }}</td>
+                                    <td>{{ $staff->email }}</td>
                                     <td>
-                                        {{ $manager->warehouse->first()->name ?? 'None' }}
+                                        {{ $staff->warehouse->first()->name ?? 'None' }}
                                     </td>
                                     <td>
                                     <div class="buttons">
-                                        @if($manager->status == true)
-                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
+                                        @if($staff->status == true)
+                                        <a href="{{ route('staff.toggle', ['id' => $staff->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
                                             <i class="fas fa-times"></i>
                                         </a>
                                         @else
-                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
+                                        <a href="{{ route('staff.toggle', ['id' => $staff->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
                                             <i class="fas fa-check"></i>
                                         </a>
                                         @endif
 
-                                        <a href="{{ route('staff.edit_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
+                                        <a href="{{ route('staff.edit_user', ['id' => $staff->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
                                             <i class="far fa-edit"></i>
                                         </a>
 
-                                        <a href="{{ route('staff.modify_permissions', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
+                                        <a href="{{ route('access.byUser', ['id' => $staff->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
                                             <i class="fas fa-lock"></i>
                                         </a>
-                                        @can('delete-manager')
-                                        <a href="{{ route('staff.delete_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Account">
+                                        @can('delete-staff')
+                                        <a href="{{ route('staff.delete_user', ['id' => $staff->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Account">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                         @endrole
@@ -120,7 +120,7 @@
                       </table>
                     </div>
                 <div class="float-right">
-                    {{ $managers->links() }}
+                    {{ $staffs->links() }}
                 </div>
                 </div>
             </div>
@@ -142,7 +142,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content card">
             <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Add Manager</h5>
+                <h5 class="modal-title" id="myModalLabel">Add staff</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -150,7 +150,7 @@
             <hr>
 
             <div class="modal-body">
-                <form method="post" action="{{ route('staff.managers') }}">
+                <form method="post" action="{{ route('staff.staff') }}">
                     @csrf
                     <div class="card-body">
                         <div class="form-row">

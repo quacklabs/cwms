@@ -19,23 +19,38 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
         Route::get('/', 'DashboardController@index')->name('dashboard');
         Route::get('dashboard', 'DashboardController@index')->name('dashboard');
         
-        Route::group(['middleware' => ['role:admin|manager']], function () {
+        Route::group(['middleware' => ['role:admin|manager|staff']], function () {
+            Route::prefix('personnel')->group(function() {
+                Route::group(['middleware' => 'role:admin|manager', 'as' => 'staff.'], function() {
+                    Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
+                    Route::match(['get', 'post'], 'staff/{id}/{action}', 'StaffController@edit_staff')->middleware(['can:create-user'])->name('edit_staff');
+
+                    Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+                    Route::match(['get','post'], 'edit-user/{id}', 'StaffController@edit_user')->middleware(['can:create-manager'])->name('edit_user');
+                    Route::get('toggle-user/{id}/{action}', 'StaffController@toggle')->middleware(['role:admin|manager'])->name('toggle');
+                    Route::get('delete-user/{id}', 'StaffController@delete_user')->middleware('can:delete-account')->name('delete_user');
+                    // Route::match(['get','post'], '/modify-permissions/{id}', 'StaffController@permissions')->middleware(['can:grant-user-permission'])->name('modify_permissions');
+                });
+            });
+
+            Route::prefix('access-control')->name('access.')->group(function() {
+                Route::group(['middleware' => ['role:admin|manager']], function() {
+                    Route::get('byRole', 'AccessController@role_permissions')->middleware('role:admin')->name('byRole');
+                    Route::post('byRole/{role}', 'AccessController@role_permissions')->middleware('role:admin')->name('modifyByRole');
+                    Route::match(['get', 'post'], 'byUser/{id}', 'AccessController@user_permissions')->name('byUser');
+                });
+            });
 
 
-            //
-            Route::prefix('personnel')->name('staff.')->group(function() {
-                Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
-                Route::match(['get', 'post'], 'manager', 'StaffController@manager')->middleware('can:create-manager')->name('managers');
+            Route::prefix('warehouse')->name('warehouse.')->group(function() {
+                Route::match(['get', 'post'], 'warehouses', 'WareHouseController@index')->name('manage');
             });
             
 
-            Route::match(['get', 'post'], 'control', 'AccessController@control')
-            ->middleware(['can:grant-user-permission|grant-product-permission'])
-            ->name('control');
+            // Route::match(['get', 'post'], 'control', 'AccessController@control')
+            // ->middleware(['can:grant-user-permission|grant-product-permission'])
+            // ->name('control');
         });
-        
-        
-        
     });
 
     Route::match(['get', 'post'], '/login', 'AuthController@login')->name('login');

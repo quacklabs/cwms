@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\PermissionGroup;
 
 class RolesSeeder extends Seeder
 {
@@ -20,29 +21,124 @@ class RolesSeeder extends Seeder
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $list = $this->defaultPermissions();
-        
-        foreach($list as $permission) {
-            Permission::create(['name' => $permission]);
-        }
-
         $admin_role = Role::create(['name' => 'admin']);
-        $admin_role->givePermissionTo($list);
-        
         $manager_role = Role::create(['name' => 'manager']);
-        $manager_role->givePermissionTo(['create-user', 'grant-product-permission']);
-        
         $staff_role = Role::create(['name' => 'staff']);
+        $grantAdmin = Permission::create(['name' => 'grant-manager-permissions']);
+        $admin_role->givePermissionTo($grantAdmin);
 
+        foreach($list as $key => $permissions) {
+            $group = PermissionGroup::create(['name' => $key]);
+            
+            foreach($permissions as $permission) {
+                $permission = Permission::create([
+                    'name' => $permission,
+                    'permission_group_id' => $group->id,
+                ]);
+                $admin_role->givePermissionTo($permission);
+            }
+        }
+        $userGroup = 'user';
+        $group = PermissionGroup::where('name', $userGroup)->first();
+        $managerNotPermitted = Permission::whereNotIn('name', [
+            'create-manager', 
+            'delete-brand',
+            'delete-warehouse',
+            'delete-supplier',
+            'delete-product',
+            'delete-store',
+            'delete-category',
+            'modify-store',
+            'delete-unit',
+            'transfer-user',
+            'grant-manager-permission',
+            'delete-customer',
+        ])->get();
+    
+        $manager_perms = array_map(function($permission) {
+            return $permission['name'];
+        }, $managerNotPermitted->toArray());
+
+        $staffNotAllowed = 
+        $staff_perms = Permission::whereNotIn('name', [
+            'create-manager', 
+            'delete-brand',
+            'delete-warehouse',
+            'delete-supplier',
+            'delete-product',
+            'delete-store',
+            'modify-store',
+            'delete-unit',
+            'transfer-user',
+            'grant-manager-permission',
+            'tokenize-product-transfer',
+            'create_store',
+            'create-user',
+            'create-category',
+            'create-brand',
+            'create-warehouse',
+            'create-store',
+            'suspend-user',
+            'delete-user',
+            'delete-customer',
+            'approve-user-transfer',
+            'grant-user-permission',
+            'modify-warehouse',
+            'grant-product-permission',
+        ])->get();
+        
+        // dd($managerProductPerms);
+        // $manager_perms = array_merge($managerUserperms, $managerProductPerms, $managerWarehousePerms, $managerStorePerms);
+        $manager_role->syncPermissions($manager_perms);
+        $staff_role->syncPermissions($staff_perms);
+        // $manager_role->syncPermissions();
+        // $manager_role->syncPermissions();
+        // $manager_role->syncPermissions();
     }
 
     private function defaultPermissions(): array {
         return [
-            'create-user',
-            'grant-user-permission',
-            'grant-product-permission',
-            'create-warehouse',
-            'create-store',
-            'create-manager'
+            'user' => [
+                'create-user',
+                'create-manager',
+                'grant-user-permission',
+                'suspend-user',
+                'transfer-user',
+                'approve-user-transfer',
+                'create-customer',
+                'delete-customer',
+                'modify-customer',
+                'create-supplier',
+                'delete-supplier',
+                'modify-supplier'
+            ],
+            'product' => [
+                'create-category',
+                'create-brand',
+                'create-unit',
+                'delete-unit',
+                'delete-category',
+                'delete-brand',
+                'delete-product',
+                'modify-brand',
+                'modify-category',
+                'grant-product-permission',
+                'create-product-category',
+                'create-product',
+                'modify-product',
+                'transfer-product',
+                'approve-product-transfer'
+            ],
+            'warehouse' => [
+                'create-warehouse',
+                'delete-warehouse',
+                'modify-warehouse',
+            ],
+            'store' => [
+                'create-store',
+                'delete-store',
+                'modify-store',
+            ]
         ];
     }
 }

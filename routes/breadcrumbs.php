@@ -13,8 +13,24 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
     $trail->push('Dashboard', route('dashboard'));
 });
 
-// Home > Blog
+// Dashboard > Staff
 Breadcrumbs::for('staff.managers', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Managers');
+});
+
+Breadcrumbs::for('staff.staff', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Staff Management');
+});
+
+// Dashboard > Access Control
+Breadcrumbs::for('access.byRole', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Access Control');
+});
+
+Breadcrumbs::for('access.byUser', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('User Access Control');
 });
