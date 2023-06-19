@@ -19,6 +19,7 @@ class CreateWarehouseTable extends Migration
             $table->longText('address');
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

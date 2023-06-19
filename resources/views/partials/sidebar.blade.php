@@ -42,6 +42,11 @@
 
             @hasanyrole('admin|manager')
             <li class="menu-header">WareHouse Management</li>
+            <li class="{{ request()->routeIs('warehouse.all_warehouses') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('warehouse.all_warehouses') }}">
+                    <i class="fas fa-warehouse"></i> <span>Warehouse</span>
+                </a>
+            </li>
             @endhasanyrole
 
             

@@ -133,6 +133,7 @@ class RolesSeeder extends Seeder
                 'create-warehouse',
                 'delete-warehouse',
                 'modify-warehouse',
+                'suspend-warehouse'
             ],
             'store' => [
                 'create-store',

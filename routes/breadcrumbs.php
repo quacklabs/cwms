@@ -34,3 +34,10 @@ Breadcrumbs::for('access.byUser', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('User Access Control');
 });
+
+
+//Dashboard Warehouses
+Breadcrumbs::for('warehouse.warehouse', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Warehouses');
+});

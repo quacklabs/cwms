@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="{{ asset('css/fontawesome.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/iziToast.css') }}">
 
         @yield('css')
     
@@ -48,6 +49,31 @@
         <script src="{{ asset('js/jquery.nicescroll.js') }}"></script>
         <script src="{{ asset('js/moment.min.js') }}"></script>
         <script src="{{ asset('js/stisla.js') }}"></script>
+        <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+
+        @if(session('success'))
+        <script>
+            $(function() {
+                swal({
+                title: 'Successful',
+                text: "{{ session('success') }}",
+                icon: 'success'
+                })
+            })
+        </script>
+        @endif
+
+        @if(session('error'))
+        <script>
+            $(function() {
+                swal({
+                title: 'Successful',
+                text: "{{ session('error') }}",
+                icon: 'warning'
+                })
+            })
+        </script>
+@endif
         
         @yield('js')
 

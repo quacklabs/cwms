@@ -209,39 +209,3 @@
 </div>
 
 @endsection
-
-@section('js')
-<script src="{{ asset('js/iziToast.js') }}"></script>
-
-<script>
-$(function() {
-
-});
-</script>
-
-@if(session('success'))
-<script>
-$(function() {
-    iziToast.success({
-        title: 'Action Successful',
-        message: "{{ session('success') }}",
-        position: 'topRight'
-    });
-})
-</script>
-@endif
-
-
-@if(session('error'))
-<script>
-$(function() {
-    iziToast.error({
-        title: 'Action failed',
-        message: "{{ session('error') }}",
-        position: 'topRight'
-    });
-})
-</script>
-@endif
-
-@endsection
