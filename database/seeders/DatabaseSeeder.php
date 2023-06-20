@@ -8,6 +8,8 @@ use Database\Seeders\RolesSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\BrandSeeder;
+use Database\Seeders\UnitSeeder;
+use Database\Seeders\ProductSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(WarehouseSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(BrandSeeder::class);
-        
+        $this->call(UnitSeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }

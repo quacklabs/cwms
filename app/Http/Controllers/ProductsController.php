@@ -6,12 +6,31 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Unit;
 
 class ProductsController extends Controller {
 
-
     public function products(Request $request) {
+        if($request->method() == "POST") {
+            $name = $request->validate([
+                'name' => ['required', 'unique:categories,name']
+            ]);
 
+            $product = Category::create($name);
+
+            if(!$product) {
+                return redirect()->route('product.categories')->with('error', 'Category could not be created. please try again');
+            }
+            return redirect()->route('product.categories')->with('success', 'Category Addedd successfully');
+        }
+        $products = Product::orderBy('created_at', 'desc')->paginate(25);
+        $data = [
+            'title' => 'Product Categories',
+            'products' => $products,
+            'product' => null
+        ];
+        
+        return parent::render($data, 'product.products');
     }
 
     public function categories(Request $request) {
@@ -68,7 +87,26 @@ class ProductsController extends Controller {
     }
 
     public function units(Request $request) {
+        if($request->method() == "POST") {
+            $name = $request->validate([
+                'name' => ['required', 'unique:categories,name']
+            ]);
 
+            $unit = Unit::create($name);
+
+            if(!$unit) {
+                return redirect()->route('product.units')->with('error', 'Unit could not be created. please try again');
+            }
+            return redirect()->route('product.units')->with('success', 'Unit Addedd successfully');
+        }
+        $units = Unit::orderBy('created_at', 'desc')->paginate(50);
+        $data = [
+            'title' => 'Product Unit',
+            'units' => $units,
+            'unit' => null
+        ];
+        
+        return parent::render($data, 'product.unit');
     }
 
     public function edit(Request $request) {
@@ -129,8 +167,31 @@ class ProductsController extends Controller {
             return redirect()->route('product.brands')->with('success', 'Brand updated successfully');
         }
         
-        $data = ['title' => 'Edit Brand', 'brands' => null, 'brand' =>  $category];
+        $data = ['title' => 'Edit Brand', 'brands' => null, 'brand' =>  $brand];
         return parent::render($data, 'product.categories');
+    }
+
+    private function edit_unit($id, Request $request) {
+        $unit = Unit::find($id);
+        if(!$unit) {
+            return redirect()->route('product.units')->with('error', 'Unable to update');
+        }
+
+        if($request->method() === 'POST') {
+            $valid = $request->validate([
+                'name' => ['required']
+            ]);
+            $exists = Unit::where('name', $valid['name'])->where('id', '!=', $unit->id)->first();
+            if($exists) {
+                return redirect()->route('product.units')->with('error', 'Unit name already exists');
+            }
+            $unit->name = $valid['name'];
+            $unit->save();
+            return redirect()->route('product.units')->with('success', 'Unit updated successfully');
+        }
+        
+        $data = ['title' => 'Edit Unit', 'units' => null, 'unit' =>  $unit];
+        return parent::render($data, 'product.unit');
     }
 
     public function toggle(Request $request) {
@@ -163,11 +224,21 @@ class ProductsController extends Controller {
     private function toggle_brand($id, $action) {
         $brand = Brand::find($id);
         if(!$brand) {
-            return redirect()->route('product.categories');
+            return redirect()->route('product.brands');
         }
         $brand->status = ($action === 'suspend') ? false : true;
         $brand->save();
-        return redirect()->route('product.categories')->with('success', 'Category updated successfully');
+        return redirect()->route('product.categories')->with('success', 'Brand updated successfully');
+    }
+
+    public function toggle_unit($id, $action) {
+        $unit = Unit::find($id);
+        if(!$unit) {
+            return redirect()->route('product.units');
+        }
+        $unit->status = ($action === 'suspend') ? false : true;
+        $unit->save();
+        return redirect()->route('product.unitss')->with('success', 'UNit updated successfully');
     }
 
     public function delete(Request $request) {
@@ -191,6 +262,40 @@ class ProductsController extends Controller {
         }
         $cat->products()->detach();
         $cat->delete();
-        return redirect()->route('product.categories')->with('success', 'Category updated successfully');
+        return redirect()->route('product.categories')->with('success', 'Category deleted successfully');
     }
+
+    private function delete_brand($id, Request $request) {
+        $brand = Brand::find($id);
+        if(!$brand) {
+            return redirect()->route('product.brands');
+        }
+        $brand->products()->detach();
+        $brand->delete();
+        return redirect()->route('product.brands')->with('success', 'Brand deleted successfully');
+    }
+
+    private function delete_unit($id, Request $request) {
+        $unit = Unit::find($id);
+        if(!$unit) {
+            return redirect()->route('product.categories');
+        }
+        $unit->products()->detach();
+        $unit->delete();
+        return redirect()->route('product.units')->with('success', 'Unit deleted successfully');
+    }
+
+    private function delete_product($id, Request $request) {
+        $product = Product::find($id);
+        if(!$product) {
+            return redirect()->route('product.categories');
+        }
+        $product->unit()->detach();
+        $product->category()->detach();
+        $product->brand()->detach();
+        $product->delete();
+        return redirect()->route('product.products')->with('success', 'Product deleted successfully');
+    }
+
+
 }

@@ -59,7 +59,7 @@ Breadcrumbs::for('product.products', function (BreadcrumbTrail $trail) {
     $trail->push('products');
 });
 
-Breadcrumbs::for('product.unit', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('product.units', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Units');
 });

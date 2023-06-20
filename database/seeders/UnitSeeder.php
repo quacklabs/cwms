@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Unit;
 
 class UnitSeeder extends Seeder
 {
@@ -14,5 +15,10 @@ class UnitSeeder extends Seeder
     public function run()
     {
         //
+        $units = [
+            ['name' => 'kg'],
+            ['name' => 'crate']
+        ];
+        Unit::insert($units);
     }
 }

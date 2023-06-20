@@ -1,11 +1,11 @@
 <div class="main-sidebar sidebar-style-2 bg-dark">
-    <aside id="sidebar-wrapper">
+    <aside id="sidebar-wrapper mb-5">
         <div class="sidebar-brand mb-4 mt-4">
             <a href="{{ route('dashboard') }}">
                 <img src="{{ asset('img/logo.png') }}" style="max-height: 4em !important;">
             </a>
         </div>
-        <ul class="sidebar-menu">
+        <ul class="sidebar-menu mb-5">
             <li class="menu-header">Dashboard</li>
             <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-home"></i> <span>Overview</span></a>
@@ -63,7 +63,7 @@
 
             <li class="{{ request()->routeIs('product.units') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.units') }}">
-                    <i class="fas fa-warehouse"></i> <span>Units</span>
+                    <i class="far fa-balance-scale"></i> <span>Units</span>
                 </a>
             </li>
 
