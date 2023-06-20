@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Brand;
 
 class ProductsController extends Controller {
 
@@ -38,7 +39,26 @@ class ProductsController extends Controller {
     }
 
     public function brands(Request $request) {
+        if($request->method() == "POST") {
+            $name = $request->validate([
+                'name' => ['required', 'unique:categories,name']
+            ]);
 
+            $brand = Brand::create($name);
+
+            if(!$brand) {
+                return redirect()->route('product.brands')->with('error', 'Category could not be created. please try again');
+            }
+            return redirect()->route('product.brands')->with('success', 'Category Addedd successfully');
+        }
+        $brands = Brand::orderBy('created_at', 'desc')->paginate(50);
+        $data = [
+            'title' => 'Product Brands',
+            'brands' => $brands,
+            'brand' => null
+        ];
+        
+        return parent::render($data, 'product.brands');
     }
 
     public function product(Request $request) {
@@ -90,6 +110,29 @@ class ProductsController extends Controller {
         return parent::render($data, 'product.categories');
     }
 
+    private function edit_brand($id, Request $request) {
+        $brand = Brand::find($id);
+        if(!$brand) {
+            return redirect()->route('product.brands')->with('error', 'Unable to update');
+        }
+
+        if($request->method() === 'POST') {
+            $valid = $request->validate([
+                'name' => ['required']
+            ]);
+            $exists = Brand::where('name', $valid['name'])->where('id', '!=', $brand->id)->first();
+            if($exists) {
+                return redirect()->route('product.brands')->with('error', 'Brand name already exists');
+            }
+            $brand->name = $valid['name'];
+            $brand->save();
+            return redirect()->route('product.brands')->with('success', 'Brand updated successfully');
+        }
+        
+        $data = ['title' => 'Edit Brand', 'brands' => null, 'brand' =>  $category];
+        return parent::render($data, 'product.categories');
+    }
+
     public function toggle(Request $request) {
         $type = $request->route('type');
         $id = $request->route('id');
@@ -114,6 +157,16 @@ class ProductsController extends Controller {
         }
         $cat->status = ($action === 'suspend') ? false : true;
         $cat->save();
+        return redirect()->route('product.categories')->with('success', 'Category updated successfully');
+    }
+
+    private function toggle_brand($id, $action) {
+        $brand = Brand::find($id);
+        if(!$brand) {
+            return redirect()->route('product.categories');
+        }
+        $brand->status = ($action === 'suspend') ? false : true;
+        $brand->save();
         return redirect()->route('product.categories')->with('success', 'Category updated successfully');
     }
 

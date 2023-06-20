@@ -57,7 +57,7 @@
             </li>
             <li class="{{ request()->routeIs('product.brands') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.brands') }}">
-                    <i class="fas fa-warehouse"></i> <span>Brands</span>
+                    <i class="far fa-copyright"></i> <span>Brands</span>
                 </a>
             </li>
 
