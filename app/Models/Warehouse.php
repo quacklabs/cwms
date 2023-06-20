@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Category;
 use App\Policies\WarehousePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Warehouse extends Model
 {
@@ -22,5 +24,13 @@ class Warehouse extends Model
 
     public function manager() {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function categories() {
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function getActiveCategoriesAttribute() {
+        return $this->categories()->where('status', true)->get();
     }
 }

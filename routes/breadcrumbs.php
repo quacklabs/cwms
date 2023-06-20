@@ -41,3 +41,25 @@ Breadcrumbs::for('warehouse.warehouse', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Warehouses');
 });
+
+
+//Products
+Breadcrumbs::for('product.categories', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Categories');
+});
+
+Breadcrumbs::for('product.brands', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Brands');
+});
+
+Breadcrumbs::for('product.products', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('products');
+});
+
+Breadcrumbs::for('product.unit', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Units');
+});

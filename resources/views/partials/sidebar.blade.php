@@ -49,7 +49,29 @@
             </li>
             @endhasanyrole
 
-            <li class="menu-header">Product Management</li>
+            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), '')) ? 'active' : '' }}">Product Management</li>
+            <li class="{{ request()->routeIs('product.categories') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('product.categories') }}">
+                <i class="far fa-layer-group"></i> <span>Categories</span>
+                </a>
+            </li>
+            <li class="{{ request()->routeIs('product.brands') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('product.brands') }}">
+                    <i class="fas fa-warehouse"></i> <span>Brands</span>
+                </a>
+            </li>
+
+            <li class="{{ request()->routeIs('product.units') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('product.units') }}">
+                    <i class="fas fa-warehouse"></i> <span>Units</span>
+                </a>
+            </li>
+
+            <li class="{{ request()->routeIs('product.products') || request()->routeIs('product.product') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('product.products') }}">
+                    <i class="fas fa-warehouse"></i> <span>Products</span>
+                </a>
+            </li>
 
             
 

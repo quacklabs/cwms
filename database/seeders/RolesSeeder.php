@@ -53,7 +53,8 @@ class RolesSeeder extends Seeder
             'transfer-user',
             'grant-manager-permission',
             'delete-customer',
-            'reassign-manager'
+            'reassign-manager',
+            'suspend-category'
         ])->get();
     
         $manager_perms = array_map(function($permission) {
@@ -86,7 +87,9 @@ class RolesSeeder extends Seeder
             'grant-user-permission',
             'modify-warehouse',
             'grant-product-permission',
-            'reassign-manager'
+            'reassign-manager',
+            'suspend-category',
+            'modify-category'
         ])->get();
         
         // dd($managerProductPerms);

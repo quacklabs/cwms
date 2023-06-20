@@ -50,6 +50,16 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('view/{id}', 'WarehouseController@view')->name('view');
                 Route::match(['get', 'post'], 'reassign-warehouse/{id}', 'WarehouseController@reassign')->middleware('can:reassign-manager')->name('reassign');
             });
+
+            Route::prefix('product')->name('product.')->group(function() {
+                Route::match(['get', 'post'], 'products', 'ProductsController@products')->name('products');
+                Route::match(['get', 'post'], 'brands', 'ProductsController@brands')->name('brands');
+                Route::match(['get', 'post'], 'categories', 'ProductsController@categories')->name('categories');
+                Route::match(['get', 'post'], 'units', 'ProductsController@units')->name('units');
+                Route::get('toggle/{type}/{id}/{action}', 'ProductsController@toggle')->middleware('role:admin|manager')->name('toggle');
+                Route::match(['get', 'post'], 'delete/{type}/{id}', 'ProductsController@delete')->middleware('can:delete-category')->name('delete');
+                Route::match(['get', 'post'], 'edit/{type}/{id}', 'ProductsController@edit')->middleware('can:edit-category')->name('edit');
+            });
             
 
             // Route::match(['get', 'post'], 'control', 'AccessController@control')
