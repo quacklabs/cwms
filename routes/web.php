@@ -43,7 +43,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
 
             Route::prefix('warehouse')->name('warehouse.')->group(function() {
-                Route::match(['get', 'post'], 'warehouses', 'WareHouseController@index')->name('all_warehouses');
+                Route::match(['get', 'post'], 'warehouses', 'WarehouseController@index')->name('all_warehouses');
                 Route::get('toggle/{id}/{action}', 'WarehouseController@toggle')->name('toggle');
                 Route::match(['get', 'post'], 'edit/{id}', 'WarehouseController@edit')->name('edit');
                 Route::get('delete/{id}', 'WarehouseController@delete')->name('delete');
