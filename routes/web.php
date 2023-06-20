@@ -48,7 +48,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'], 'edit/{id}', 'WarehouseController@edit')->name('edit');
                 Route::get('delete/{id}', 'WarehouseController@delete')->name('delete');
                 Route::get('view/{id}', 'WarehouseController@view')->name('view');
-                Route::match(['get', 'post'], 'WarehouseController@reassign')->middleware('can:reassign-manager')->name('reassign');
+                Route::match(['get', 'post'], 'reassign-warehouse/{id}', 'WarehouseController@reassign')->middleware('can:reassign-manager')->name('reassign');
             });
             
 

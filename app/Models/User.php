@@ -14,6 +14,8 @@ use App\Models\Warehouse;
 use App\Policies\UserPolicy;
 use App\Models\Store;
 use App\Models\PermissionGroup;
+use Illuminate\Support\Facades\Session;
+
 
 class User extends Authenticatable
 {
@@ -102,5 +104,16 @@ class User extends Authenticatable
         }
         
         return $this->hasRole($group->roles);
+    }
+
+    /**
+     * Generate an API token for the user.
+     *
+     * @return string
+     */
+    public function generateApiToken()
+    {
+        $token = $this->createToken('Bearer')->plainTextToken;
+        Session::put('api_token', $token);
     }
 }

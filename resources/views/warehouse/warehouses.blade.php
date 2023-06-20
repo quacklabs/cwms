@@ -88,14 +88,14 @@
                                             @endcan
 
                                             @can('reassign-manager')
-                                            <a href="{{ route('warehouse.reassign', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Warehouse">
-                                                <i class="fas fa-check"></i>
+                                            <a href="{{ route('warehouse.reassign', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Reassign Manager">
+                                                <i class="fas fa-random"></i>
                                             </a>
                                             @endcan
 
                                             @can('modify-warehouse')
                                                 <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
-                                                    <i class="fas fa-random"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                             @endcan
 

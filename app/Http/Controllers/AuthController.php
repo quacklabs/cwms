@@ -27,6 +27,7 @@ class AuthController extends Controller
                         'message' => 'Account Suspended',
                     ]);
                 }
+                $token = $user->generateApiToken();
                 return redirect()->route('dashboard');
             } else {
                 // Authentication failed

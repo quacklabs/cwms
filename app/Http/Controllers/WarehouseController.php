@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Str; 
+use Spatie\Permission\Models\Role;
+use App\Models\User;
 
 class WarehouseController extends Controller {
     //
@@ -102,7 +104,30 @@ class WarehouseController extends Controller {
     }
 
     public function reassign(Request $request) {
+        $id = $request->route('id');
+        if(!$id) {
+            return redirect()->back()->with('error', 'Warehouse could not be found, invalid ID');
+        }
+        $warehouse = Warehouse::find($id);
+        if($warehouse == NULL) {
+            return redirect()->back()->with('error', 'Warehouse already deleted');
+        }
+        $managerRole = Role::where('name', 'manager')->first();
+        $data = [
+            "title" => 'Reassign Warehouse',
+            "warehouse" => $warehouse,
+            'user' => Auth::user(),
+            "managers" => User::role($managerRole)->paginate(100),
+        ];
 
+        if($request->method() == 'POST') {
+            $details = $request->validate([
+                'manager_id' => 'required'
+            ]);
+            $warehouse->update($details);
+            return redirect()->route('warehouse.all_warehouses')->with('success', 'Warehouse reassigned successfully');
+        }
+        return parent::render($data, 'warehouse.reassign_warehouse');
     }
 
     public function delete(Request $request) {
