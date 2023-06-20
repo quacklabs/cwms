@@ -75,11 +75,21 @@ class StaffController extends Controller
         $user = User::create($user_info);
         $user->assignRole($role);
 
+
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
             $warehouse = Warehouse::find($data['assigned_to']);
+            $managerRole = Role::findByName('manager');
+                        
             if($warehouse){
+                if($user->role->name == $managerRole->name) {
+                    if($warehouse->manager == null) {
+                        $warehouse->manager_id = $user->id;
+                    }
+                }
                 $warehouse->staff()->attach([$manager]);
             }
+
+            
         }
         return redirect()->route('staff.managers')->with('success', 'Manager Added Successfully');
     }

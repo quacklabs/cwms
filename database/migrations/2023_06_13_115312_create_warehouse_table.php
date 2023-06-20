@@ -18,8 +18,11 @@ class CreateWarehouseTable extends Migration
             $table->string('name');
             $table->longText('address');
             $table->boolean('status')->default(true);
+            $table->unsignedBigInteger('manager_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->unique('manager_id');
+            $table->foreign('manager_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Warehouse;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class WarehouseSeeder extends Seeder
 {
@@ -23,6 +24,12 @@ class WarehouseSeeder extends Seeder
         ]);
 
         $users = User::all();
+        // Get users by a specific role
+        $role = Role::where('name', 'manager')->first(); // Replace 'admin' with the desired role name
+        $user = User::role($role)->first();
+        // dd($user);
+        $warehouse->manager_id = $user->id;
+        $warehouse->save();
         $warehouse->staff()->attach($users);
     }
 }

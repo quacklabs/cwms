@@ -13,10 +13,14 @@ class Warehouse extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'warehouse';
-    protected $fillable = ["name","address","status"];
+    protected $fillable = ["name","address","status", 'manager_id'];
     protected $policy = WarehousePolicy::class;
 
     public function staff() {
         return $this->belongsToMany(User::class);
+    }
+
+    public function manager() {
+        return $this->belongsTo(User::class, 'manager_id');
     }
 }

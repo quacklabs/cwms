@@ -40,6 +40,7 @@
                             <th></th>
                             <th>Name</th>
                             <th>Address</th>
+                            <th>Manager</th>
                             <th>Actions</th>
                           </tr>
                         </thead>
@@ -68,8 +69,12 @@
                                     </td>
                                     <td>{{ $warehouse->name }}</td>
                                     <td>{{ $warehouse->address }}</td>
+                                    <td>{{ $warehouse->manager->name ?? 'Unassigned' }}</td>
                                     <td>
                                         <div class="buttons">
+                                            <a href="{{ route('warehouse.view', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Warehouse">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                             @can('suspend-warehouse')
                                                 @if($warehouse->status == true)
                                                 <a href="{{ route('warehouse.toggle', ['id' => $warehouse->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Warehouse">
@@ -82,14 +87,20 @@
                                                 @endif
                                             @endcan
 
+                                            @can('reassign-manager')
+                                            <a href="{{ route('warehouse.reassign', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Warehouse">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                            @endcan
+
                                             @can('modify-warehouse')
-                                                <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
-                                                    <i class="fas fa-edit"></i>
+                                                <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
+                                                    <i class="fas fa-random"></i>
                                                 </a>
                                             @endcan
 
                                             @can('delete-warehouse')
-                                                <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
+                                                <a href="{{ route('warehouse.delete', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Warehouse">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             @endcan

@@ -37,7 +37,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::group(['middleware' => ['role:admin|manager']], function() {
                     Route::get('byRole', 'AccessController@role_permissions')->middleware('role:admin')->name('byRole');
                     Route::post('byRole/{role}', 'AccessController@role_permissions')->middleware('role:admin')->name('modifyByRole');
-                    Route::match(['get', 'post'], 'byUser/{id}', 'AccessController@user_permissions')->name('byUser');
+                    Route::match(['get', 'post'], 'byUser/{id}', 'AccessController@user_permissions')->middleware('role_or_permission:admin|manager|grant-user-permission')->name('byUser');
                 });
             });
 
@@ -45,7 +45,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             Route::prefix('warehouse')->name('warehouse.')->group(function() {
                 Route::match(['get', 'post'], 'warehouses', 'WareHouseController@index')->name('all_warehouses');
                 Route::get('toggle/{id}/{action}', 'WarehouseController@toggle')->name('toggle');
-                Route::match(['get', 'post'], 'edit', 'WarehouseController@edit')->name('edit');
+                Route::match(['get', 'post'], 'edit/{id}', 'WarehouseController@edit')->name('edit');
+                Route::get('delete/{id}', 'WarehouseController@delete')->name('delete');
+                Route::get('view/{id}', 'WarehouseController@view')->name('view');
+                Route::match(['get', 'post'], 'WarehouseController@reassign')->middleware('can:reassign-manager')->name('reassign');
             });
             
 

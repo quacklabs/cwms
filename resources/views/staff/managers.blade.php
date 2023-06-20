@@ -91,7 +91,7 @@
                                             <i class="far fa-edit"></i>
                                         </a>
 
-                                        <a href="{{ route('staff.modify_permissions', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
+                                        <a href="{{ route('access.byUser', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
                                             <i class="fas fa-lock"></i>
                                         </a>
                                         @can('delete-manager')
