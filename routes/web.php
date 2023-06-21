@@ -70,11 +70,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             });
 
             Route::prefix('partners')->name('partner.')->group(function() {
-                Route::match(['get', 'post'], 'customers', 'PartnersController@customers')->name('customers');
-                Route::match(['get', 'post'], 'suppliers', 'PartnersController@suppliers')->name('suppliers');
-                Route::get('view-customers/{id}', 'PartnersController@suppliers')->name('view');
-                Route::match(['get', 'post'], 'edit-customer/{id}', 'PartnersController@edit_customer')->name('edit_customer');
-                Route::match(['get', 'post'], 'edit-supplier/{id}', 'PartnersController@edit_supplier')->name('edit_supplier');
+                Route::match(['get', 'post'], 'partners/{flag}', 'PartnersController@partners')->name('all');
+                Route::get('view-partner/{flag}/{id}', 'PartnersController@view')->name('view');
+                Route::get('toggle/{flag}/{id}/{action}', 'PartnersController@toggle')->middleware('permission:suspend-customer|suspend-supplier')->name('toggle');
+                Route::get('delete/{flag}/{id}', 'PartnersController@delete')->middleware('permission:delete-customer|delete-supplier')->name('delete');
+                Route::match(['get', 'post'], 'edit/{flag}/{id}', 'PartnersController@edit')->name('edit');
             });
             
 

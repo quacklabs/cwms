@@ -41,13 +41,13 @@
             @endrole
 
             <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">Partners Management</li>
-            <li class="{{ request()->routeIs('partner.customers') || request()->routeIs('partner.customer') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('partner.customers') }}">
+            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('partner.all', ['flag' => 'customer']) }}">
                 <i class="fas fa-user-tag"></i><span>Customers</span>
                 </a>
             </li>
-            <li class="{{ request()->routeIs('partner.suppliers') || request()->routeIs('partner.supplier') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('partner.suppliers') }}">
+            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('partner.all', ['flag' => 'supplier']) }}">
                 <i class="fas fa-users"></i> <span>Suppliers</span>
                 </a>
             </li>

@@ -75,3 +75,25 @@ Breadcrumbs::for('store.edit', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Edit Store');
 });
+
+// Dashboard > Partners
+Breadcrumbs::for('partners.customer', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('View Customers');
+});
+
+// Dashboard > Partners
+Breadcrumbs::for('partners.supplier', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('View Suppliers');
+});
+
+Breadcrumbs::for('partners.edit_customer', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Edit Customer');
+});
+
+Breadcrumbs::for('partners.edit_supplier', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Edit Supplier');
+});

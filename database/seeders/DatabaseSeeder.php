@@ -11,6 +11,7 @@ use Database\Seeders\BrandSeeder;
 use Database\Seeders\UnitSeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\StoreSeeder;
+use Database\Seeders\CustomerSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,5 +31,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitSeeder::class);
         $this->call(ProductSeeder::class);
         $this->call(StoreSeeder::class);
+        $this->call(CustomerSeeder::class);
     }
 }
