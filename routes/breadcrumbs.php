@@ -63,3 +63,15 @@ Breadcrumbs::for('product.units', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Units');
 });
+
+
+// Dashboard > Stores
+Breadcrumbs::for('store.stores', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Stores');
+});
+
+Breadcrumbs::for('store.edit', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Edit Store');
+});

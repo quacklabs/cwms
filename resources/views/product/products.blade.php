@@ -7,10 +7,13 @@
     <section class="section">
         <div class="section-header">
         <h1>{{$title }}</h1>
+        @can('create-product')
         <div class="section-header-button">
             <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New</button>
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
+        @endcan
+        
         {{ Breadcrumbs::render('product.products') }}
         </div>
         <div class="section-body">

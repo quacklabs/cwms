@@ -83,6 +83,7 @@ class RolesSeeder extends Seeder
             'suspend-user',
             'delete-user',
             'delete-customer',
+            'suspend-customer',
             'approve-user-transfer',
             'grant-user-permission',
             'modify-warehouse',

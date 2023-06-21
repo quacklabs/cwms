@@ -60,6 +60,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'], 'delete/{type}/{id}', 'ProductsController@delete')->middleware('can:delete-category')->name('delete');
                 Route::match(['get', 'post'], 'edit/{type}/{id}', 'ProductsController@edit')->middleware('can:edit-category')->name('edit');
             });
+
+            Route::prefix('stores')->name('store.')->group(function() {
+                Route::match(['get', 'post'], 'stores', 'StoreController@stores')->name('stores');
+                Route::get('view-store/{id}', 'StoreController@view')->name('view');
+                Route::get('toggle-store/{id}/{action}', 'StoreController@toggle')->name('toggle');
+                Route::get('delete-store/{id}', 'StoreController@delete')->middleware('can:delete-store')->name('delete');
+                Route::match(['get', 'post'], 'edit-store/{id}', 'StoreController@edit')->middleware('can:modify-store')->name('edit');
+            });
             
 
             // Route::match(['get', 'post'], 'control', 'AccessController@control')

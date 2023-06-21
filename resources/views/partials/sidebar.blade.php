@@ -41,10 +41,15 @@
             @endrole
 
             @hasanyrole('admin|manager')
-            <li class="menu-header">WareHouse Management</li>
+            <li class="menu-header">WareHouse/Store Management</li>
             <li class="{{ (Str::startsWith(Route::currentRouteName(), 'warehouse')) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('warehouse.all_warehouses') }}">
                     <i class="fas fa-warehouse"></i> <span>Warehouse</span>
+                </a>
+            </li>
+            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'store')) ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('store.stores') }}">
+                    <i class="fas fa-store-alt"></i> <span>Stores</span>
                 </a>
             </li>
             @endhasanyrole
@@ -69,7 +74,7 @@
 
             <li class="{{ request()->routeIs('product.products') || request()->routeIs('product.product') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.products') }}">
-                    <i class="fas fa-warehouse"></i> <span>Products</span>
+                    <i class="fas fa-apple-crate"></i> <span>Products</span>
                 </a>
             </li>
 

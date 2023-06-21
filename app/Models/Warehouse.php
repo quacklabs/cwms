@@ -33,4 +33,8 @@ class Warehouse extends Model
     public function getActiveCategoriesAttribute() {
         return $this->categories()->where('status', true)->get();
     }
+
+    public function stores() {
+        return $this->hasMany(Store::class);
+    }
 }
