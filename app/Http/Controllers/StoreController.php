@@ -10,11 +10,26 @@ use App\Models\Warehouse;
 class StoreController extends Controller
 {
     public function stores(Request $request) {
+
+        if($request->method() == 'POST') {
+            $valid = $request->validate([
+                'name' => ['required'],
+                'address' => ['required'],
+                'warehouse_id' => ['required'],
+                'notes' => ['nullable']
+            ]);
+
+            Store::create($valid);
+
+            return redirect()->route('store.stores')->with('success', 'Store Added successfully');
+        }
+
         $stores = Store::orderBy('created_at', 'desc')->paginate(25);
-        
+        $warehouses = Warehouse::orderBy('created_at', 'desc')->get();
         $data = [
             'title' => 'Stores',
             'stores' => $stores,
+            'warehouses' => $warehouses
         ];
         return parent::render($data, 'store.stores');
     }

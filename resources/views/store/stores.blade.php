@@ -88,9 +88,9 @@
                                             <td>{{ $store->warehouse->name ?? 'Unassigned' }}</td>
                                             <td>
                                                 <div class="buttons">
-                                                    <a href="{{ route('store.view', ['id' => $store->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View store">
+                                                    <!-- <a href="{{ route('store.view', ['id' => $store->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View store">
                                                         <i class="fas fa-eye"></i>
-                                                    </a>
+                                                    </a> -->
                                                     @can('suspend-store')
                                                         @if($store->status == true)
                                                         <a href="{{ route('store.toggle', ['id' => $store->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate store">
@@ -155,7 +155,7 @@
 
 <style>
 .modal-dialog {
-  max-width: 70%;
+  max-width: 50%;
   margin: auto;
 }
 </style>
@@ -165,7 +165,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content card">
             <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Add product</h5>
+                <h5 class="modal-title" id="myModalLabel">Add Store</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -174,28 +174,37 @@
             
 
             <div class="modal-body">
-                <form id="productForm" method="post" action="{{ route('product.products') }}" enctype="multipart/form-data">
+                <form id="productForm" method="post" action="{{ route('store.stores') }}">
                     @csrf
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-md-6 col-sm-12">
+                            <div class="form-group col-12">
                                 <label for="inputEmail4">Store Name</label>
                                 <input id="productName" name="name" type="text" class="form-control" autocomplete="off" required>
                             </div>
 
-                            <div class="form-group col-md-6 col-sm-12">
+                            
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
                                 <label for="inputEmail4">Address</label>
                                 <input id="sku" name="address" type="text" class="form-control" autocomplete="off" required>
                             </div>
                         </div>
 
                         <div class="form-row">
-                            <!-- <div class="form-group col-6 col-sm-12">
-                                <label for="inputEmail4"></label>
-                                <input id="productName" name="name" type="text" class="form-control" autocomplete="off" required>
-                            </div> -->
-
-                           
+                            <div class="form-group col-12">
+                                <label for="site-description">Warehouse</label>
+                                <select class="form-control" name="warehouse_id">
+                                    @empty($warehouses)
+                                    
+                                    @else
+                                        @foreach ($warehouses as $warehouse)
+                                        <option value="{{$warehouse->id}}">{{ $warehouse->name }}</option>
+                                        @endforeach
+                                    @endempty
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-row">

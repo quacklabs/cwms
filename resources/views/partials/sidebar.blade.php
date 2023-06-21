@@ -40,6 +40,18 @@
             </li>
             @endrole
 
+            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">Partners Management</li>
+            <li class="{{ request()->routeIs('partner.customers') || request()->routeIs('partner.customer') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('partner.customers') }}">
+                <i class="fas fa-user-tag"></i><span>Customers</span>
+                </a>
+            </li>
+            <li class="{{ request()->routeIs('partner.suppliers') || request()->routeIs('partner.supplier') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('partner.suppliers') }}">
+                <i class="fas fa-users"></i> <span>Suppliers</span>
+                </a>
+            </li>
+
             @hasanyrole('admin|manager')
             <li class="menu-header">WareHouse/Store Management</li>
             <li class="{{ (Str::startsWith(Route::currentRouteName(), 'warehouse')) ? 'active' : '' }}">
@@ -54,7 +66,7 @@
             </li>
             @endhasanyrole
 
-            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), '')) ? 'active' : '' }}">Product Management</li>
+            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), 'product')) ? 'active' : '' }}">Product Management</li>
             <li class="{{ request()->routeIs('product.categories') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.categories') }}">
                 <i class="far fa-layer-group"></i> <span>Categories</span>

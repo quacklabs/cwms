@@ -18,6 +18,7 @@ class CreateStore extends Migration
             $table->string('name');
             $table->longText('address');
             $table->boolean('status')->default(true);
+            $table->longText('notes')->nullable();
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->timestamps();
 
