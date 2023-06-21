@@ -19,85 +19,107 @@
             Each staff must be assigned to a warehouse
         </p> -->
 
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         
         <div class="row mt-4">
             <div class="col-12">
-
-
-            <div class="card">
-                <div class="card-header">
-                    <h4>All Products</h4>
-                    <div class="card-header-form">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                <div class="card">
+                    <div class="card-header">
+                        <h4>All Products</h4>
+                        <div class="card-header-form">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
-                  </div>
-                  <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <tbody>
-                                <tr>
-                                    <th>Image</th>
-                                    <th>Name|SKU</th>
-                                    <th>Brand</th>
-                                    <th>Category</th>
-                                    <th>Stock</th>
-                                    <th>Total Sale | Alert Qty</th>
-                                    <th>Unit</th>
-                                    <th>Actions</th>
-                                </tr>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Name|SKU</th>
+                                        <th>Brand</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Total Sale | Alert Qty</th>
+                                        <th>Unit</th>
+                                        <th>Actions</th>
+                                    </tr>
 
-                                <tr>
-                                    <td class="p-0 text-center">
-                                        <div class="custom-checkbox custom-control">
-                                        <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1">
-                                        <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
-                                        </div>
-                                    </td>
-                                    <td>Create a mobile app</td>
-                                    <td class="align-middle">
-                                        <div class="progress" data-height="4" data-toggle="tooltip" title="" data-original-title="100%" style="height: 4px;">
-                                        <div class="progress-bar bg-success" data-width="100" style="width: 100px;"></div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <img alt="image" src="http://localhost:8080/stisla-codeigniter/assets/img/avatar/avatar-5.png" class="rounded-circle" width="35" data-toggle="tooltip" title="" data-original-title="Wildan Ahdian">
-                                    </td>
-                                    <td>2018-01-20</td>
-                                    <td><div class="badge badge-success">Completed</div></td>
-                                    <td><a href="#" class="btn btn-secondary">Detail</a></td>
-                                </tr>
-                        
-                            </tbody>
-                        </table>
+                                    @empty(@products)
+                                    
+                                    @else
+                                        @foreach ($products as $product)
+                                        <tr>
+                                            <td class="p-0 text-center">
+                                                <img src="image;base64,{{ $product->image }}" style="height: 80px; width: 80px;">
+                                            </td>
+                                            <td>
+                                                {{ $product->name }}
+                                                <span class="text-muted">
+                                                    <p>{{ $product->sku }}</p>
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                {{ $product->brands->first()->name }}
+                                            </td>
+                                            <td>
+                                            {{ $product->categories->first()->name }}
+                                            </td>
+                                            <td>{{ $product->totalInStock() }}</td>
+                                            <td>
+                                                {{ $product->name }}
+                                                <span class="text-muted">
+                                                    <p>{{ $product->sku }}</p>
+                                                </span>
+                                            </td>
+                                            <td><a href="#" class="btn btn-secondary">Detail</a></td>
+                                        </tr>
+                                            
+                                        @endforeach
+                                    @endempty
+
+                                    
+                            
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                  </div>
 
-                  <div class="card-footer">
-                    <div class="float-right">
-                        @empty($products)
+                    <div class="card-footer">
+                        <div class="float-right">
+                            @empty($products)
 
-                        @else
-                            {{ $products->links() }}
-                        @endempty
+                            @else
+                                {{ $products->links() }}
+                            @endempty
+                        </div>
                     </div>
-                  </div>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 </div>
 
 <style>
 .modal-dialog {
-  max-width: 50%;
+  max-width: 70%;
   margin: auto;
 }
 </style>
@@ -113,17 +135,93 @@
                 </button>
             </div>
             <hr>
+            
 
             <div class="modal-body">
-                <form id="productForm" method="post" action="{{ route('product.products') }}">
+                <form id="productForm" method="post" action="{{ route('product.products') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-row">
-                            <div class="form-group col-12">
-                                <label for="inputEmail4">product Name</label>
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Product Name</label>
                                 <input id="productName" name="name" type="text" class="form-control" autocomplete="off" required>
                             </div>
+
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">SKU</label>
+                                <input id="sku" name="sku" type="text" class="form-control" autocomplete="off" required>
+                            </div>
                         </div>
+
+                        <div class="form-row">
+                            <!-- <div class="form-group col-6 col-sm-12">
+                                <label for="inputEmail4"></label>
+                                <input id="productName" name="name" type="text" class="form-control" autocomplete="off" required>
+                            </div> -->
+
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Category</label>
+                                <select class="form-control" name="category_id">
+                                    @empty(@categories)
+                                    <option>No Categories</option>
+                                    @else
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ ucwords($category->name) }}</option>
+                                        @endforeach
+                                    @endempty
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Unit</label>
+                                <select class="form-control" name="unit_id">
+                                    @empty(@units)
+                                    <option>No Units</option>
+                                    @else
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}">{{ strtoupper($unit->name) }}</option>
+                                        @endforeach
+                                    @endempty
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Brand Name</label>
+                                <select class="form-control" name="brand_id">
+                                    @empty(@brands)
+                                    <option>No Brands</option>
+                                    @else
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ ucwords($brand->name) }}</option>
+                                        @endforeach
+                                    @endempty
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Alert Amount</label>
+                                <input id="productName" name="alert" type="number" class="form-control" autocomplete="off" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6 col-sm-12">
+                                <label for="inputEmail4">Image</label>
+                                <input name="image" type="file" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12 col-sm-12">
+                                <label for="inputEmail4">Notes</label>
+                                <textarea class="form-control" name="notes">
+
+                                </textarea>
+                            </div>
+                        </div>
+                        
                         
                     </div>
 
@@ -142,26 +240,27 @@
 
 @section('js')
 
-@empty($product)
+
+@empty($edit_product)
 
 @else
 <script>
-    $(function() {
-        $("#myModalLabel").html('Edit product')
-        const form = $("#productForm")
-        $("#productName").val("{{ $product->name }}")
+    // $(function() {
+    //     $("#myModalLabel").html('Edit product')
+    //     const form = $("#productForm")
+    //     $("#productName").val("{{ $edit_product->name }}")
 
-        var newAction = "{{ route('product.edit', ['type' => 'edit_product', 'id' => $product->id]) }}" 
-        console.log(newAction); // Verify the newAction value in the console
-        form.attr('action', newAction);
+    //     var newAction = "{{ route('product.edit', ['type' => 'edit_product', 'id' => $product->id]) }}" 
+    //     console.log(newAction); // Verify the newAction value in the console
+    //     form.attr('action', newAction);
         
-        $(".close").click(function(e) {
-            e.preventDefault()
-            window.location.href = "{{ route('product.products') }}"
-        });
+    //     $(".close").click(function(e) {
+    //         e.preventDefault()
+    //         window.location.href = "{{ route('product.products') }}"
+    //     });
 
-        $("#myModal").modal('show')
-    })
+    //     $("#myModal").modal('show')
+    // })
 </script>
 @endempty
 

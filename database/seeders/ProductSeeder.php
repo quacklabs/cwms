@@ -17,8 +17,6 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        //
-
         $brand = Brand::find(1);
         $category = Category::find(1);
         $unit = Unit::find(1);
@@ -26,16 +24,16 @@ class ProductSeeder extends Seeder
         Product::create([
             'name' => 'Pears baby oil',
             'sku' => Product::ean13(),
-            // 'brand_id' => $brand->id,
-            // 'unit_id' => $unit->id,
-            // 'category_id' => $category->id
+            'brand_id' => $brand->id,
+            'unit_id' => $unit->id,
+            'category_id' => $category->id
         ]);
         Product::create([
             'name' => 'Pears baby powder',
             'sku' => Product::ean13(),
-            // 'brand_id' => $brand->id,
-            // 'unit_id' => $unit->id,
-            // 'category_id' => $category->id
+            'brand_id' => $brand->id,
+            'unit_id' => $unit->id,
+            'category_id' => $category->id
         ]);
 
         $products = Product::all();

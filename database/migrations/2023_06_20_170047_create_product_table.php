@@ -21,6 +21,8 @@ class CreateProductTable extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->integer('alert')->default(1);
+            $table->longText('image')->nullable();
+            $table->longText('notes')->nullable();
             $table->boolean('status')->default(true);
             $table->softDeletes();
             $table->timestamps();

@@ -12,23 +12,40 @@ class ProductsController extends Controller {
 
     public function products(Request $request) {
         if($request->method() == "POST") {
-            $name = $request->validate([
-                'name' => ['required', 'unique:categories,name']
+            $info = $request->validate([
+                'name' => ['required', 'unique:products,name'],
+                'sku' => ['required', 'min:13'],
+                'unit_id' => ['reqeuired'],
+                'brand_id' => ['required'],
+                'category_id' => ['required'],
+                'alert' => ['required'],
+                'image' => ['file', 'nullable', 'mimes:png,jpg,jpeg', 'min:1', 'max:2048'],
+                'notes' => ['nullable', 'string']
             ]);
 
-            $product = Category::create($name);
+            if($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    $info['image'] = base64_encode(file_get_contents($request->file('image')));
+                }
+            }
+            $product = Product::create($info);
 
             if(!$product) {
-                return redirect()->route('product.categories')->with('error', 'Category could not be created. please try again');
+                return redirect()->route('product.products')->with('error', 'Product could not be created. please try again');
             }
-            return redirect()->route('product.categories')->with('success', 'Category Addedd successfully');
+            return redirect()->route('product.products')->with('success', 'Product Addedd successfully');
         }
         $products = Product::orderBy('created_at', 'desc')->paginate(25);
         $data = [
-            'title' => 'Product Categories',
+            'title' => 'Products',
             'products' => $products,
-            'product' => null
+            'product' => null,
+            'categories' => Category::all(),
+            'brands' => Brand::all(),
+            'units' => Unit::all()
         ];
+
+        // dd($products);
         
         return parent::render($data, 'product.products');
     }
@@ -78,12 +95,6 @@ class ProductsController extends Controller {
         ];
         
         return parent::render($data, 'product.brands');
-    }
-
-    public function product(Request $request) {
-
-
-
     }
 
     public function units(Request $request) {
@@ -194,6 +205,30 @@ class ProductsController extends Controller {
         return parent::render($data, 'product.unit');
     }
 
+    private function edit_product($id, Request $request) {
+        $unit = Product::find($id);
+        if(!$unit) {
+            return redirect()->route('product.units')->with('error', 'Unable to update');
+        }
+
+        if($request->method() === 'POST') {
+            $valid = $request->validate([
+                'name' => ['required'],
+                'category_id' => ['required']
+            ]);
+            $exists = Product::where('name', $valid['name'])->where('id', '!=', $unit->id)->first();
+            if($exists) {
+                return redirect()->route('product.products')->with('error', 'Product name already exists');
+            }
+            $unit->name = $valid['name'];
+            $unit->save();
+            return redirect()->route('product.products')->with('success', 'Product updated successfully');
+        }
+        
+        $data = ['title' => 'Edit Product', 'products' => null, 'product' =>  $unit];
+        return parent::render($data, 'product.products');
+    }
+
     public function toggle(Request $request) {
         $type = $request->route('type');
         $id = $request->route('id');
@@ -238,7 +273,17 @@ class ProductsController extends Controller {
         }
         $unit->status = ($action === 'suspend') ? false : true;
         $unit->save();
-        return redirect()->route('product.unitss')->with('success', 'UNit updated successfully');
+        return redirect()->route('product.units')->with('success', 'Unit updated successfully');
+    }
+
+    public function toggle_product($id, $action) {
+        $unit = Product::find($id);
+        if(!$unit) {
+            return redirect()->route('product.units');
+        }
+        $unit->status = ($action === 'suspend') ? false : true;
+        $unit->save();
+        return redirect()->back()->with('success', 'Product updated successfully');
     }
 
     public function delete(Request $request) {

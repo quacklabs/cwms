@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Unit;
 use App\Models\Brand;
 use Faker\Factory;
+use App\Models\ProductStock;
+use App\Models\SaleDetails;
 
 class Product extends Model
 {
@@ -20,9 +22,11 @@ class Product extends Model
         'brand_id', 
         'category_id', 
         'unit_id', 
-        'alert'
+        'alert',
+        'image',
+        'notes'
     ];
-
+    
     public function categories() {
         return $this->belongsToMany(Category::class);
     }
@@ -39,6 +43,22 @@ class Product extends Model
         $faker = Factory::create();
         $ean13 = $faker->ean13;
         return $ean13;
+    }
+
+    public function totalInStock() {
+        return $this->productStock->sum('quantity');
+    }
+
+    public function productStock(){
+        return $this->hasMany(ProductStock::class);
+    }
+
+    public function totalSale(){
+        return $this->saleDetails->sum('quantity');
+    }
+
+    public function saleDetails(){
+        return $this->hasMany(SaleDetails::class);
     }
 
 }
