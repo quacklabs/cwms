@@ -62,8 +62,17 @@ class UserSeeder extends Seeder
             "username" => "staff1",
             "mobile" => "+1223445566"
         ];
+        $staff2_data = [
+            "name" => "Staff 2",
+            "email" => "staff2@celdongroup.com",
+            "password" => "12345678",
+            "username" => "staff2",
+            "mobile" => "+1223445566"
+        ];
         $staff = User::create($staff_data);
+        $staff2 = User::create($staff2_data);
         $role = Role::findByName('staff');
         $staff->assignRole($role);
+        $staff2->assignRole($role);
     }
 }

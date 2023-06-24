@@ -18,18 +18,27 @@ class WarehouseSeeder extends Seeder
     public function run()
     {
         //
-        $warehouse = Warehouse::create([
-            "name" => "KIGG BENIN WAREHOUSE",
-            "address" => "4,Omorose Close Off Omomena Street, Barbers Bus Stop, Oko Central, Along Airport Road, Benin City."
-        ]);
-
+        
+        $warehouses = Warehouse::factory()->count(2)->create();
         $users = User::all();
+        $manager_role = Role::where('name', 'manager')->first(); // Replace 'admin' with the desired role name
+        $staff_role = Role::where('name', 'staff')->first();
+        $managers = User::role($manager_role)->get();
+        $staff = User::role($staff_role)->get();
+
+        foreach($warehouses as $index => $warehouse) {
+            $warehouse->manager_id = $managers[$index]->id;
+            $warehouse->staff()->attach($managers[$index]);
+            $warehouse->save();
+        }
+
+        
         // Get users by a specific role
-        $role = Role::where('name', 'manager')->first(); // Replace 'admin' with the desired role name
-        $user = User::role($role)->first();
+        
+        
         // dd($user);
-        $warehouse->manager_id = $user->id;
-        $warehouse->save();
-        $warehouse->staff()->attach($users);
+        
+        
+        
     }
 }

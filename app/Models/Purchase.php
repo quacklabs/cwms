@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Warehouse;
+use App\Models\Supplier;
+use App\Contracts\Transaction;
 
-class Purchase extends Model
+class Purchase extends Model implements Transaction
 {
     use HasFactory, SoftDeletes;
 
@@ -18,9 +20,7 @@ class Purchase extends Model
         'warehouse_id',
         'total_price',
         'discount_amount',
-        'payable_amount',
         'paid_amount',
-        'due_amount',
         'note',
         'return_status'
     ];
@@ -32,5 +32,19 @@ class Purchase extends Model
 
     public function warehouse() {
         return $this->belongsTo(Warehouse::class);
+    }
+
+    public function owner() {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
+    }
+
+    public function payable(): float {
+        $full = $this->total_price - $this->discount_amount;
+        return $full;
+    }
+
+    public function due(): float {
+        $full = $this->total_price - $this->discount_amount;
+        return $full - $this->received_amount;
     }
 }

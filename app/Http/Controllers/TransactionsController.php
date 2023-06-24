@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Warehouse;
@@ -13,6 +14,8 @@ use App\Enums\TransactionType;
 
 use Faker\Factory;
 use Faker\Provider\Barcode;
+
+use App\Rules\DecimalComparison;
 
 
 class TransactionsController extends Controller implements TransactionInterface {
@@ -26,14 +29,14 @@ class TransactionsController extends Controller implements TransactionInterface 
 
         if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
             $transactions = Purchase::orderBy('created_at', 'desc')->paginate(25);
-        } else if(PartnerType::isEqual($flag, PartnerType::SALE)) {
+        } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
             $transactions = Sale::orderBy('created_at', 'desc')->paginate(25);
         } else {
             return redirect()->route('dashboard');
         }
         // $purchases = Purchase::orderBy('created_at', 'desc')->paginate(25);
         $data = [
-            'title' => 'Purchases',
+            'title' => ucwords($flag).'s',
             'items' => $transactions,
             'flag' => $flag
         ];
@@ -70,6 +73,51 @@ class TransactionsController extends Controller implements TransactionInterface 
         return parent::render($data, 'transactions.add_transaction');
     }
 
+    public function enter_ledger(Request $request) {
+        $flag = $request->route('flag');
+        $id = $request->route('id');
+        if(!$flag || !$id) {
+            return redirect()->route('dashboard');
+            // dd($request->route());
+        }
+
+        if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
+            $transaction = $this->purchase($id);
+        } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
+            $transaction = $this->sale($id);
+        } else {
+            return redirect()->route('dashboard');
+        }
+
+        if(!$transaction) {
+            return redirect()->route('dashboard');
+        }
+
+        if($request->method() == 'POST') {
+            $valid = $request->validate([
+                'amount' => ['required', 'decimal', new DecimalComparison('due')],
+                'due' => ['required', 'decimal'],
+            ]);
+
+            $paid = str_replace(',','', $valid['amount']);
+            $due = str_replace(',','', $valid['due']);
+            $user = Auth::user();
+            $transaction->received_amount = $transaction->received_amount + $paid;
+            $transaction->save();
+            return redirect()->route('transaction.view', ['flag' => $flag])->with('success', 'Payment processed successfully');
+        }
+        $title = TransactionType::isEqual($flag, TransactionType::SALE) ? "Receive Payment" : "Give Payment";
+        $action = TransactionType::isEqual($flag, TransactionType::SALE) ? 'received' : 'given';
+        $data = [
+            'title' => $title,
+            'transaction' => $transaction,
+            'action' => $action,
+            'flag' => $flag
+        ];
+
+        return parent::render($data, 'transactions.enter_ledger');
+    }
+
     public function update(Request $request) {
 
     }
@@ -80,7 +128,7 @@ class TransactionsController extends Controller implements TransactionInterface 
     }
 
     public function purchase(int $id): Purchase {
-
+        return Purchase::findOrFail($id);
     }
 
     public function sale(int $id): Sale {

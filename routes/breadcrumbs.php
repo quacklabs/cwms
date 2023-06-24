@@ -120,3 +120,16 @@ Breadcrumbs::for('transactions.add_purchase', function (BreadcrumbTrail $trail) 
     $trail->push('Purchases', route('transaction.view', ['flag', 'purchase']));
     $trail->push('Add Purchase');
 });
+
+
+Breadcrumbs::for('transactions.enter_purchase_ledger', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Purchases', route('transaction.view', ['flag', 'purchase']));
+    $trail->push('Add Purchase');
+});
+
+Breadcrumbs::for('transactions.enter_sale_ledger', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Sales', route('transaction.view', ['flag', 'sale']));
+    $trail->push('Add Purchase');
+});

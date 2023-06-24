@@ -13,7 +13,7 @@ class CreateSales extends Migration
      */
     public function up()
     {
-        Schema::create('sales', function (Blueprint $table) {
+        Schema::create('sale', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->string('invoice_no');
@@ -21,9 +21,7 @@ class CreateSales extends Migration
             $table->date('sale_date');
             $table->decimal('total_price', 28,2)->default(0.00);
             $table->decimal('discount_amount', 28,2)->default(0.00);
-            $table->decimal('receiveable_amount', 28,2)->default(0.00);
             $table->decimal('received_amount', 28,2)->default(0.00);
-            $table->decimal('due_amount',28,2)->default(0.00);
             $table->longText('notes')->nullable();
             $table->boolean('return_status')->default(false);
             $table->timestamps();
@@ -42,5 +40,6 @@ class CreateSales extends Migration
     public function down()
     {
         Schema::dropIfExists('sales');
+        Schema::dropIfExists('sale');
     }
 }

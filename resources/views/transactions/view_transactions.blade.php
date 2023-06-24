@@ -51,28 +51,80 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table">
+                            <table class="table table-striped ">
                                 <thead class="bg-dark text-white">
-                                    <tr>
+                                    <tr class="text-left">
                                         <th class="text-white">Invoice | Date</th>
-                                        <th class="text-white">{{ ucwords($flag) }} | Mobile</th>
+                                        <th class="text-white">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }} | Mobile</th>
                                         <th class="text-white">Amount | Warehouse</th>
                                         <th class="text-white">Discount | Payable</th>
                                         <th class="text-white">Paid | Due</th>
                                         <th class="text-white">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="mt-4">
                                     @empty($items)
                                     <tr>No {{ $flag }} found</tr>
 
                                     @else
                                         @foreach($items as $transaction)
-                                        <tr>
+                                        <tr class="text-left">
                                             <td>
-                                                {{ $transaction->invoice_no }}
-                                                <span class="">{{ $transaction->created_at }}</span>
+                                                <strong>#{{ $transaction->invoice_no }}</strong>
+                                                <span class="text-muted">
+                                                    <p>{{ $transaction->created_at }}</p>
+                                                </span>
+                                            </td>
 
+                                            <td class="p-2">
+                                                <strong>{{ $transaction->owner->name }}</strong>
+                                                <span class="text-muted">
+                                                    <p>{{ $transaction->owner->mobile_no }}</p>
+                                                </span>
+                                            </td>
+                                            
+                                            <td class="p-3">
+                                                <strong>&#8358;{{ number_format($transaction->total_price, 2) }}</strong>
+                                                <span class="text-muted">
+                                                    <p>{{ $transaction->warehouse->name }}</p>
+                                                </span>
+                                            </td>
+
+                                            <td class="p-3">
+                                                <strong>&#8358;{{ number_format($transaction->discount_amount, 2) }}</strong>
+                                                <span class="text-muted">
+                                                    <p>&#8358;{{ number_format($transaction->payable(), 2) }}</p>
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <strong>&#8358;{{ number_format($transaction->received_amount, 2) }}</strong>
+                                                <span class="text-muted">
+                                                    <p>&#8358;{{ number_format($transaction->due(),2) }}</p>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="buttons">
+                                                    @can('approve-'.$flag)
+                                                        @if ($transaction->due() != 0.00)
+                                                            <a href="{{ route('transaction.enter_ledger', ['flag' => $flag, 'id' => $transaction->id]) }}" class="btn btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}">
+                                                                <i class="fas fa-money-check-alt"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endcan
+
+                                                    @can('create-purchase-return')
+                                                        <a href="" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
+                                                            <i class="fas fa-reply"></i>
+                                                        </a>
+                                                    @endcan
+
+                                                    @can('delete-purchase')
+                                                        <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale' }}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    @endcan
+                                                </div>
                                             </td>
                                         </tr>
                                         

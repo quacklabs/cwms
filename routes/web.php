@@ -79,6 +79,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('transactions')->name('transaction.')->group(function() {
                 Route::match(['get','post'], 'add-transaction/{flag}', 'TransactionsController@create')->middleware('permission:create-purchase|create-sale')->name('create');
+                Route::match(['get','post'], 'enter-ledger/{flag}/{id}', 'TransactionsController@enter_ledger')->middleware('permission:enter-ledger|approve-purchase|approve-sale')->name('enter_ledger');
 
                 Route::get('transactions/{flag}', 'TransactionsController@view')->name('view');
                 Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
