@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Policies\WarehousePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use APp\Models\Purchase;
 
 class Warehouse extends Model
 {
@@ -36,5 +36,9 @@ class Warehouse extends Model
 
     public function stores() {
         return $this->hasMany(Store::class);
+    }
+
+    public function purchases() {
+        return $this->hasMany(Purchase::class, 'warehouse_id');
     }
 }

@@ -1,4 +1,4 @@
-<div class="main-sidebar sidebar-style-2 bg-dark">
+<div class="main-sidebar sidebar-style-1">
     <aside id="sidebar-wrapper mb-5">
         <div class="sidebar-brand mb-4 mt-4">
             <a href="{{ route('dashboard') }}">
@@ -6,13 +6,13 @@
             </a>
         </div>
         <ul class="sidebar-menu mb-5">
-            <li class="menu-header">Dashboard</li>
+            <li class="menu-header text-danger">Dashboard</li>
             <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-home"></i> <span>Overview</span></a>
             </li>
             
             @hasanyrole('manager|admin')
-            <li class="menu-header">User Management</li>
+            <li class="menu-header text-danger">User Management</li>
             @endhasanyrole
 
             @role('admin')
@@ -40,55 +40,72 @@
             </li>
             @endrole
 
-            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">Partners Management</li>
-            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">
+            <li class="menu-header">Partners Management</li>
+            <li class="{{ (Str::contains(Route::currentRouteName(), 'customer') == true) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('partner.all', ['flag' => 'customer']) }}">
                 <i class="fas fa-user-tag"></i><span>Customers</span>
                 </a>
             </li>
-            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'partner')) ? 'active' : '' }}">
+            <li class="{{ Str::contains(Route::currentRouteName(), 'supplier') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('partner.all', ['flag' => 'supplier']) }}">
                 <i class="fas fa-users"></i> <span>Suppliers</span>
                 </a>
             </li>
 
             @hasanyrole('admin|manager')
-            <li class="menu-header">WareHouse/Store Management</li>
-            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'warehouse')) ? 'active' : '' }}">
+            <li class="menu-header text-danger">WareHouse/Store Management</li>
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'warehouse') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('warehouse.all_warehouses') }}">
                     <i class="fas fa-warehouse"></i> <span>Warehouse</span>
                 </a>
             </li>
-            <li class="{{ (Str::startsWith(Route::currentRouteName(), 'store')) ? 'active' : '' }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'store') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('store.stores') }}">
                     <i class="fas fa-store-alt"></i> <span>Stores</span>
                 </a>
             </li>
             @endhasanyrole
 
-            <li class="menu-header {{ (Str::startsWith(Route::currentRouteName(), 'product')) ? 'active' : '' }}">Product Management</li>
-            <li class="{{ request()->routeIs('product.categories') ? 'active' : '' }}">
+            <li class="menu-header">Product Management</li>
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.categories') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.categories') }}">
                 <i class="far fa-layer-group"></i> <span>Categories</span>
                 </a>
             </li>
-            <li class="{{ request()->routeIs('product.brands') ? 'active' : '' }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.brands') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.brands') }}">
                     <i class="far fa-copyright"></i> <span>Brands</span>
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('product.units') ? 'active' : '' }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.units') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.units') }}">
                     <i class="far fa-balance-scale"></i> <span>Units</span>
                 </a>
             </li>
 
-            <li class="{{ request()->routeIs('product.products') || request()->routeIs('product.product') ? 'active' : '' }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.product') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.products') }}">
                     <i class="fas fa-apple-crate"></i> <span>Products</span>
                 </a>
             </li>
+
+
+            @hasanyrole('admin|manager|staff')
+            <li class="menu-header text-danger">Transactions Management</li>
+                @canany('view-purchases|view-purchase-return')
+                <li class="dropdown">
+                    <a class="nav-link has-dropdown" href="#">
+                        <i class="fas fa-shopping-cart"></i> <span>Purchases</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ Str::contains(Route::currentRouteName(), '/purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'purchase']) }}">Purchases</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'return_purchase']) }}">Returned Purchases</a></li>
+                    </ul>
+                </li>
+                @endcanany
+            
+            @endhasanyrole
 
             
 

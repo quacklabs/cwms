@@ -54,7 +54,17 @@ class RolesSeeder extends Seeder
             'grant-manager-permission',
             'delete-customer',
             'reassign-manager',
-            'suspend-category'
+            'suspend-category',
+            'view-purchase',
+            'create-purchase',
+            'view-purchase-return',
+            'create-purchase-return',
+            'approve-purchase-return',
+            'create-sale',
+            'approve-sale',
+            'view-sale',
+            'create-sale-return',
+            'approve-sale-return'
         ])->get();
     
         $manager_perms = array_map(function($permission) {
@@ -90,7 +100,12 @@ class RolesSeeder extends Seeder
             'grant-product-permission',
             'reassign-manager',
             'suspend-category',
-            'modify-category'
+            'modify-category',
+            'view-purchase',
+            'view-purchase-return',
+            'create-sale',
+            'view-sale',
+            'create-sale-return',
         ])->get();
         
         // dd($managerProductPerms);
@@ -146,6 +161,21 @@ class RolesSeeder extends Seeder
                 'create-store',
                 'delete-store',
                 'modify-store',
+            ],
+            'transactions' => [
+                'view-purchase',
+                'create-purchase',
+                'view-purchase-return',
+                'create-purchase-return',
+                'approve-purchase-return',
+                'delete-purchase',
+                'create-sale',
+                'approve-purchase',
+                'view-sale',
+                'delete-sale',
+                'approve-sale',
+                'create-sale-return',
+                'approve-sale-return'
             ]
         ];
     }

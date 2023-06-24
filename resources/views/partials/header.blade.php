@@ -1,4 +1,4 @@
-<div class="navbar-bg bg-dark"></div>      
+<div class="navbar-bg"></div>      
 <nav class="navbar navbar-expand-lg main-navbar">
     <form action="#" class="form-inline mr-auto">
         <ul class="navbar-nav mr-3">
@@ -10,25 +10,25 @@
             <button class="btn" type="submit"><i class="fas fa-search"></i></button>
             <div class="search-backdrop"></div>
             <div class="search-result">
-                <div class="search-header">
+                <!-- <div class="search-header">
                     Search History
-                </div>
+                </div> -->
                 <!-- <div class="search-item">
                     <a href="#">How to hack NASA using CSS</a>
                     <a href="#" class="search-close"><i class="fas fa-times"></i></a>
                 </div> -->
-                <div class="search-header">
+                <!-- <div class="search-header">
                     Result
-                </div>
+                </div> -->
                 <!-- <div class="search-item">
                     <a href="#">
                     <img class="mr-3 rounded" width="30" src="assets/img/products/product-3-50.png" alt="product">
                     oPhone S9 Limited Edition
                     </a>
                 </div> -->
-                <div class="search-header">
+                <!-- <div class="search-header">
                     Projects
-                </div>
+                </div> -->
                 <!-- <div class="search-item">
                     <a href="#">
                     <div class="search-icon bg-danger text-white mr-3">

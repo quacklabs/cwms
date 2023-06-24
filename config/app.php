@@ -177,6 +177,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\PaginatorServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        // Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+        // Barryvdh\Cors\ServiceProvider::class,
 
 
     ],

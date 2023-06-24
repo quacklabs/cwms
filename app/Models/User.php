@@ -16,7 +16,6 @@ use App\Models\Store;
 use App\Models\PermissionGroup;
 use Illuminate\Support\Facades\Session;
 
-
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;

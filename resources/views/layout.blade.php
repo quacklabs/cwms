@@ -36,13 +36,12 @@
                     All Rights Reserved
                     </div>
                 </footer>
-
-
             </div>
         </div>
 
         <!-- General JS Scripts -->
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui.js') }}"></script>
         <script src="{{ asset('js/popper.js') }}"></script>
         <script src="{{ asset('js/tooltip.js') }}"></script>
         <script src="{{ asset('js/bootstrap.js') }}"></script>

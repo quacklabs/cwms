@@ -76,11 +76,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('delete/{flag}/{id}', 'PartnersController@delete')->middleware('permission:delete-customer|delete-supplier')->name('delete');
                 Route::match(['get', 'post'], 'edit/{flag}/{id}', 'PartnersController@edit')->name('edit');
             });
-            
 
-            // Route::match(['get', 'post'], 'control', 'AccessController@control')
-            // ->middleware(['can:grant-user-permission|grant-product-permission'])
-            // ->name('control');
+            Route::prefix('transactions')->name('transaction.')->group(function() {
+                Route::match(['get','post'], 'add-transaction/{flag}', 'TransactionsController@create')->middleware('permission:create-purchase|create-sale')->name('create');
+
+                Route::get('transactions/{flag}', 'TransactionsController@view')->name('view');
+                Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
+                // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
+            });
+            
         });
     });
 
