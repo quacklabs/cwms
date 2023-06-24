@@ -28,15 +28,15 @@ class Product extends Model
     ];
     
     public function categories() {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function brands() {
-        return $this->belongsToMany(Brand::class);
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
     public function unit() {
-        return $this->belongsToMany(Unit::class);
+        return $this->belongsTo(Unit::class, 'unit_id');
     }
 
     public static function ean13(): string {
@@ -56,6 +56,7 @@ class Product extends Model
     public function totalSale(){
         return $this->saleDetails->sum('quantity');
     }
+
 
     public function saleDetails(){
         return $this->hasMany(SaleDetails::class);

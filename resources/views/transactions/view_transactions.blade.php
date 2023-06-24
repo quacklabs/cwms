@@ -57,8 +57,8 @@
                                         <th class="text-white">Invoice | Date</th>
                                         <th class="text-white">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }} | Mobile</th>
                                         <th class="text-white">Amount | Warehouse</th>
-                                        <th class="text-white">Discount | Payable</th>
-                                        <th class="text-white">Paid | Due</th>
+                                        <th class="text-white">Payable | Discount </th>
+                                        <th class="text-white">Due | Paid</th>
                                         <th class="text-white">Actions</th>
                                     </tr>
                                 </thead>
@@ -91,16 +91,16 @@
                                             </td>
 
                                             <td class="p-3">
-                                                <strong>&#8358;{{ number_format($transaction->discount_amount, 2) }}</strong>
+                                                <strong>&#8358;{{ number_format($transaction->payable(), 2) }}</strong>
                                                 <span class="text-muted">
-                                                    <p>&#8358;{{ number_format($transaction->payable(), 2) }}</p>
+                                                    <p>&#8358;{{ number_format($transaction->discount_amount, 2) }}</p>
                                                 </span>
                                             </td>
 
                                             <td>
-                                                <strong>&#8358;{{ number_format($transaction->received_amount, 2) }}</strong>
+                                                <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}">&#8358;{{ number_format($transaction->due(),2) }} </strong>
                                                 <span class="text-muted">
-                                                    <p>&#8358;{{ number_format($transaction->due(),2) }}</p>
+                                                    <p>&#8358;{{ number_format($transaction->received_amount, 2) }}</p>
                                                 </span>
                                             </td>
                                             <td>

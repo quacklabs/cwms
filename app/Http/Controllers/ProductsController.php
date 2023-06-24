@@ -15,7 +15,7 @@ class ProductsController extends Controller {
             $info = $request->validate([
                 'name' => ['required', 'unique:products,name'],
                 'sku' => ['required', 'min:13'],
-                'unit_id' => ['reqeuired'],
+                'unit_id' => ['required'],
                 'brand_id' => ['required'],
                 'category_id' => ['required'],
                 'alert' => ['required'],

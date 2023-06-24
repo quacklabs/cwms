@@ -78,19 +78,20 @@
                                                     <p>{{ $product->sku }}</p>
                                                 </span>
                                             </td>
-                                            <td class="align-middle">
-                                                {{ $product->brands->first()->name }}
+                                            <td class="p-3">
+                                                {{ $product->brands->name }}
                                             </td>
-                                            <td>
-                                            {{ $product->categories->first()->name }}
+                                            <td class="p-3">
+                                            {{ $product->categories->name }}
                                             </td>
                                             <td>{{ $product->totalInStock() }}</td>
-                                            <td>
-                                                {{ $product->name }}
+                                            <td class="p-3">
+                                                {{ $product->totalSale() }}
                                                 <span class="text-muted">
-                                                    <p>{{ $product->sku }}</p>
+                                                    <p>{{ $product->alert }} {{ $product->unit->name }}</p>
                                                 </span>
                                             </td>
+                                            <td>{{ $product->unit->name }}</td>
                                             <td><a href="#" class="btn btn-secondary">Detail</a></td>
                                         </tr>
                                             
