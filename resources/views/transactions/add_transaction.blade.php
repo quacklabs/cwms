@@ -40,74 +40,73 @@
                     <div class="card-header">
                         <h4> </h4>
                         <div class="card-header-form ">
-                            <form action="{{ route('transaction.create', ['flag' => $flag]) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="purchaseOrder" id="jsonObjectInput">
-                                <div class="input-group float-right">
-                                    <button id="submit_transaction" class="btn rounded btn-primary"><i class="fas fa-plus"></i> Save</button>
-                                </div>
-                            </form>
+                            <div class="input-group float-right">
+                                <button type="button" id="submit_transaction" class="btn rounded btn-primary"><i class="fas fa-plus"></i> Save</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <label for="inputEmail4">Invoice No</label>
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" value="{{ $invoice_no }}" readonly>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputPassword4">{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}</label>
-                                <div class="form-control p-0">
-                                    <select id="partner_select" name="partner_id" class="p-0 mb-0 selector">
-                                        <option value=""></option>
-                                        @empty($partners)
-                                        
-                                        @else
-                                            @foreach ($partners as $partner)
-                                                <option value="{{ $partner->id }}">{{ $partner->name }}</option>
-                                            @endforeach
-                                        @endempty
-                                    </select>
-
+                        <form id="orderForm" action="{{ route('transaction.create', ['flag' => $flag]) }}" method="POST">
+                            @csrf
+                            <div class="form-row">
+                                <input type="hidden" name="order" id="order" value="{{ old('order') }}">
+                                <input type="hidden" name="discount_amount" id="discount" value="{{ old('discount_amount') }}">
+                                <input type="hidden" name="total_price" id="order_amount" value="{{ old('total_price') }}">
+                                <div class="form-group col-md-3">
+                                    <label for="inputEmail4">Invoice No</label>
+                                    <input name="invoice_no" type="text" class="form-control" value="{{ old('invoice_no') ?? $invoice_no }}" readonly required>
                                 </div>
-                                
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="inputEmail4">Date</label>
-                                <input id="date" name="purchase_date" type="text" class="form-control" value="{{ date('d-m-Y') }}" required>
-                            </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4">{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}</label>
+                                    <div class="form-control p-0">
+                                        <select data-name="{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}" id="partner_select" name="partner_id" class="p-0 mb-0 selector" required>
+                                            <option value=""></option>
+                                            @empty($partners)
+                                            
+                                            @else
+                                                @foreach ($partners as $partner)
+                                                    <option value="{{ $partner->id }}">{{ $partner->name }}</option>
+                                                @endforeach
+                                            @endempty
+                                        </select>
 
-                            <div class="form-group col-md-3">
-                                <label for="inputPassword4">Warehouse</label>
-                                <div class="form-control p-0">
-                                    <select id="warehouse_select" name="warehouse_id" class="p-0 mb-0 selector">
-                                        <option value=""></option>
-                                        @empty($warehouses)
-                                        
-                                        @else
-                                            @foreach ($warehouses as $warehouse)
-                                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                            @endforeach
-                                        @endempty
-                                    </select>
-
+                                    </div>
+                                    
                                 </div>
-                                
-                            </div>
-                        </div>
+                                <div class="form-group col-md-3">
+                                    <label for="inputEmail4">Date</label>
+                                    <input id="date" name="date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="inputPassword4">Warehouse</label>
+                                    <div class="form-control p-0">
+                                        <select data-name="Warehouse" id="warehouse_select" name="warehouse_id" class="p-0 mb-0 selector" required>
+                                            <option value=""></option>
+                                            @empty($warehouses)
+                                            
+                                            @else
+                                                @foreach ($warehouses as $warehouse)
+                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                @endforeach
+                                            @endempty
+                                        </select>
+
+                                    </div>
+                                    
+                                </div>
+                            </div> 
+                        </form>
 
                         <div class="form-row mb-4">
                             <select class="col-12" id="product_select" placeholder="Product Name or SKU">
 
                             </select>
-                            
-                            <!-- <div class="input-group col-12">
-                                <input name="product id="product_select" type="text" class="form-control" placeholder="Product name or SKU" autocomplete="off">
-                            </div> -->
                         </div>
 
                         <div class="table-responsive">
                             <table class="table table-striped">
+                                @if ($flag == 'purchase')
                                 <thead>
                                     <th></th>
                                     <th>Name</th>
@@ -115,91 +114,41 @@
                                     <th class="text-right">Quantity</th>
                                     <th class="text-right">Amount</th>
                                 </thead>
+                                    
+                                @else
+                                <thead>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>In Stock</th>
+                                    <th class="text-right">Price</th>
+                                    <th class="text-right">Quantity</th>
+                                    <th class="text-right">Amount</th>
+                                </thead>
+                                @endif
+                                
                                 <tbody id="items">
-                                    <tr id="grand_total" style="display: none;">
-                                        <td colspan="4" class="text-right font-weight-bold">Total</td>
-                                        <td id="total_amount" class="text-right font-weight-bold">&#8358;0.00</td>
-                                        
-                                    </tr>
-
-                                    @empty($transactions)
-
-                                    @else
-                                        @foreach($transactions as $transaction)
-                                        
-                                        <tr>
-                                            <td class="pricing-transaction">
-                                                @if($transaction->status == true)
-                                                <div class="pricing-details">
-                                                    <div class="pricing-transaction">
-                                                        <div class="pricing-transaction-icon bg-success text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
-                                                            <i class="fas fa-check"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                @else
-                                                <div class="pricing-transaction-icon bg-danger text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
-                                                    <i class="fas fa-times"></i>
-                                                </div>
-                                                @endif
-                                            </td>
-                                            <td>{{ $transaction->name }}</td>
-                                            <td>{{ $transaction->address }}</td>
-                                            <td>{{ $transaction->warehouse->name ?? 'Unassigned' }}</td>
-                                            <td>
-                                                <div class="buttons">
-                                                    <!-- <a href="{{ route('transaction.view', ['id' => $transaction->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View transaction">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a> -->
-                                                    @can('suspend-transaction')
-                                                        @if($transaction->status == true)
-                                                        <a href="{{ route('transaction.toggle', ['id' => $transaction->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate transaction">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                        @else
-                                                        <a href="{{ route('transaction.toggle', ['id' => $transaction->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate transaction">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                        @endif
-                                                    @endcan
-
-                                                    @can('modify-'.$flag)
-                                                        <a href="{{ route('transaction.edit', ['id' => $transaction->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit transaction">
-                                                            <i class="fas fa-edit"></i>
-                                                        </a>
-                                                    @endcan
-
-                                                    @can('delete-'.$flag)
-                                                        <a href="{{ route('transaction.delete', ['id' => $transaction->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete transaction">
-                                                            <i class="fas fa-trash"></i>
-                                                        </a>
-                                                    @endcan
-                                                    <!-- <a href="#" class="btn btn-icon btn-secondary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-user"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-info-circle"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-exclamation-triangle"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-times"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-check"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-star"></i></a>
-                                                    <a href="#" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-file"></i></a> -->
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-
-                                    @endempty
+                                    <!-- this is where we display rows for each product added -->
                                 </tbody>
+
+                                <tfoot id="grand_total" style="display: none;">
+                                    <tr>
+                                        <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Discount Amount</td>
+                                        <th  class="text-right font-weight-bold">
+                                            <input id="discount_amount" class="value-input form-control text-right" type="text" value="0">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Total</td>
+                                        <th id="total_amount" class="text-right font-weight-bold">&#8358;0.00</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
 
                     <div class="card-footer">
                         <div class="float-right">
-                            @empty($transactions)
-
-                            @else
-                                {{ $transactions->links() }}
-                            @endempty
+                           
                         </div>
                     </div>
                     </div>
@@ -220,8 +169,11 @@
    
 
     function updateGrandTotal() {
+        if(isNaN($("#discount_amount").val())) {
+            $("#discount_amount").val('0')
+        }
         const item_rows = $("#items")
-        const rows = item_rows.find('tr').not(':last')
+        const rows = item_rows.find('tr')
         var grand = 0
         rows.each(function(index, element) {
             const total = $(element).find('input').filter(function() {
@@ -229,14 +181,117 @@
             }).first()
             grand = parseFloat(grand) + parseFloat(total.val())
         })
+        const discount = $("#discount_amount").val()
+        grand = parseFloat(grand) - parseFloat(discount)
         $("#total_amount").html('&#8358;'+grand)
+        return grand
+    }
+
+    function createOrder(grand_total) {
+        const item_rows = $("#items")
+        const rows = item_rows.find('tr')
+        var order = []
+        var validity = true;
+        rows.each(function(index, element) {
+            const total = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'total';
+            }).first()
+
+            const quantity = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'quantity';
+            }).first()
+
+            const price = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'price';
+            }).first()
+
+            
+
+            if(quantity.val() === 0 || isNaN(quantity.val())) {
+                validity = false
+                swal({
+                    title: 'Empty Order',
+                    text: 'Please ensure all products have at least one item',
+                    icon: 'error'
+                })
+                return
+            } else if (price.val() === 0 || isNaN(price.val())) {
+                validity = false
+                swal({
+                    title: 'Empty Price',
+                    text: 'Please ensure all products have a price set',
+                    icon: 'error'
+                })
+                return
+            } else {
+                const total_amount = price.val() * quantity.val()
+                const current = {
+                    id: $(element).data('id'),
+                    quantity: quantity.val(),
+                    price: price.val(),
+                    total_price: total_amount
+                }
+                order.push(current)
+            }
+        })
+        if(validity == true && order.length > 0) {
+            const arg = JSON.stringify(order)
+            const discount = $("#discount_amount").val()
+            $("#order").val(arg)
+            $("#discount").val(discount)
+            $("#order_amount").val(grand_total)
+            $("#orderForm").submit()
+        } else {
+            swal({
+                title: 'Empty Order',
+                text: 'Please select some items to purchase',
+                icon: 'error'
+            })
+        }
     }
 
     function validateOrder() {
+        const grand_total = updateGrandTotal()
+        if(grand_total === 0 || isNaN(grand_total)) {
+            swal({
+                title: 'Empty Order',
+                text: 'Please select some items to purchase',
+                icon: 'error'
+            })
+            return false
+        }
 
+        createOrder(grand_total)
     }
 
     $(function() {
+
+        $("#submit_transaction").click(function(e) {
+            const partner_id = $("#partner_select").val()
+            const warehouse_id = $("#warehouse_select").val()
+
+            if (partner_id == null || partner_id == '' || partner_id == undefined) {
+                swal({
+                    title: "{{ ($flag == 'sale') ? 'Customer' : 'Supplier' }} Required",
+                    text: "Please select a {{ ($flag == 'sale') ? 'customer' : 'supplier' }} to continue",
+                    icon: 'error'
+                }) 
+                return
+            } else if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
+                swal({
+                    title: "Warehouse Required",
+                    text: "Please select a warehouse to continue",
+                    icon: 'error'
+                })
+                return
+            } else {
+                validateOrder()
+            }
+        });
+
+        $("#discount_amount").on('input', function(e) {
+            updateGrandTotal()
+        })
 
         $('#date').datepicker({
             format: 'dd-mm-yyyy',
@@ -286,7 +341,7 @@
             render: {
                 option: function(item, escape) {
                     // return null
-                    return '<div class="option" data-selectable="" data-name="'+item.name+'" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
+                    return '<div class="option" data-stock="'+escape(item.stock)+'" data-selectable="" data-name="'+item.name+'" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
                 }
             },
             load: function(query, callback) {
@@ -298,7 +353,9 @@
                 var selectedOption = this.getOption(value);
                 var name = selectedOption.data('name');
                 var id = selectedOption.data('value');
-                insertItem(name, id)
+                var stock = selectedOption.data('stock');
+                console.log(selectedOption)
+                insertItem(name, id, stock)
                 this.clearOptions()
             }
         }
@@ -309,18 +366,57 @@
         
     })
 
-    function insertItem(name, id) {
+    function insertItem(name, id, stock = undefined) {
         const item_rows = $("#items")
-        var newRow = '<tr id="row'+id+'">' +
-        '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
-        '<td>'+name+'</td>' +
-        '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
-        '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
-        '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
-        '</tr>';
-
-        item_rows.find('tr:last').before(newRow);
-        $("#grand_total").show();
+        const rows = item_rows.find('tr')
+        var exists = false;
+        rows.each(function(index, element) {
+            // console.log()
+            const this_id = $(element).data('id')
+            const existing = id
+            // console.log("row: "+this_id)
+            if(this_id === existing) {
+                exists = true
+                console.log(exists)
+                return;
+            }
+            
+        })
+        if(exists == false) {
+            @if($flag == 'sale')
+                if(stock != undefined) {
+                    if(stock === 0) {
+                        swal({
+                            title: 'Out Of stock',
+                            text: 'Item is out of stock',
+                            icon: 'error'
+                        })
+                        return;
+                    }
+                }
+                var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
+                '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
+                '<td>'+name+'</td>' +
+                '<td id="stock">'+stock+'</td>'+
+                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
+                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
+                '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
+                '</tr>';
+            @else
+                var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
+                '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
+                '<td>'+name+'</td>' +
+                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
+                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
+                '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
+                '</tr>';
+            @endif
+            item_rows.append(newRow);
+            $("#grand_total").show();
+        } else {
+            return
+        }
+        
     }
 
     function search(url, query, callback) {
@@ -382,6 +478,8 @@
         total.val(totalAmount)
         updateGrandTotal()
     });
+
+    
 </script>
 
 

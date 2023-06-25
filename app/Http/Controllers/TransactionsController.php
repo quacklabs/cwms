@@ -16,9 +16,10 @@ use Faker\Factory;
 use Faker\Provider\Barcode;
 
 use App\Rules\DecimalComparison;
+use App\Http\Helpers\Transaction;
 
 
-class TransactionsController extends Controller implements TransactionInterface {
+class TransactionsController extends Controller {
 
     protected function view(Request $request) {
 
@@ -28,13 +29,12 @@ class TransactionsController extends Controller implements TransactionInterface 
         }
 
         if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
-            $transactions = Purchase::orderBy('created_at', 'desc')->paginate(25);
+            $transactions = Transaction::getPurchases(Auth::user());
         } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
-            $transactions = Sale::orderBy('created_at', 'desc')->paginate(25);
+            $transactions = Transaction::getSales(Auth::user());
         } else {
             return redirect()->route('dashboard');
         }
-        // $purchases = Purchase::orderBy('created_at', 'desc')->paginate(25);
         $data = [
             'title' => ucwords($flag).'s',
             'items' => $transactions,
@@ -50,6 +50,23 @@ class TransactionsController extends Controller implements TransactionInterface 
             return redirect()->route('dashboard');
         }
 
+        if($request->method() == 'POST') {
+            $valid = $request->validate([
+                'partner_id' => ['required', 'numeric'],
+                'warehouse_id' => ['required', 'numeric'],
+                'date' => ['required', 'date'],
+                'order' => ['required'],
+                'discount_amount' => ['numeric', 'nullable'],
+                'total_price' => ['required', 'decimal'],
+                'invoice_no' => ['required']
+            ]);
+            
+            $transaction = Transaction::create($valid, $flag);
+            if($transaction) {
+                return redirect()->route('transaction.view', ['flag' => $flag])->with('success', 'order added successfully');
+            }
+        }
+
         switch($flag) {
             case 'purchase':
                 $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
@@ -61,7 +78,7 @@ class TransactionsController extends Controller implements TransactionInterface 
 
         $faker = Factory::create();
         $faker->addProvider(new Barcode($faker));
-        $warehouses = Warehouse::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
+        $warehouses = Transaction::warehouse(auth()->user());
         $data = [
             'title' => 'Add '.ucwords($flag),
             'flag' => $flag,
@@ -125,13 +142,5 @@ class TransactionsController extends Controller implements TransactionInterface 
 
     public function delete(Request $request) {
         
-    }
-
-    public function purchase(int $id): Purchase {
-        return Purchase::findOrFail($id);
-    }
-
-    public function sale(int $id): Sale {
-
     }
 }

@@ -93,10 +93,20 @@
                                             </a>
                                             @endcan
 
-                                            @can('modify-warehouse')
+                                            @role('admin')
                                                 <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
+                                            @endrole
+
+                                            @can('modify-warehouse')
+                                                @if ($warehouse->manager_id == $user->id)
+                                                <a href="{{ route('warehouse.edit', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Warehouse">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                @else
+                                                    
+                                                @endif
                                             @endcan
 
                                             @can('delete-warehouse')

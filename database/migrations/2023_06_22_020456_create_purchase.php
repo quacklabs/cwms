@@ -19,10 +19,10 @@ class CreatePurchase extends Migration
             $table->string('invoice_no');
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('warehouse_id');
-            $table->date('purchase_date');
+            $table->date('date');
             $table->decimal('total_price', 28,2);
             $table->decimal('discount_amount', 28,2)->default(0.00);
-            $table->decimal('received_amount', 28,2)->default(0.00);
+            $table->decimal('paid_amount', 28,2)->default(0.00);
             $table->text('note')->nullable();
             $table->boolean('return_status')->default(false);
             $table->softDeletes();

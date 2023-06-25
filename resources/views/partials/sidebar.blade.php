@@ -91,9 +91,9 @@
             </li>
 
 
-            @hasanyrole('admin|manager|staff')
+            @role(['admin','manager','staff'])
             <li class="menu-header text-danger">Transactions Management</li>
-                @canany('view-purchases|view-purchase-return')
+                @canany(['view-purchase','view-purchase-return'])
                 <li class="dropdown">
                     <a class="nav-link has-dropdown" href="#">
                         <i class="fas fa-shopping-cart"></i> <span>Purchases</span>
@@ -106,7 +106,7 @@
                 @endcanany
 
 
-                @canany('view-sales|view-sales-return')
+                @canany(['view-sale', 'view-sale-return'])
                 <li class="dropdown">
                     <a class="nav-link has-dropdown" href="#">
                         <i class="fas"> 
@@ -121,7 +121,7 @@
                 </li>
                 @endcanany
             
-            @endhasanyrole
+            @endrole
 
             
 

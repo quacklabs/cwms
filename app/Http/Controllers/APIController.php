@@ -8,6 +8,7 @@ use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Product;
+use App\Contracts\ProductResponse;
 
 class APIController extends Controller
 {
@@ -44,8 +45,19 @@ class APIController extends Controller
         $products = Product::where('name', 'LIKE', '%' . $search . '%')
         ->orWhere('sku', 'LIKE', '%' . $search . '%')
         ->get();
-        $response['status'] = true;
-        $response['data'] = $products;
+        if($products != null) {
+            // dd($products->all());
+            $response['status'] = true;
+            $response['data'] = array_map(function($product) {
+                // dd($product->id);
+                return new ProductResponse($product->id, $product->name, $product->totalInStock());
+            }, $products->all());
+
+            // dd($response);
+        } else {
+            $response['status'] = false;
+            $response['data'] = [];
+        }
         return response()->json($response);
 
     }

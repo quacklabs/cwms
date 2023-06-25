@@ -18,7 +18,7 @@ class CreateSales extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->string('invoice_no');
             $table->unsignedBigInteger('warehouse_id');
-            $table->date('sale_date');
+            $table->date('date');
             $table->decimal('total_price', 28,2)->default(0.00);
             $table->decimal('discount_amount', 28,2)->default(0.00);
             $table->decimal('received_amount', 28,2)->default(0.00);

@@ -9,9 +9,9 @@ use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Model\SaleDetails;
 
-use App\Contracts\Transaction;
+use App\Contracts\TransactionInterface;
 
-class Sale extends Model implements Transaction
+class Sale extends Model implements TransactionInterface
 {
     use HasFactory, SoftDeletes;
 
@@ -23,7 +23,7 @@ class Sale extends Model implements Transaction
         'warehouse_id',
         'total_amount',
         'discount_amount',
-        'paid_amount',
+        'received_amount',
         'note',
         'return_status'
     ];
@@ -42,7 +42,15 @@ class Sale extends Model implements Transaction
     }
 
     public function details() {
-        return $this->hasOne(SaleDetails::class);
+        return $this->hasMany(SaleDetails::class, 'sale_id');
+    }
+
+    public static function purchase(int $id) : Purchase {
+        return new Purchase;
+    }
+
+    public static function sale(int $id) : Sale {
+        return self::find($id);
     }
 
 

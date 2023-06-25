@@ -18,9 +18,9 @@
         </div>
         <div class="section-body">
         <h2 class="section-title">Manage {{ ucwords($flag) }}</h2>
-        <!-- <p class="section-lead">
-            Each staff must be assigned to a transaction
-        </p> -->
+        <p class="section-lead">
+            Unsettled payments are displayed in red.
+        </p>
 
         @if($errors->any())
             <div class="alert alert-danger">

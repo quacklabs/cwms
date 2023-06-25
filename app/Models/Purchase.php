@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Warehouse;
 use App\Models\Supplier;
-use App\Contracts\Transaction;
+use App\Models\PurchaseDetails;
+use App\Contracts\TransactionInterface;
 
-class Purchase extends Model implements Transaction
+class Purchase extends Model implements TransactionInterface
 {
     use HasFactory, SoftDeletes;
 
@@ -22,13 +23,19 @@ class Purchase extends Model implements Transaction
         'discount_amount',
         'paid_amount',
         'note',
-        'return_status'
+        'return_status',
+        'date'
     ];
 
     protected $casts = [
+        'date' => 'datetime:Y-m-d H:i:s',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    public function details() {
+        return $this->hasMany(PurchaseDetails::class, 'purchase_id');
+    }
 
     public function warehouse() {
         return $this->belongsTo(Warehouse::class);
@@ -45,6 +52,15 @@ class Purchase extends Model implements Transaction
 
     public function due(): float {
         $full = $this->total_price - $this->discount_amount;
-        return $full - $this->received_amount;
+        return $full - $this->paid_amount;
+    }
+
+    public static function purchase(int $id): Purchase {
+        return self::find($id);
+    }
+
+    public static function sale(int $id): Sale {
+        return  new Sale();
+        // return self::find($id);
     }
 }

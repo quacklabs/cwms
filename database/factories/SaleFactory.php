@@ -24,7 +24,7 @@ class SaleFactory extends Factory
             'customer_id' => mt_rand(1,2),
             'invoice_no' => $this->faker->ean13,
             'warehouse_id' => mt_rand(1,2),
-            'sale_date' => Carbon::parse($this->faker->dateTimeThisYear()),
+            'date' => Carbon::parse($this->faker->dateTimeThisYear()),
             'total_price' => $this->faker->randomNumber(4),
             'discount_amount' => 4.00,
             'received_amount' => $this->faker->randomNumber(3),

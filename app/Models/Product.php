@@ -45,6 +45,10 @@ class Product extends Model
         return $ean13;
     }
 
+    public function getStockAttribute() {
+        return $this->productStock->sum('quantity');
+    }
+
     public function totalInStock() {
         return $this->productStock->sum('quantity');
     }
