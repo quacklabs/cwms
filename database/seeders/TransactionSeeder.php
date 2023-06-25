@@ -16,7 +16,15 @@ class TransactionSeeder extends Seeder
     public function run()
     {
         //
-        Purchase::factory()->count(5)->create();
-        Sale::factory()->count(5)->create();
+
+        // $purchases = Purchase::factory()->count(5)->create();
+        // foreach($purchases as $purchase) {
+        //     ProductStock::create([
+        //         'warehouse_id' => $purchase->warehouse_id,
+        //         'product_id' => $order['product_id'],
+        //         'quantity' => $order['quantity']
+        //     ]);
+        // }
+        // Sale::factory()->count(5)->create();
     }
 }

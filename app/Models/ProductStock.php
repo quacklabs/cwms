@@ -11,6 +11,9 @@ class ProductStock extends Model
 {
     use HasFactory;
     protected $table = 'product_stock';
+    protected $fillable = [
+        'warehouse_id', 'product_id', 'quantity'
+    ];
 
     public function product()
     {

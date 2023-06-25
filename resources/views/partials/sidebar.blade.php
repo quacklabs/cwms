@@ -126,8 +126,8 @@
             @role(['admin','manager'])
             <li class="menu-header text-danger">Inventory Management</li>
             @can('adjust-stock')
-            <li class="{{ Str::startsWith(Route::currentRouteName(), 'stock.adjustment') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('stock.adjustment') }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'stock.adjustments') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('stock.adjustments') }}">
                     <i class="fas fa-apple-crate"></i> <span>Adjustment</span>
                 </a>
             </li>

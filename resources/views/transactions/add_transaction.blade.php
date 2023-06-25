@@ -363,6 +363,7 @@
         $("#partner_select").selectize(partner_options)
         $("#warehouse_select").selectize(warehouse_options)
         $("#product_select").selectize(product_options)
+        $('input').prop('autocomplete', 'off');
         
     })
 

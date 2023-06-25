@@ -15,12 +15,14 @@ class CreateAdjustment extends Migration
     {
         Schema::create('adjustment', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('warehouse_id');
             $table->date('adjust_date');
             $table->string('tracking_no');
             $table->text('note');
             $table->softDeletes();
             $table->timestamps();
             $table->index(['tracking_no']);
+            $table->foreign('warehouse_id')->references('id')->on('warehouse');
         });
     }
 

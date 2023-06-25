@@ -5,6 +5,7 @@ use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Warehouse;
 use App\Models\User;
+use App\Models\ProductStock;
 use Spatie\Permission\Models\Role;
 use App\Contracts\TransactionInterface;
 use Carbon\Carbon;
@@ -45,6 +46,17 @@ final class Transaction implements TransactionInterface {
             ];
         }, json_decode($data['order']));
         $transaction->details()->createMany($orders);
+        if($flag == 'purchase') {
+            foreach($orders as $order) {
+                ProductStock::create([
+                    'warehouse_id' => $data['warehouse_id'],
+                    'product_id' => $order['product_id'],
+                    'quantity' => $order['quantity']
+                ]);
+            }
+        }
+        
+
         return $transaction;
     }
 

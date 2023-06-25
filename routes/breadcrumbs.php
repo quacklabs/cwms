@@ -133,3 +133,16 @@ Breadcrumbs::for('transactions.enter_sale_ledger', function (BreadcrumbTrail $tr
     $trail->push('Sales', route('transaction.view', ['flag', 'sale']));
     $trail->push('Add Purchase');
 });
+
+// Dashboard > Stock
+Breadcrumbs::for('stock.adjustment', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Products', route('product.products'));
+    $trail->push('Adjustments');
+});
+
+Breadcrumbs::for('stock.make_adjustment', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Products', route('product.products'));
+    $trail->push('Adjust Stock');
+});

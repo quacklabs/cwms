@@ -191,7 +191,7 @@
                     <div class="form-group row align-items-center">
                         <label for="site-description" class="form-control-label col-sm-3 text-md-right">Due Now</label>
                         <div class="col-sm-6 col-md-9">
-                            <input id="due" name="due" type="text" class="form-control"  value="{{ number_format($transaction->due(),2) }}" readonly>
+                            <input id="due" name="due" type="text" class="form-control"  value="" readonly>
                         </div>
                     </div>
 
