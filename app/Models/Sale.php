@@ -63,6 +63,15 @@ class Sale extends Model implements TransactionInterface
         return $full;
     }
 
+    public function getPayableAttribute() {
+        return $this->payable();
+    }
+
+
+    public function getDueAttribute() {
+        return $this->due();
+    }
+
     public function due(): float {
         $full = $this->total_price - $this->discount_amount;
         return $full - $this->paid_amount;

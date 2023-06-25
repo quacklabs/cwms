@@ -85,6 +85,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
                 // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
             });
+
+            Route::prefix('stock')->name('stock.')->group(function() {
+                Route::match(['get','post'], 'adjustment', 'StockController@adjust')->middleware('permission:adjust-stock')->name('adjustment');
+                // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
+            });
             
         });
     });

@@ -95,6 +95,7 @@ class RolesSeeder extends Seeder
             'create-sale-return',
             'approve-purchase',
             'approve-sale',
+            'adjust-stock'
         ])->get();
         
         // dd($managerProductPerms);
@@ -137,7 +138,8 @@ class RolesSeeder extends Seeder
                 'create-product',
                 'modify-product',
                 'transfer-product',
-                'approve-product-transfer'
+                'approve-product-transfer',
+                'adjust-stock'
             ],
             'warehouse' => [
                 'create-warehouse',

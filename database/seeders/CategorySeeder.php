@@ -15,9 +15,6 @@ class CategorySeeder extends Seeder
     public function run()
     {
         //
-        Category::create([
-            "name" => "Skin Care"
-        ]);
-
+        Category::factory()->count(5)->create();
     }
 }

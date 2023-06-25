@@ -15,6 +15,6 @@ class BrandSeeder extends Seeder
     public function run()
     {
         //
-        Brand::create(['name'=> 'Cussons']);
+        Brand::factory()->count(5)->create();
     }
 }

@@ -17,7 +17,8 @@ class UnitSeeder extends Seeder
         //
         $units = [
             ['name' => 'kg'],
-            ['name' => 'crate']
+            ['name' => 'crate'],
+            ['name' => 'carton']
         ];
         Unit::insert($units);
     }
