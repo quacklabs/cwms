@@ -33,6 +33,10 @@ class Purchase extends Model implements TransactionInterface
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
+    protected $appends = [
+        'due', 'payable', 'url'
+    ];
+
     public function details() {
         return $this->hasMany(PurchaseDetails::class, 'purchase_id');
     }
@@ -45,9 +49,17 @@ class Purchase extends Model implements TransactionInterface
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
+    public function getPayableAttribute() {
+        return $this->payable();
+    }
+
     public function payable(): float {
         $full = $this->total_price - $this->discount_amount;
         return $full;
+    }
+
+    public function getDueAttribute() {
+        return $this->due();
     }
 
     public function due(): float {
@@ -62,5 +74,9 @@ class Purchase extends Model implements TransactionInterface
     public static function sale(int $id): Sale {
         return  new Sale();
         // return self::find($id);
+    }
+
+    public function getUrlAttribute() {
+        return route('transaction.enter_ledger', ['flag' => 'purchase', 'id' => $this->id]);
     }
 }

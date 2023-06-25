@@ -36,36 +36,7 @@
                         <h4>{{ $title }}</h4>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('transaction.enter_ledger', ['flag' => $flag, 'id' => $transaction->id]) }}">
-                                @csrf
-                                <div class="form-group row align-items-center">
-                                    <label for="site-title" class="form-control-label col-sm-3 text-md-right">Amount</label>
-                                    <div class="col-sm-6 col-md-9">
-                                    <input name="amount" type="text" class="form-control" id="decimalInput" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row align-items-center">
-                                    <label for="site-description" class="form-control-label col-sm-3 text-md-right">Due Now</label>
-                                    <div class="col-sm-6 col-md-9">
-                                        <input name="due" type="text" class="form-control"  value="{{ number_format($transaction->due(),2) }}" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row align-items-center">
-                                    <label for="site-description" class="form-control-label col-sm-3 text-md-right">Signature</label>
-                                    <div class="col-sm-6 col-md-9">
-                                        <input id="myCheckbox" name="status" type="checkbox" class="form-control" checked required>
-                                        <span class="text-muted">I affirm that I have {{ $action }} said sum above</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row align-items-center">
-                                    <!-- <label for="site-description" class="form-control-label col-sm-3 text-md-right">Active</label> -->
-                                    <div class="col-sm-6 col-md-9">
-                                        <button type="submit" class="btn btn-large btn-primary">Accept</button>
-                                    </div>
-                                </div>
-                            </form>
+                            
                              
                         </div>
                     </div>

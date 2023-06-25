@@ -23,9 +23,13 @@ class Sale extends Model implements TransactionInterface
         'warehouse_id',
         'total_amount',
         'discount_amount',
-        'received_amount',
+        'paid_amount',
         'note',
         'return_status'
+    ];
+
+    protected $appends = [
+        'due', 'payable','url'
     ];
 
     protected $casts = [
@@ -62,5 +66,9 @@ class Sale extends Model implements TransactionInterface
     public function due(): float {
         $full = $this->total_price - $this->discount_amount;
         return $full - $this->paid_amount;
+    }
+
+    public function getUrlAttribute() {
+        return route('transaction.enter_ledger', ['flag' => 'sale', 'id' => $this->id]);
     }
 }

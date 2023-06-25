@@ -99,9 +99,9 @@ class TransactionsController extends Controller {
         }
 
         if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
-            $transaction = $this->purchase($id);
+            $transaction = Transaction::purchase($id);
         } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
-            $transaction = $this->sale($id);
+            $transaction = Transaction::sale($id);
         } else {
             return redirect()->route('dashboard');
         }
@@ -119,20 +119,11 @@ class TransactionsController extends Controller {
             $paid = str_replace(',','', $valid['amount']);
             $due = str_replace(',','', $valid['due']);
             $user = Auth::user();
-            $transaction->received_amount = $transaction->received_amount + $paid;
+            $transaction->paid_amount = $transaction->paid_amount + $paid;
+            // dd($transaction);
             $transaction->save();
             return redirect()->route('transaction.view', ['flag' => $flag])->with('success', 'Payment processed successfully');
         }
-        $title = TransactionType::isEqual($flag, TransactionType::SALE) ? "Receive Payment" : "Give Payment";
-        $action = TransactionType::isEqual($flag, TransactionType::SALE) ? 'received' : 'given';
-        $data = [
-            'title' => $title,
-            'transaction' => $transaction,
-            'action' => $action,
-            'flag' => $flag
-        ];
-
-        return parent::render($data, 'transactions.enter_ledger');
     }
 
     public function update(Request $request) {

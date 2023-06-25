@@ -27,7 +27,7 @@ class SaleFactory extends Factory
             'date' => Carbon::parse($this->faker->dateTimeThisYear()),
             'total_price' => $this->faker->randomNumber(4),
             'discount_amount' => 4.00,
-            'received_amount' => $this->faker->randomNumber(3),
+            'paid_amount' => $this->faker->randomNumber(3),
             'return_status' => false,
         ];
     }
