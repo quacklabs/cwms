@@ -46,13 +46,33 @@ final class Transaction implements TransactionInterface {
             ];
         }, json_decode($data['order']));
         $transaction->details()->createMany($orders);
+        
+
         if($flag == 'purchase') {
             foreach($orders as $order) {
-                ProductStock::create([
-                    'warehouse_id' => $data['warehouse_id'],
-                    'product_id' => $order['product_id'],
-                    'quantity' => $order['quantity']
-                ]);
+                $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
+                ->where('product_id', $order['product_id'])->first();
+                if($stock) {
+                    $stock->quantity = $stock->quantity + $order['quantity'];
+                    $stock->save();
+                } else {
+                    ProductStock::create([
+                        'warehouse_id' => $data['warehouse_id'],
+                        'product_id' => $order['product_id'],
+                        'quantity' => $order['quantity']
+                    ]);
+                }
+            }
+        } else {
+            $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])->where('product_id', $data['product_id'])->first();
+            if($stock) {
+                if($stock->quantity < $order['quantity']){
+                    $transaction->total_price = $transaction->total->price - $order['total_price'];
+                    $transaction->save();
+                } else {
+                    $stock->quantity = $stock->quantity - $order['quantity'];
+                    $stock->save();
+                }
             }
         }
         

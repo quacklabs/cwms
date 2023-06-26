@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\AdjustmentDetail;
 
 class Adjustment extends Model
 {
@@ -19,4 +20,9 @@ class Adjustment extends Model
         'tracking_no',
         'note'
     ];
+
+
+    public function details() {
+        return $this->hasMany(AdjustmentDetail::class, 'adjustment_id');
+    }
 }

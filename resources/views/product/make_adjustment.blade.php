@@ -48,7 +48,8 @@
                     <div class="card-body">
                         <form id="orderForm" action="{{ route('stock.make_adjustment') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="notes" type="text">
+                            <input id="note" type="hidden" name="notes">
+                            <input type="hidden" name="items" id="order">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="inputPassword4">Warehouse</label>
@@ -56,7 +57,7 @@
                                         <select data-name="Warehouse" id="warehouse_select" name="warehouse_id" class="p-0 mb-0 selector" required>
                                             <option value=""></option>
                                             @empty($warehouses)
-                                            
+                                            <option value="">No Warehouse to select</option>
                                             @else
                                                 @foreach ($warehouses as $warehouse)
                                                     <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
@@ -68,7 +69,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4">Date</label>
-                                    <input id="date" name="date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
+                                    <input id="date" name="adjust_date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
                                 </div>
                             </div>
                         
@@ -102,10 +103,13 @@
                     </div>
 
                     <div class="card-footer">
-                        <div class="float-right">
-                           
+                        <div class="form-row mb-4">
+                            <label class="input-label">Notes</label>
+                            <textarea id="collect_note" class="col-12 form-control">
+
+                            </textarea>
                         </div>
-                    </div>
+                        
                     </div>
                 </div>
             </div>
@@ -121,154 +125,98 @@
 <script src="{{ asset('js/datepicker.js') }}"></script>
 
 <script>
-   
 
-    // function updateGrandTotal() {
-    //     if(isNaN($("#discount_amount").val())) {
-    //         $("#discount_amount").val('0')
-    //     }
-    //     const item_rows = $("#items")
-    //     const rows = item_rows.find('tr')
-    //     var grand = 0
-    //     rows.each(function(index, element) {
-    //         const total = $(element).find('input').filter(function() {
-    //             return $(this).data('name') === 'total';
-    //         }).first()
-    //         grand = parseFloat(grand) + parseFloat(total.val())
-    //     })
-    //     const discount = $("#discount_amount").val()
-    //     grand = parseFloat(grand) - parseFloat(discount)
-    //     $("#total_amount").html('&#8358;'+grand)
-    //     return grand
-    // }
+    function createOrder(grand_total) {
+        const item_rows = $("#items")
+        const rows = item_rows.find('tr')
+        var order = []
+        var validity = true;
+        rows.each(function(index, element) {
+            const current_stock = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'current_stock';
+            }).first().val();
 
-    // function createOrder(grand_total) {
-    //     const item_rows = $("#items")
-    //     const rows = item_rows.find('tr')
-    //     var order = []
-    //     var validity = true;
-    //     rows.each(function(index, element) {
-    //         const total = $(element).find('input').filter(function() {
-    //             return $(this).data('name') === 'total';
-    //         }).first()
+            const adjusted_stock = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'stock';
+            }).first().val();
 
-    //         const quantity = $(element).find('input').filter(function() {
-    //             return $(this).data('name') === 'quantity';
-    //         }).first()
+            const quantity = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'quantity';
+            }).first().val();
 
-    //         const price = $(element).find('input').filter(function() {
-    //             return $(this).data('name') === 'price';
-    //         }).first()
+            const type_val = $(element).find('select').filter(function() {
+                return $(this).data('id') === 'adjust_type';
+            }).first().val();
 
-            
+            const type = parseInt(type_val)
+            console.log("type: "+type)
 
-    //         if(quantity.val() === 0 || isNaN(quantity.val())) {
-    //             validity = false
-    //             swal({
-    //                 title: 'Empty Order',
-    //                 text: 'Please ensure all products have at least one item',
-    //                 icon: 'error'
-    //             })
-    //             return
-    //         } else if (price.val() === 0 || isNaN(price.val())) {
-    //             validity = false
-    //             swal({
-    //                 title: 'Empty Price',
-    //                 text: 'Please ensure all products have a price set',
-    //                 icon: 'error'
-    //             })
-    //             return
-    //         } else {
-    //             const total_amount = price.val() * quantity.val()
-    //             const current = {
-    //                 id: $(element).data('id'),
-    //                 quantity: quantity.val(),
-    //                 price: price.val(),
-    //                 total_price: total_amount
-    //             }
-    //             order.push(current)
-    //         }
-    //     })
-    //     if(validity == true && order.length > 0) {
-    //         const arg = JSON.stringify(order)
-    //         const discount = $("#discount_amount").val()
-    //         $("#order").val(arg)
-    //         $("#discount").val(discount)
-    //         $("#order_amount").val(grand_total)
-    //         $("#orderForm").submit()
-    //     } else {
-    //         swal({
-    //             title: 'Empty Order',
-    //             text: 'Please select some items to purchase',
-    //             icon: 'error'
-    //         })
-    //     }
-    // }
+            if(isNaN(quantity)) {
+                validity = false;
+                console.log('failed at quantity isNaN')
+                return
+            }
 
-    // function validateOrder() {
-    //     const grand_total = updateGrandTotal()
-    //     if(grand_total === 0 || isNaN(grand_total)) {
-    //         swal({
-    //             title: 'Empty Order',
-    //             text: 'Please select some items to purchase',
-    //             icon: 'error'
-    //         })
-    //         return false
-    //     }
+            if(quantity <= 0) {
+                validity = false;
+                swal({
+                    title: 'Empty Adjustment',
+                    text: 'Please delete products not being adjusted',
+                    icon: 'error'
+                })
+                return
+            }
 
-    //     createOrder(grand_total)
-    // }
+            if(quantity > current_stock && type == 1) {
+                console.log('cannot subtract more than current stock')
+                validity = false;
+                return
+            }
+
+            // const total_amount = price.val() * quantity.val()
+            const current = {
+                product_id: $(element).data('id'),
+                quantity: quantity,
+                adjust_type: type
+            }
+            order.push(current)
+        })
+        if(validity == true && order.length > 0) {
+            const arg = JSON.stringify(order)
+            $("#order").val(arg)
+            const note = $("#collect_note").val()
+            $("#note").val(note)
+            $("#orderForm").submit()
+        } else {
+            swal({
+                title: 'Empty Order',
+                text: 'Please select some items to adjust',
+                icon: 'error'
+            })
+        }
+    }
 
     $(function() {
 
-        // $("#submit_transaction").click(function(e) {
-        //     const partner_id = $("#partner_select").val()
-        //     const warehouse_id = $("#warehouse_select").val()
+        $("#submit_transaction").click(function(e) {
+            const warehouse_id = $("#warehouse_select").val()
 
-        //     if (partner_id == null || partner_id == '' || partner_id == undefined) {
-        //         swal({
-        //             title: "",
-        //             text: "Please select a  to continue",
-        //             icon: 'error'
-        //         }) 
-        //         return
-        //     } else if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
-        //         swal({
-        //             title: "Warehouse Required",
-        //             text: "Please select a warehouse to continue",
-        //             icon: 'error'
-        //         })
-        //         return
-        //     } else {
-        //         validateOrder()
-        //     }
-        // });
-
-        // $("#discount_amount").on('input', function(e) {
-        //     updateGrandTotal()
-        // })
+            if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
+                swal({
+                    title: "Warehouse Required",
+                    text: "Please select a warehouse to continue",
+                    icon: 'error'
+                })
+                return
+            } else {
+                createOrder()
+            }
+        });
 
         $('#date').datepicker({
             format: 'dd-mm-yyyy',
             autoclose: true
         });
-
-        const warehouse_options = {
-            valueField: 'id', // Specify the key for option value
-            labelField: 'name', // Specify the key for option innerHTML
-            searchField: 'name', // Specify the key for search field
-            closeAfterSelect: true,
-            create: false,
-            render: {
-                option: function(item, escape) {
-                    return '<div class="option" data-selectable="" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
-                }
-            },
-            load: function(query, callback) {
-                if (!query.length) return callback();
-                search("{{ route('api.findWarehouse') }}", query, callback)
-            }
-        }
 
         const product_options = {
             valueField: 'id', // Specify the key for option value
@@ -297,9 +245,33 @@
                 this.clearOptions()
             }
         }
-        $("#warehouse_select").selectize(warehouse_options)
-        $("#product_select").selectize(product_options)
 
+        @role('admin')
+            const warehouse_options = {
+                valueField: 'id', // Specify the key for option value
+                labelField: 'name', // Specify the key for option innerHTML
+                searchField: 'name', // Specify the key for search field
+                closeAfterSelect: true,
+                create: false,
+                render: {
+                    option: function(item, escape) {
+                        return '<div class="option" data-selectable="" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
+                    }
+                },
+                load: function(query, callback) {
+                    if (!query.length) return callback();
+                    search("{{ route('api.findWarehouse') }}", query, callback)
+                }
+            }
+            $("#warehouse_select").selectize(warehouse_options)
+        @else
+        $("#warehouse_select").selectize({
+            create: false, 
+            closeAfterSelect: true,
+        })
+        @endrole
+        
+        $("#product_select").selectize(product_options)
         $('input').prop('autocomplete', 'off');
     })
 
@@ -320,12 +292,6 @@
             
         })
         if(exists == false) {
-            // <th>Name</th>
-            // <th class="text-right">Current Stock</th>
-            // <th class="text-right">Stock - After Adjust</th>
-            // <th class="text-right">Adjust Quantity</th>
-            // <th class="text-right">Type</th>
-            // <th class="text-right">Action</th>
             var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
             '<td>'+name+'</td>' +
             '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="current_stock" type="text" value="'+stock+'" readonly></td>'+
@@ -412,8 +378,6 @@
         e.preventDefault()
         const row = $("#row"+row_id)
         row.remove();
-        // updateGrandTotal()
-        // console.log(row)
     });
 
 
