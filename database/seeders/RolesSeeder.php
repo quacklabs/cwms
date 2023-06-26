@@ -55,7 +55,10 @@ class RolesSeeder extends Seeder
             'delete-customer',
             'reassign-manager',
             'suspend-category',
-            'delete-adjustment'
+            'delete-adjustment',
+            'modify-expense-type',
+            'delete-expense',
+            'delete-expsense-type',
         ])->get();
     
         $manager_perms = array_map(function($permission) {
@@ -100,6 +103,10 @@ class RolesSeeder extends Seeder
             'delete-adjustment',
             'transfer-product',
             'view-transfer',
+            'create-expense-type',
+            'delete-expsense-type',
+            'modify-expense-type',
+            'delete-expense'
         ])->get();
         $staff_role->syncPermissions($staff_perms);
     }
@@ -167,7 +174,13 @@ class RolesSeeder extends Seeder
                 'delete-sale',
                 'approve-sale',
                 'create-sale-return',
-                'approve-sale-return'
+                'approve-sale-return',
+                'create-expense-type',
+                'delete-expsense-type',
+                'modify-expense-type',
+                'create-expense',
+                'delete-expense'
+
             ]
         ];
     }

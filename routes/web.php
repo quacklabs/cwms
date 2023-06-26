@@ -100,6 +100,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'], 'create-transfer', 'TransferController@create_transfer')->middleware('permission:transfer-product')->name('create');
                 // Route::get('approve-transfer', )
             });
+
+            Route::prefix('expenses')->name('expense.')->group(function() {
+                Route::match(['get', 'post'], 'expense-types', 'ExpenseController@expense_types')->middleware('permission:create-expense-type')->name('types');
+                Route::match(['get','post'],'expenses', 'ExpenseController@expenses')->name('expenses');
+                Route::get('delete-expense/{id}', 'ExpenseController@delete')->middleware('permission:delete-expense')->name('delete');
+                Route::get('delete-expense-type/{id}', 'ExpenseController@delete_type')->middleware('permission:delete-expense-type')->name('delete_type');
+                Route::get('download-invoice', 'ExpenseController@download')->name('download');
+            });
         });
     });
 

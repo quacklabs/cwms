@@ -142,6 +142,20 @@
                 @endcan
             @endrole
 
+            <li class="menu-header text-danger">Expenses Management</li>
+            @can('create-expense-type')
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'expense.ty') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('expense.types') }}">
+                    <i class="fas fa-apple-crate"></i> <span>Expense Type</span>
+                </a>
+            </li>
+            @endcan
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'expense.expense') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('expense.expenses') }}">
+                    <i class="fas fa-apple-crate"></i> <span>Expenses</span>
+                </a>
+            </li>
+
             <!-- <li class="menu-header">Locations</li> -->
             <!-- <li class="dropdown">
                 <a href="#" class="nav-link has-dropdown"><i class="fas fa-th-large"></i> <span>Components</span></a>

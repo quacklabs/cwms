@@ -15,6 +15,8 @@ use App\Policies\UserPolicy;
 use App\Models\Store;
 use App\Models\PermissionGroup;
 use Illuminate\Support\Facades\Session;
+use App\Models\Expense;
+
 
 class User extends Authenticatable
 {
@@ -114,5 +116,9 @@ class User extends Authenticatable
     {
         $token = $this->createToken('Bearer')->plainTextToken;
         Session::put('api_token', $token);
+    }
+
+    public function expenses() {
+        return $this->hasMany(Expenses::class, 'created_by');
     }
 }

@@ -158,3 +158,16 @@ Breadcrumbs::for('transfer.create', function (BreadcrumbTrail $trail) {
     $trail->push('Transfers', route('transfer.transfers'));
     $trail->push('Make Transfer');
 });
+
+
+// Dashboard > Expenses
+Breadcrumbs::for('expense.expenses', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Expenses');
+});
+
+Breadcrumbs::for('expense.types', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Expenses', route('expense.expenses'));
+    $trail->push('Create Expense Type');
+});

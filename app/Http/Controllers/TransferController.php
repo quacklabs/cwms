@@ -22,7 +22,7 @@ class TransferController extends Controller
             // $to_warehouse = Warehouse::orderBy('created_at', 'desc')->paginate(60);
         } else {
             $my_warehouse = $user->warehouse->first()->id;
-            $transfers = Transfer::where('from_warehouse', $my_warehouse)->orWhere('to_warehouse', $my_warehouse)->paginate(1);
+            $transfers = Transfer::where('from_warehouse', $my_warehouse)->orWhere('to_warehouse', $my_warehouse)->paginate(25);
         }
         $data = [
             'title' => 'Transfers',
