@@ -167,7 +167,7 @@
                 return
             }
 
-            if(quantity > current_stock && type == 1) {
+            if(parseInt(quantity) > current_stock && type == 1) {
                 console.log('cannot subtract more than current stock')
                 validity = false;
                 return

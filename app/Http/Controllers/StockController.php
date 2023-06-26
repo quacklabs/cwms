@@ -8,6 +8,7 @@ use App\Models\Adjustment;
 use App\Models\AdjustmentDetail;
 use App\Models\ProductStock;
 use Faker\Factory as Faker;
+use Carbon\Carbon;
 
 use App\Models\Warehouse;
 
@@ -16,6 +17,7 @@ class StockController extends Controller {
     public function adjustments(Request $request) {
         if(auth()->user()->hasRole('admin')) {
             $adjustments = Adjustment::orderBy('created_at', 'desc')->paginate(50);
+            // $warehouses = 
         } else {
             $warehouses = $user->warehouse->first();
             $adjustments = Adjustment::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(50);
@@ -24,7 +26,7 @@ class StockController extends Controller {
         $data = [
             'title' => 'Stock Adjustments',
             'adjustments' => $adjustments,
-            'warehouses' => $warehouses,
+            // 'warehouses' => $warehouses ,
         ];
 
         return parent::render($data, 'product.adjustments');
@@ -37,7 +39,7 @@ class StockController extends Controller {
                 'warehouse_id' => ['required', 'numeric'],
                 'adjust_date' => ['required', 'date'],
                 'notes' => ['nullable', 'string'],
-                'items' => ['require']
+                'items' => ['required']
             ]);
 
             $adjustment = $this->store($valid);
@@ -65,7 +67,7 @@ class StockController extends Controller {
         $faker = Faker::create();
         $adjustment = Adjustment::create([
             'warehouse_id' => $data['warehouse_id'],
-            'adjust_date' => $data['adjust_date'],
+            'adjust_date' => Carbon::parse($data['adjust_date']),
             'tracking_no' => $faker->bothify("???########"),
         ]);
 
@@ -79,11 +81,11 @@ class StockController extends Controller {
                 'quantity' => $order->quantity,
                 'adjust_type' => $order->adjust_type
             ];
-        }, json_decode($data['order']));
+        }, json_decode($data['items']));
         $adjustment->details()->createMany($orders);
 
         foreach($orders as $order) {
-            $product_stock = ProductStock::whereIn(['warehouse_id' => $adjustment->warehouse_id, 'product_id' => $order['product_id']])->first();;
+            $product_stock = ProductStock::where('warehouse_id', $adjustment->warehouse_id)->where('product_id', $order['product_id'])->first();;
             if($product_stock) {
                 switch($order['adjust_type']) {
                     case 1:
@@ -96,5 +98,7 @@ class StockController extends Controller {
                 $product_stock->save();
             }
         }
+
+        return $adjustment;
     }
 }

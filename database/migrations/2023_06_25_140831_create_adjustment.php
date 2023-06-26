@@ -18,7 +18,7 @@ class CreateAdjustment extends Migration
             $table->unsignedBigInteger('warehouse_id');
             $table->date('adjust_date');
             $table->string('tracking_no');
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->index(['tracking_no']);
