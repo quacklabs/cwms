@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
@@ -10,7 +11,9 @@ use App\Models\Unit;
 
 class ProductsController extends Controller {
 
+
     public function products(Request $request) {
+        $user = Auth::user();
         if($request->method() == "POST") {
             $info = $request->validate([
                 'name' => ['required', 'unique:products,name'],
@@ -35,7 +38,9 @@ class ProductsController extends Controller {
             }
             return redirect()->route('product.products')->with('success', 'Product Addedd successfully');
         }
+
         $products = Product::orderBy('created_at', 'desc')->paginate(25);
+        
         $data = [
             'title' => 'Products',
             'products' => $products,

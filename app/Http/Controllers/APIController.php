@@ -8,6 +8,7 @@ use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Product;
+use App\Models\ProductStock;
 use App\Contracts\ProductResponse;
 
 class APIController extends Controller
@@ -52,6 +53,37 @@ class APIController extends Controller
                 // dd($product->id);
                 return new ProductResponse($product->id, $product->name, $product->totalInStock());
             }, $products->all());
+
+            // dd($response);
+        } else {
+            $response['status'] = false;
+            $response['data'] = [];
+        }
+        return response()->json($response);
+
+    }
+
+    public function productsbyWarehouse(Request $request) {
+        $keyword = $request->input('query');
+        $id = $request->route('id');
+        $response = [];
+        if(!$keyword || !$id){
+            $response['status'] = false;
+            $response['data'] = null;
+        }
+        $stock = ProductStock::with('product')->where('warehouse_id', $id)
+        ->whereHas('product', function ($query) use ($keyword) {
+            $query->where('name', 'like', '%' . $keyword . '%')->orWhere('sku', 'LIKE', '%' . $keyword . '%');
+        })->get();
+
+        // dd($products);
+        if($stock != null) {
+            // dd($products->all());
+            $response['status'] = true;
+            $response['data'] = array_map(function($detail) {
+                // dd($product->id);
+                return new ProductResponse($detail->product_id, $detail->product->name, $detail->quantity);
+            }, $stock->all());
 
             // dd($response);
         } else {

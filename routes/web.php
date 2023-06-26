@@ -94,6 +94,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('delete-adjustment/{id}', 'StockController@delete_adjustment')->middleware('permission:delete-adjustment')->name('delete_adjustment');
             });
             
+
+            Route::prefix('transfer')->name('transfer.')->group(function() {
+                Route::get('transfers', 'TransferController@transfers')->middleware('permission:view-transfer')->name('transfers');
+                Route::match(['get', 'post'], 'create-transfer', 'TransferController@create_transfer')->middleware('permission:transfer-product')->name('create');
+                // Route::get('approve-transfer', )
+            });
         });
     });
 

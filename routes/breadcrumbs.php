@@ -146,3 +146,15 @@ Breadcrumbs::for('stock.make_adjustment', function (BreadcrumbTrail $trail) {
     $trail->push('Products', route('product.products'));
     $trail->push('Adjust Stock');
 });
+
+// Dashboard > Transfer
+Breadcrumbs::for('transfer.transfers', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Transfers');
+});
+
+Breadcrumbs::for('transfer.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Transfers', route('transfer.transfers'));
+    $trail->push('Make Transfer');
+});

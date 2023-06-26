@@ -38,8 +38,7 @@ class RolesSeeder extends Seeder
                 $admin_role->givePermissionTo($permission);
             }
         }
-        $userGroup = 'user';
-        $group = PermissionGroup::where('name', $userGroup)->first();
+
         $managerNotPermitted = Permission::whereNotIn('name', [
             'create-manager', 
             'delete-brand',
@@ -62,8 +61,8 @@ class RolesSeeder extends Seeder
         $manager_perms = array_map(function($permission) {
             return $permission['name'];
         }, $managerNotPermitted->toArray());
+        $manager_role->syncPermissions($manager_perms);
 
-        $staffNotAllowed = 
         $staff_perms = Permission::whereNotIn('name', [
             'create-manager', 
             'delete-brand',
@@ -98,16 +97,11 @@ class RolesSeeder extends Seeder
             'approve-sale',
             'adjust-stock',
             'edit-adjustment',
-            'delete-adjustment'
+            'delete-adjustment',
+            'transfer-product',
+            'view-transfer',
         ])->get();
-        
-        // dd($managerProductPerms);
-        // $manager_perms = array_merge($managerUserperms, $managerProductPerms, $managerWarehousePerms, $managerStorePerms);
-        $manager_role->syncPermissions($manager_perms);
         $staff_role->syncPermissions($staff_perms);
-        // $manager_role->syncPermissions();
-        // $manager_role->syncPermissions();
-        // $manager_role->syncPermissions();
     }
 
     private function defaultPermissions(): array {
@@ -144,7 +138,8 @@ class RolesSeeder extends Seeder
                 'approve-product-transfer',
                 'adjust-stock',
                 'edit-adjustment',
-                'delete-adjustment'
+                'delete-adjustment',
+                'view-transfer'
             ],
             'warehouse' => [
                 'create-warehouse',

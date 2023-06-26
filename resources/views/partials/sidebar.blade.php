@@ -124,20 +124,23 @@
             @endrole
 
             @role(['admin','manager'])
-            <li class="menu-header text-danger">Inventory Management</li>
-            @can('adjust-stock')
-            <li class="{{ Str::startsWith(Route::currentRouteName(), 'stock.adjustments') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('stock.adjustments') }}">
-                    <i class="fas fa-apple-crate"></i> <span>Adjustment</span>
-                </a>
-            </li>
-            @endcan
-            
+                <li class="menu-header text-danger">Inventory Management</li>
+                @can('adjust-stock')
+                <li class="{{ Str::startsWith(Route::currentRouteName(), 'stock.adjustments') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('stock.adjustments') }}">
+                        <i class="fas fa-apple-crate"></i> <span>Adjustment</span>
+                    </a>
+                </li>
+                @endcan
 
-
+                @can('transfer-product')
+                <li class="{{ Str::startsWith(Route::currentRouteName(), 'transfer') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('transfer.transfers') }}">
+                        <i class="fas fa-apple-crate"></i> <span>Transfer</span>
+                    </a>
+                </li>
+                @endcan
             @endrole
-
-            
 
             <!-- <li class="menu-header">Locations</li> -->
             <!-- <li class="dropdown">

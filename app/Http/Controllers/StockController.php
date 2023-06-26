@@ -15,11 +15,12 @@ use App\Models\Warehouse;
 class StockController extends Controller {
 
     public function adjustments(Request $request) {
+        $user = Auth::user();
         if(auth()->user()->hasRole('admin')) {
             $adjustments = Adjustment::orderBy('created_at', 'desc')->paginate(50);
             // $warehouses = 
         } else {
-            $warehouses = $user->warehouse->first();
+            $warehouse = $user->warehouse->first();
             $adjustments = Adjustment::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(50);
         }
 
@@ -60,6 +61,18 @@ class StockController extends Controller {
         ];
 
         return parent::render($data, 'product.make_adjustment');
+    }
+
+    public function delete_adjustment(Request $request) {
+        $id = $request->route('id');
+
+        return redirect()->route('stock.adjustments');
+
+        // if(!$id) {
+        //     return redirect()->route('stock.adjustments');
+        // }
+
+        // $adjustment = 
     }
 
 

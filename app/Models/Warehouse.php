@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\Category;
 use App\Policies\WarehousePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use APp\Models\Purchase;
+use App\Models\Purchase;
+use App\Models\Transfer;
 
 class Warehouse extends Model
 {
@@ -40,5 +41,13 @@ class Warehouse extends Model
 
     public function purchases() {
         return $this->hasMany(Purchase::class, 'warehouse_id');
+    }
+
+    public function inward_transfer() {
+        return $this->hasMany(Transfer::class, 'to_warehouse');
+    }
+
+    public function outward_transfer() {
+        return $this->hasMany(Transfer::class, 'from_warehouse');
     }
 }
