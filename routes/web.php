@@ -89,6 +89,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             Route::prefix('stock')->name('stock.')->group(function() {
                 Route::get('adjustments', 'StockController@adjustments')->middleware('permission:adjust-stock')->name('adjustments');
                 Route::match(['get', 'post'],'make-adjustment', 'StockController@make_adjustment')->middleware('permission:adjust-stock')->name('make_adjustment');
+                Route::match(['get', 'post'], 'adjustment/{id}', 'StockController@adjustment')->middleware('permission:edit-adjustment')->name('adjustment');
+                Route::get('download-invoice/{id}', 'StockController@download_invoice')->name('download_invoice');
+                Route::get('delete-adjustment/{id}', 'StockController@delete_adjustment')->middleware('permission:delete-adjustment')->name('delete_adjustment');
             });
             
         });

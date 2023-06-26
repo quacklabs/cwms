@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Warehouse;
+
 use App\Models\AdjustmentDetail;
 
 class Adjustment extends Model
@@ -21,6 +23,9 @@ class Adjustment extends Model
         'note'
     ];
 
+    public function warehouse() {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
 
     public function details() {
         return $this->hasMany(AdjustmentDetail::class, 'adjustment_id');

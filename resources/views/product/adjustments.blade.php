@@ -77,7 +77,30 @@
                                     @else
                                         @foreach ($adjustments as $adjustment)
                                             <tr>
-                                                <td>$adjustments->firstItem() + $loop->index</td>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ strtoupper($adjustment->tracking_no) }} </td>
+                                                <td>{{ $adjustment->adjust_date }}</td>
+                                                <td>{{ $adjustment->warehouse->name }}</td>
+                                                <td>{{ count($adjustment->details) }}</td>
+                                                <td>
+                                                    <div class="buttons">
+                                                        @can('edit-adjustment')
+                                                        <a href="{{ route('stock.adjustment', ['id' => $adjustment->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        @endcan
+                                                        <a href="{{ route('stock.download_invoice', ['id' => $adjustment->id]) }}" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download Invoice">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                        @can('delete-adjustment')
+                                                        <a href="{{ route('stock.delete_adjustment', ['id' => $adjustment->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                        @endcan
+
+                                                    </div>
+                                                    
+                                                </td>
                                             </tr>
                                         @endforeach
                                         

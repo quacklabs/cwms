@@ -56,6 +56,7 @@ class RolesSeeder extends Seeder
             'delete-customer',
             'reassign-manager',
             'suspend-category',
+            'delete-adjustment'
         ])->get();
     
         $manager_perms = array_map(function($permission) {
@@ -95,7 +96,9 @@ class RolesSeeder extends Seeder
             'create-sale-return',
             'approve-purchase',
             'approve-sale',
-            'adjust-stock'
+            'adjust-stock',
+            'edit-adjustment',
+            'delete-adjustment'
         ])->get();
         
         // dd($managerProductPerms);
@@ -139,7 +142,9 @@ class RolesSeeder extends Seeder
                 'modify-product',
                 'transfer-product',
                 'approve-product-transfer',
-                'adjust-stock'
+                'adjust-stock',
+                'edit-adjustment',
+                'delete-adjustment'
             ],
             'warehouse' => [
                 'create-warehouse',
