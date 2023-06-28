@@ -10,6 +10,9 @@ use App\Models\Supplier;
 use App\Models\Product;
 use App\Models\ProductStock;
 use App\Contracts\ProductResponse;
+use League\Csv\Reader;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MyDataImport;
 
 class APIController extends Controller
 {
@@ -134,6 +137,65 @@ class APIController extends Controller
         }
         $response['status'] = true;
         $response['data'] = $data ?? null;
+        return response()->json($response)->header('Content-Type', 'application/json');
+    }
+
+    public function parse_serials(Request $request) {
+        $file = $request->file('file');
+
+        if ($file->isValid()) {
+            $filePath = $file->getRealPath();
+            $fileType = $file->getClientOriginalExtension();
+
+            if ($fileType === 'csv') {
+                $csv = Reader::createFromPath($filePath);
+                $csv->setHeaderOffset(0); // Skip the header row if present
+    
+                // Convert CSV rows to an array
+                $data = iterator_to_array($csv->getRecords());
+                
+                $parsedData = array_map(function($row) {
+                    return $row;
+                }, $data); // Assuming the data is in the first sheet
+                $response = [
+                    'status' => true,
+                    'data' => $parsedData
+                ];
+                $response = [
+                    'status' => true,
+                    'data' => array_values($parsedData)
+                ];
+                // Process the array as needed
+                // ...
+            } elseif ($fileType === 'xls' || $fileType === 'xlsx') {
+                try {
+                    // Parse the XLS file using the Excel facade
+                    $data = Excel::toArray(new MyDataImport(), $filePath);
+    
+                    // Access the parsed data
+                    $parsedData = array_map(function($row) {
+                        return $row;
+                    }, array_value($data[0])) ; // Assuming the data is in the first sheet
+                    $response = [
+                        'status' => true,
+                        'data' => $parsedData
+                    ];
+                    // Process the parsed data as needed
+                    // ...
+                } catch (\Exception $e) {
+                    $response = [
+                        'status' => false,
+                        'data' => null
+                    ];
+                }
+            }
+        } else {
+            $response = [
+                'status' => false,
+                'data' => 'file is not valid'
+            ];
+        }
+
         return response()->json($response)->header('Content-Type', 'application/json');
     }
 }

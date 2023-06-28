@@ -21,6 +21,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::post('findProduct', 'APIController@products')->name('findProduct');
         Route::post('findProductByWarehouse/{id}', 'APIController@productsByWarehouse')->name('findProductByWarehouse');
         Route::post('findPartner/{flag}', 'APIController@partners')->name('findPartner');
+        Route::post('uploadSerial', 'APIController@parse_serials')->name('uploadSerials');
     });
 });
 

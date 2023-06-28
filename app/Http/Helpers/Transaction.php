@@ -5,6 +5,8 @@ use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Warehouse;
 use App\Models\User;
+use App\Models\Item;
+use App\Model\SaleItem;
 use App\Models\ProductStock;
 use Spatie\Permission\Models\Role;
 use App\Contracts\TransactionInterface;
@@ -42,12 +44,13 @@ final class Transaction implements TransactionInterface {
                 'product_id' => $order->id,
                 'quantity' => $order->quantity,
                 'price' => $order->price,
-                'total' => $order->total_price
+                'total' => $order->total_price, 
+                'serials' => $order->serials ?? []
             ];
         }, json_decode($data['order']));
+        // dd($orders);
         $transaction->details()->createMany($orders);
         
-
         if($flag == 'purchase') {
             foreach($orders as $order) {
                 $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
@@ -56,22 +59,59 @@ final class Transaction implements TransactionInterface {
                     $stock->quantity = $stock->quantity + $order['quantity'];
                     $stock->save();
                 } else {
-                    ProductStock::create([
+                    $stock = ProductStock::create([
                         'warehouse_id' => $data['warehouse_id'],
                         'product_id' => $order['product_id'],
                         'quantity' => $order['quantity']
                     ]);
                 }
+                $serials = json_decode($order['serials']);
+
+
+                if(count($serials) > 0) {
+                    foreach($serials as $serial) {
+                        Item::create([
+                            'product_id' => $order['product_id'],
+                            'purchase_id' => $transaction->id,
+                            'serial_no' => $serial,
+                            'current_warehouse' => $data['warehouse_id']
+                        ]);
+                    }
+                }
             }
         } else {
-            $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])->where('product_id', $data['product_id'])->first();
-            if($stock) {
+
+            foreach($orders as $order) {
+                $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
+                ->where('product_id', $order['product_id'])->first();
+                // $stock->quantity = $stock->quantity - $order['quantity'];
+
                 if($stock->quantity < $order['quantity']){
                     $transaction->total_price = $transaction->total->price - $order['total_price'];
                     $transaction->save();
+                    
                 } else {
                     $stock->quantity = $stock->quantity - $order['quantity'];
                     $stock->save();
+
+                    $serials = json_decode($order['serials']);
+
+                    if(count($serials) > 0) {
+                        foreach($serials as $serial) {
+                            $item = Item::where('product_id', $order['product_id'])
+                            ->where('current_warehouse', $data['warehouse_id'])
+                            ->where('serial_no', $serial)->first();
+                            $item->sold = true;
+                            $item->save();
+
+                            SaleItem::create([
+                                'product_id' => $order['product_id'],
+                                'sale_id' => $transaction->id,
+                                'serial_no' => $serial,
+                                'sale_warehouse' => $data['warehouse_id']
+                            ]);
+                        }
+                    }
                 }
             }
         }

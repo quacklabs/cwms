@@ -13,7 +13,6 @@ class CreateUnitProduct extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('product_unit');
         Schema::create('product_unit', function (Blueprint $table) {
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('unit_id');
