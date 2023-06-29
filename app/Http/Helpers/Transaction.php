@@ -115,8 +115,6 @@ final class Transaction implements TransactionInterface {
                 }
             }
         }
-        
-
         return $transaction;
     }
 

@@ -70,7 +70,7 @@
                                         @foreach ($products as $product)
                                         <tr>
                                             <td class="p-0 text-center">
-                                                <img src="image;base64,{{ $product->image }}" style="height: 80px; width: 80px;">
+                                                <img src="{{ $product->image_url ?? asset('img/avatar.png') }}" style="height: 80px; width: 80px;">
                                             </td>
                                             <td>
                                                 {{ $product->name }}

@@ -155,6 +155,10 @@
                 return $(this).data('name') === 'quantity';
             }).first().val();
 
+            const serials = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'serials';
+            }).first()
+
             if(isNaN(quantity) || quantity <= 0) {
                 validity = false;
                 swal({
@@ -179,6 +183,11 @@
             const current = {
                 product_id: $(element).data('id'),
                 quantity: parseInt(quantity),
+            }
+            if(serials != undefined) {
+                if(serials.val() != '' && serials.val() != undefined && serials.val() != null) {
+                    current.serials = serials.val()
+                }
             }
             order.push(current)
         })
@@ -306,14 +315,25 @@
             var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
             '<td>'+name+'</td>' +
             '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="current_stock" type="text" value="'+stock+'" readonly></td>'+
-            '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="0"></td>' +
-            '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
+            '<td>'+
+            '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
+            '<input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="0"></td>' +
+
+            '<td>'+
+                '<div class="buttons">'+
+                '<input data-row="'+id+'" data-name="file" class="file-input" type="file" style="display: none;" accept=".csv, .xls, .xlsx">'+
+                '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
+                '<button type="button" data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i> Remove</button>'+
+                '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark"><i class="fas fa-upload"> Upload Serial Numbers</i></button>'+
+                '</div>'+
+            '</td>'+
             '</tr>';
             item_rows.append(newRow);
         } else {
             return
         }
     }
+
 
     function search(url, query, callback) {
         $.ajax({
@@ -345,6 +365,67 @@
         row.remove();
     });
 
+
+    $(document).on('click', '.upload-btn', function(e) {
+        const row_id = $(this).data('row')
+        const row = $("#row"+row_id)
+        const total = row.find('input').filter(function() {
+            return $(this).data('name') === 'file';
+        }).first();
+        total.click(); // Trigger the file input click event
+    });
+
+    $(document).on('input', '.file-input', function() {
+        var file = this.files[0]; // Get the selected file
+        const row_id = $(this).data('row')
+        const row = $("#row"+row_id)
+        const serials = row.find('input').filter(function() {
+            return $(this).data('name') === 'serials';
+        }).first();
+
+        const quantity = row.find('input').filter(function() {
+            return $(this).data('name') === 'quantity';
+        }).first();
+
+        // Create a FormData object
+        var formData = new FormData();
+        // formData
+        formData.append('file', file);
+
+        // Make an AJAX request to upload the file
+        $.ajax({
+        url: "{{ route('api.uploadSerials') }}",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            // Handle the success response
+            console.log('File uploaded successfully.');
+            const values = [];
+            const data = response.data
+
+            // Iterate over the outer object keys
+            for (const key in data) {
+                // Access the inner object
+                const innerObject = data[key];
+            
+                // Iterate over the inner object values
+                for (const innerValue in innerObject) {
+                    // Push the inner value to the array
+                    values.push(innerObject[innerValue]);
+                }
+            }
+            serials.val(JSON.stringify(values))
+            quantity.val(values.length)
+            quantity.prop('readonly', true)
+        },
+        error: function(xhr, status, error) {
+            // Handle the error response
+            console.error('Error uploading file:', error);
+        }
+        });
+    });
 
     
 </script>

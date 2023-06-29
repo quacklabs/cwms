@@ -23,7 +23,7 @@ class Product extends Model
         'category_id', 
         'unit_id', 
         'alert',
-        'image',
+        'image_url',
         'notes'
     ];
     

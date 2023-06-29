@@ -17,12 +17,19 @@ class ProductStock extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('warehouse_id');
-            $table->integer('quantity');
+            $table->string('serial');
+            $table->boolean('sold')->default(false);
+            $table->unsignedBigInteger('sold_by')->nullable();
+            $table->unsignedBigInteger('sold_from')->nullable();
+            // $table->integer('quantity');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');
+
+            $table->foreign('sold_from')->references('id')->on('warehouse')->onDelete('cascade');
+            $table->foreign('sold_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

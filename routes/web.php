@@ -14,12 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['namespace' => 'App\Http\Controllers'], function(){
+
+    Route::match(['get', 'post'], '/login', 'AuthController@login')->name('login');
+    Route::match(['get','post'], '/forgot', 'AuthController@forgot_password')->name('forgot_password');
+    Route::get('/logout', 'AuthController@logout')->name('logout');
+
     Route::middleware(['auth'])->group(function () {
         // Define your routes here
-        Route::get('/', 'DashboardController@index')->name('dashboard');
-        Route::get('dashboard', 'DashboardController@index')->name('dashboard');
-        
+       
         Route::group(['middleware' => ['role:admin|manager|staff']], function () {
+            Route::get('/', 'DashboardController@index')->name('dashboard');
+            Route::get('dashboard', 'DashboardController@index')->name('dashboard');
+
             Route::prefix('personnel')->group(function() {
                 Route::group(['middleware' => 'role:admin|manager', 'as' => 'staff.'], function() {
                     Route::match(['get', 'post'],'staff', 'StaffController@staff')->name('staff');
@@ -110,8 +116,4 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             });
         });
     });
-
-    Route::match(['get', 'post'], '/login', 'AuthController@login')->name('login');
-    Route::match(['get','post'], '/forgot', 'AuthController@forgot_password')->name('forgot_password');
-    Route::get('/logout', 'AuthController@logout')->name('logout');
 });

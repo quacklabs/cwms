@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Brand;
-use App\Models\Unit;
+use App\Services\ProductService;
+
 
 class ProductsController extends Controller {
+    // protected ProductService $service = new ProductService();
 
+    // public function __construct() {
+        // $this->service = new ProductService();
+        // parent::__construct();
+    // }
 
     public function products(Request $request) {
         $user = Auth::user();
         if($request->method() == "POST") {
             $info = $request->validate([
                 'name' => ['required', 'unique:products,name'],
-                'sku' => ['required', 'min:13'],
+                'sku' => ['numeric', 'nullable'],
                 'unit_id' => ['required'],
                 'brand_id' => ['required'],
                 'category_id' => ['required'],
@@ -25,13 +28,13 @@ class ProductsController extends Controller {
                 'image' => ['file', 'nullable', 'mimes:png,jpg,jpeg', 'min:1', 'max:2048'],
                 'notes' => ['nullable', 'string']
             ]);
-
+            $file = null;
             if($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    $info['image'] = base64_encode(file_get_contents($request->file('image')));
+                    $file = $request->file('image');
                 }
             }
-            $product = Product::create($info);
+            $product = ProductService::create($info, $file);
 
             if(!$product) {
                 return redirect()->route('product.products')->with('error', 'Product could not be created. please try again');
@@ -39,18 +42,14 @@ class ProductsController extends Controller {
             return redirect()->route('product.products')->with('success', 'Product Addedd successfully');
         }
 
-        $products = Product::orderBy('created_at', 'desc')->paginate(25);
-        
         $data = [
             'title' => 'Products',
-            'products' => $products,
+            'products' =>ProductService::getAllProducts(),
             'product' => null,
-            'categories' => Category::all(),
-            'brands' => Brand::all(),
-            'units' => Unit::all()
+            'categories' => ProductService::categories(),
+            'brands' => ProductService::brands(),
+            'units' => ProductService::units()
         ];
-
-        // dd($products);
         
         return parent::render($data, 'product.products');
     }
