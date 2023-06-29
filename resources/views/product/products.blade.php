@@ -51,18 +51,24 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-striped">
-                                <tbody>
+                            <table class="table">
+                                <thead>
                                     <tr>
                                         <th>Image</th>
                                         <th>Name|SKU</th>
                                         <th>Brand</th>
                                         <th>Category</th>
                                         <th>Stock</th>
-                                        <th>Total Sale | Alert Qty</th>
+                                        <th>
+                                            Total Sale
+                                            <p class="text-muted">Alert Qty</p>
+                                        </th>
                                         <th>Unit</th>
                                         <th>Actions</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    
 
                                     @empty(@products)
                                     

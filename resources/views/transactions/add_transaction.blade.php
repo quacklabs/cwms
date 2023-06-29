@@ -13,7 +13,7 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-        <h1>{{$title }}</h1>
+        <h1>{{ $title }}</h1>
 
         {{ Breadcrumbs::render('transactions.add_'.$flag) }}
         </div>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form id="orderForm" action="{{ route('transaction.create', ['flag' => $flag]) }}" method="POST">
+                        <form id="orderForm" action="{{ $action }}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <input type="hidden" name="order" id="order" value="{{ old('order') }}">

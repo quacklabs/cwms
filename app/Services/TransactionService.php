@@ -1,5 +1,8 @@
 <?php
-namespace App\Http\Helpers;
+namespace App\Services;
+
+use Carbon\Carbon;
+use App\Contracts\TransactionInterface;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -8,12 +11,9 @@ use App\Models\User;
 use App\Models\Item;
 use App\Model\SaleItem;
 use App\Models\ProductStock;
-use Spatie\Permission\Models\Role;
-use App\Contracts\TransactionInterface;
-use Carbon\Carbon;
 
-final class Transaction implements TransactionInterface {
-
+class TransactionService implements TransactionInterface {
+    
     public static function create(array $data, $flag): TransactionInterface {
         switch($flag) {
             case 'sale':
@@ -154,9 +154,11 @@ final class Transaction implements TransactionInterface {
     public static function sale(int $id): Sale {
         return Sale::findOrFail($id);
     }
+
     public function payable(): float {
 
     }
+    
     public function due(): float {
 
     }

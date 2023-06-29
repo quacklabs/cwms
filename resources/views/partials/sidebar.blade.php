@@ -99,8 +99,8 @@
                         <i class="fas fa-shopping-cart"></i> <span>Purchases</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="{{ Str::contains(Route::currentRouteName(), '/purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'purchase']) }}">All Purchases</a></li>
-                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'return_purchase']) }}">Returned Purchases</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.view') }}">All Purchases</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.returned') }}">Returned Purchases</a></li>
                     </ul>
                 </li>
                 @endcanany
@@ -115,8 +115,8 @@
                         <span>Sales</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="{{ Str::contains(Route::currentRouteName(), '/sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'sale']) }}">All Sales</a></li>
-                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('transaction.view', ['flag' => 'return_purchase']) }}">Returned Sales</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), '/sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.sales') }}">All Sales</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.returned') }}">Returned Sales</a></li>
                     </ul>
                 </li>
                 @endcanany

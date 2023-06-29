@@ -83,14 +83,31 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'], 'edit/{flag}/{id}', 'PartnersController@edit')->name('edit');
             });
 
-            Route::prefix('transactions')->name('transaction.')->group(function() {
-                Route::match(['get','post'], 'add-transaction/{flag}', 'TransactionsController@create')->middleware('permission:create-purchase|create-sale')->name('create');
-                Route::match(['get','post'], 'enter-ledger/{flag}/{id}', 'TransactionsController@enter_ledger')->middleware('permission:enter-ledger|approve-purchase|approve-sale')->name('enter_ledger');
-
-                Route::get('transactions/{flag}', 'TransactionsController@view')->name('view');
-                Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
-                // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
+            Route::prefix('purchase')->name('purchase.')->group(function() {
+                Route::match(['get','post'], 'create', 'PurchaseController@create')->name('create');
+                Route::get('view', 'PurchaseController@view')->name('view');
+                Route::get('purchase/{id}', 'PurchaseController@view_single')->name('view_single');
+                Route::get('returned', 'PurchaseController@returned')->name('returned');
+                Route::get('delete/{id}', 'PurchaseController@delete')->middleware('permission:delete-purchase')->name('delete');
             });
+
+
+            Route::prefix('sale')->name('sale.')->group(function() {
+                Route::match(['get','post'], 'create', 'SaleController@create')->name('create');
+                Route::get('sales', 'SaleController@view')->name('sales');
+                Route::get('purchase/{id}', 'SaleController@view_single')->name('view_single');
+                Route::get('returned', 'SaleController@returned')->name('returned');
+                Route::get('delete/{id}', 'SaleController@delete')->middleware('permission:delete-sale')->name('delete');
+            });
+
+            // Route::prefix('transactions')->name('transaction.')->group(function() {
+            //     Route::match(['get','post'], 'add-transaction/{flag}', 'TransactionsController@create')->middleware('permission:create-purchase|create-sale')->name('create');
+            //     Route::match(['get','post'], 'enter-ledger/{flag}/{id}', 'TransactionsController@enter_ledger')->middleware('permission:enter-ledger|approve-purchase|approve-sale')->name('enter_ledger');
+
+            //     Route::get('transactions/{flag}', 'TransactionsController@view')->name('view');
+            //     Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
+            //     // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
+            // });
 
             Route::prefix('stock')->name('stock.')->group(function() {
                 Route::get('adjustments', 'StockController@adjustments')->middleware('permission:adjust-stock')->name('adjustments');
