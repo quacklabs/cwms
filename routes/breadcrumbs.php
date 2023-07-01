@@ -99,9 +99,25 @@ Breadcrumbs::for('partners.edit_supplier', function (BreadcrumbTrail $trail) {
 });
 
 // Transactions > Purchases
-Breadcrumbs::for('transactions.purchase', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('purchase.view', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Purchases');
+});
+
+Breadcrumbs::for('purchase.create', function (BreadcrumbTrail $trail) {
+    $trail->push('Purchases', route('purchase.view'));
+    $trail->push('Create Purchase');
+});
+
+Breadcrumbs::for('purchase.return', function (BreadcrumbTrail $trail) {
+    $trail->push('Purchases', route('purchase.view'));
+    $trail->push('Returned Purchases', route('purchase.returned'));
+    $trail->push('Return Purchase');
+});
+
+Breadcrumbs::for('purchase.returned', function (BreadcrumbTrail $trail) {
+    $trail->push('Purchases', route('purchase.view'));
+    $trail->push('Returned Purchases');
 });
 
 Breadcrumbs::for('transactions.sale', function (BreadcrumbTrail $trail) {

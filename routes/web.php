@@ -89,6 +89,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('purchase/{id}', 'PurchaseController@view_single')->name('view_single');
                 Route::get('returned', 'PurchaseController@returned')->name('returned');
                 Route::get('delete/{id}', 'PurchaseController@delete')->middleware('permission:delete-purchase')->name('delete');
+                Route::match(['get','post'], 'edit/{id}', 'PurchaseController@edit')->middleware('permisson:edit-purchase')->name('edit');
+                Route::post('receive/{id}', 'PurchaseController@receive')->middleware('permission:approve-purchase')->name('receive');
+                Route::match(['get', 'post'], 'return/{id}', 'PurchaseController@return_purchase')->middleware('permission:create-purchase-return')->name('return');
             });
 
 

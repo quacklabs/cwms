@@ -42,7 +42,7 @@ class Purchase extends Model implements TransactionInterface
     }
 
     public function warehouse() {
-        return $this->belongsTo(Warehouse::class);
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
     public function owner() {
@@ -77,6 +77,6 @@ class Purchase extends Model implements TransactionInterface
     }
 
     public function getUrlAttribute() {
-        return route('transaction.enter_ledger', ['flag' => 'purchase', 'id' => $this->id]);
+        return route('purchase.receive', ['id' => $this->id]);
     }
 }

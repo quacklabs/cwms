@@ -7,19 +7,14 @@
     <section class="section">
         <div class="section-header">
         <h1>{{$title }}</h1>
-        @can('create-'.$flag)
-        <div class="section-header-button">
-            <a class="btn btn-primary" href="{{ route($flag.'.create') }}">Add New</a>
-            <!-- <a href="#" class="btn btn-primary">Add New</a> -->
-        </div>
-        @endcan
+        
         
         {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
-        <h2 class="section-title">Manage {{ ucwords($flag) }}</h2>
+        <h2 class="section-title">Manage Returns</h2>
         <p class="section-lead">
-            Unsettled payments are displayed in red.
+            Please confirm quantities &amp; serial numbers.
         </p>
 
         @if($errors->any())
@@ -37,7 +32,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>All {{ $flag }}s</h4>
+                        <h4>All returned {{ $flag }}s</h4>
                         <div class="card-header-form">
                             <form>
                                 <div class="input-group">
@@ -53,13 +48,13 @@
                         <div class="table-responsive">
                             <table class="table table-striped ">
                                 <thead class="bg-dark text-white">
-                                    <tr class="text-left">
-                                        <th class="text-white">Invoice | Date</th>
+                                    <tr class="text-left sm-text">
+                                        <th class="text-white text-sm">Invoice | Date</th>
                                         <th class="text-white">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }} | Mobile</th>
-                                        <th class="text-white">Amount | Warehouse</th>
-                                        <th class="text-white">Payable | Discount </th>
-                                        <th class="text-white">Due | Paid</th>
-                                        <th class="text-white">Actions</th>
+                                        <th class="text-white text-sm">Amount | Warehouse</th>
+                                        <th class="text-white text-sm">Lessed | Receivable </th>
+                                        <th class="text-white text-sm">Received | Due</th>
+                                        <th class="text-white text-sm">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="mt-4">

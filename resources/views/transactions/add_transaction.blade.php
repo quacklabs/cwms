@@ -15,7 +15,7 @@
         <div class="section-header">
         <h1>{{ $title }}</h1>
 
-        {{ Breadcrumbs::render('transactions.add_'.$flag) }}
+        {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
         <h2 class="section-title">Create {{ ucwords($flag) }}</h2>

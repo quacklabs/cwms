@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Purchase;
 use App\Models\Product;
+use App\Models\ProductStock;
 
 class PurchaseDetails extends Model
 {
@@ -28,6 +29,12 @@ class PurchaseDetails extends Model
     
     public function product() {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getStockAttribute() {
+        $stock = ProductStock::where('warehouse_id', $this->purchase->warehouse_id)
+        ->where('product_id', $this->product_id)->where('sold', false)->get();
+        return count($stock);
     }
 
 }
