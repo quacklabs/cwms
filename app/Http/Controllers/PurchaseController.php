@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\MessageBag;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 use App\Services\TransactionService;
+
 
 use App\Models\Supplier;
 use App\Rules\DecimalComparison;
@@ -36,11 +40,20 @@ class PurchaseController extends Controller
                 'total_price' => ['required', 'decimal'],
                 'invoice_no' => ['required']
             ]);
+
             
-            $transaction = TransactionService::create($valid, 'purchase');
-            if($transaction) {
-                return redirect()->route('purchase.view')->with('success', 'order added successfully');
-            }
+           TransactionService::create($valid, 'purchase');
+           return redirect()->route('purchase.view')->with('success', 'order added successfully');
+            // if($transaction == "ok") {
+            //     
+            // } else {
+            //     // Create a validation error manually
+            //     $errorMessage = $transaction;
+            //     $errors = session()->get('errors', new MessageBag);
+            //     $errors->add('serial', $errorMessage);
+            //     session()->flash('errors', $errors);
+            //     return redirect()->back()->withInput();
+            // }
         }
         $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
         $data = [
@@ -83,13 +96,14 @@ class PurchaseController extends Controller
     }
 
     public function returned(Request $request) {
-
+        $user = Auth::user();
+        $returns = TransactionService::returnedPurchases($user->warehouse->first()->id);
+        // dd($returns);
         $data = [
             'title' => 'Returned Purchases',
-            'flag' => 'purchase'
+            'flag' => 'purchase',
+            'transactions' => $returns
         ];
-
-
         return parent::render($data, 'transactions.reversed');
     }
 

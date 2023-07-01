@@ -58,50 +58,50 @@
                                     </tr>
                                 </thead>
                                 <tbody class="mt-4">
-                                    @empty($items)
+                                    @empty($transactions)
                                     <tr>No {{ $flag }} found</tr>
 
                                     @else
-                                        @foreach($items as $transaction)
+                                        @foreach($transactions as $transaction)
                                         <tr class="text-left">
                                             <td>
                                                 <strong>#{{ $transaction->invoice_no }}</strong>
                                                 <span class="text-muted">
-                                                    <p>{{ $transaction->created_at }}</p>
+                                                    <p>{{ $transaction->date }}</p>
                                                 </span>
                                             </td>
 
                                             <td class="p-2">
-                                                <strong>{{ $transaction->owner->name }}</strong>
+                                                <strong>{{ $transaction->purchase->owner->name }}</strong>
                                                 <span class="text-muted">
-                                                    <p>{{ $transaction->owner->mobile_no }}</p>
+                                                    <p>{{ $transaction->purchase->owner->mobile_no }}</p>
                                                 </span>
                                             </td>
                                             
                                             <td class="p-3">
                                                 <strong>&#8358;{{ number_format($transaction->total_price, 2) }}</strong>
                                                 <span class="text-muted">
-                                                    <p>{{ $transaction->warehouse->name }}</p>
+                                                    <p>{{ $transaction->purchase->warehouse->name }}</p>
                                                 </span>
                                             </td>
 
                                             <td class="p-3">
-                                                <strong>&#8358;{{ number_format($transaction->payable(), 2) }}</strong>
+                                                <strong>&#8358;{{ number_format($transaction->receivable, 2) }}</strong>
                                                 <span class="text-muted">
                                                     <p>&#8358;{{ number_format($transaction->discount_amount, 2) }}</p>
                                                 </span>
                                             </td>
 
                                             <td>
-                                                <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}">&#8358;{{ number_format($transaction->due,2) }} </strong>
+                                                <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}">&#8358;{{ number_format($transaction->due(),2) }} </strong>
                                                 <span class="text-muted">
-                                                    <p>&#8358;{{ number_format($transaction->paid_amount, 2) }}</p>
+                                                    <p>&#8358;{{ number_format($transaction->received, 2) }}</p>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="buttons">
                                                     @can('approve-'.$flag)
-                                                        @if (floatval($transaction->due) > floatval(0.00))
+                                                        @if (floatval($transaction->due()) > floatval(0.00))
                                                             <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                 <i class="fas fa-money-check-alt" ></i>
                                                             </a>
@@ -112,7 +112,7 @@
                                                     @endcan
 
 
-                                                    @if(floatval($transaction->due)  != 0.00)
+                                                    @if(floatval($transaction->due())  != 0.00)
                                                     @can('create-purchase-return')
                                                         <a href="{{ route('purchase.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
                                                             <i class="fas fa-reply"></i>
@@ -150,7 +150,7 @@
                             @empty($transactions)
 
                             @else
-                                {{ $items->links() }}
+                                {{ $transactions->links() }}
                             @endempty
                         </div>
                     </div>
@@ -184,20 +184,20 @@
             <div class="modal-body">
                 <form id="moneyForm" method="POST" action="#">
                     @csrf
-                    <div class="form-group row align-items-center">
+                    <div class="form-group row align-transactions-center">
                         <label for="site-title" class="form-control-label col-sm-3 text-md-right">Amount</label>
                         <div class="col-sm-6 col-md-9">
                         <input id="amount" name="amount" type="text" class="form-control" id="decimalInput" required>
                         </div>
                     </div>
-                    <div class="form-group row align-items-center">
+                    <div class="form-group row align-transactions-center">
                         <label for="site-description" class="form-control-label col-sm-3 text-md-right">Due Now</label>
                         <div class="col-sm-6 col-md-9">
                             <input id="due" name="due" type="text" class="form-control"  value="" readonly>
                         </div>
                     </div>
 
-                    <div class="form-group row align-items-center">
+                    <div class="form-group row align-transactions-center">
                         <label for="site-description" class="form-control-label col-sm-3 text-md-right">Signature</label>
                         <div class="col-sm-6 col-md-9">
                             <input id="myCheckbox" name="status" type="checkbox" class="form-control" checked required>
@@ -205,7 +205,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row align-items-center">
+                    <div class="form-group row align-transactions-center">
                         <!-- <label for="site-description" class="form-control-label col-sm-3 text-md-right">Active</label> -->
                         <div class="col-sm-6 col-md-9">
                             <button type="submit" class="btn btn-large btn-primary">Accept</button>

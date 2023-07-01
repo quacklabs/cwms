@@ -17,7 +17,7 @@ class ProductStock extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('warehouse_id');
-            $table->string('serial');
+            $table->string('serial')->unique();
             $table->boolean('sold')->default(false);
             $table->unsignedBigInteger('sold_by')->nullable();
             $table->unsignedBigInteger('sold_from')->nullable();

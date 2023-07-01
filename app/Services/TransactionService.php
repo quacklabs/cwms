@@ -4,6 +4,8 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Contracts\TransactionInterface;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -22,6 +24,17 @@ use Faker\Provider\Barcode;
 class TransactionService implements TransactionInterface {
     
     public static function create(array $data, $flag): TransactionInterface {
+
+        $orders = array_map(function($order) {
+            return [
+                'product_id' => $order->id,
+                'quantity' => $order->quantity,
+                'price' => $order->price,
+                'total' => $order->total_price, 
+                'serials' => $order->serials ?? "[]"
+            ];
+        }, json_decode($data['order']));
+
         switch($flag) {
             case 'sale':
                 $transaction = Sale::create([
@@ -46,15 +59,6 @@ class TransactionService implements TransactionInterface {
             default:
                 return null;
         }
-        $orders = array_map(function($order) {
-            return [
-                'product_id' => $order->id,
-                'quantity' => $order->quantity,
-                'price' => $order->price,
-                'total' => $order->total_price, 
-                'serials' => $order->serials ?? "[]"
-            ];
-        }, json_decode($data['order']));
         // dd($orders);
         $transaction->details()->createMany($orders);
         
@@ -64,7 +68,7 @@ class TransactionService implements TransactionInterface {
 
                 if(count($serials) > 0) {
                     foreach($serials as $serial) {
-                        ProductStock::create([
+                        ProductStock::updateOrCreate([
                             'warehouse_id' => $data['warehouse_id'],
                             'product_id' => $order['product_id'],
                             'serial' => $serial,
@@ -72,7 +76,7 @@ class TransactionService implements TransactionInterface {
                     }
                 } else {
                     foreach (range(1, $order['quantity']) as $index) {
-                        ProductStock::create([
+                        ProductStock::updateOrCreate([
                             'warehouse_id' => $data['warehouse_id'],
                             'product_id' => $order['product_id'],
                             'serial' => self::newInvoice(),
@@ -87,11 +91,11 @@ class TransactionService implements TransactionInterface {
 
                 if(count($serials) > 0) {
                     foreach($serials as $serial) {
-                        $stock = ProductStock::where('serial', $serial)->first();
-                        $item->sold = true;
-                        $item->sold_by = auth()->user()->id;
-                        $item->sold_from = $data['warehouse_id'];
-                        $item->save();
+                        $stock = ProductStock::updateOrCreate(['product_id' => $order['product_id'], 'warehouse_id' => $data['warehouse_id'], 'serial', $serial], [
+                            'sold' => true,
+                            'sold_by' => auth()->user()->id,
+                            'sold_from' => $data['warehouse_id']
+                        ]);
                     }
                 } else {
                     $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
@@ -184,7 +188,7 @@ class TransactionService implements TransactionInterface {
             ->where('warehouse_id', $data['warehouse_id'])
             ->where('sold', false)->take($order->quantity)->get();
 
-            $details = array_map(function($product) {
+            $details = array_map(function($product) use ($return, $order) {
                 return [
                     'return_id' => $return->id,
                     'product_id' => $product->id,
@@ -200,6 +204,13 @@ class TransactionService implements TransactionInterface {
             ProductStock::whereIn('id', $product_ids)->delete();
         }
         return;
+    }
+
+    public function returnedPurchases(int $id) {
+        $returns = PurchaseReturn::whereHas('purchase', function ($query) use ($id) {
+            $query->where('warehouse_id', $id);
+        })->paginate(25);
+        return $returns;
     }
 
 }

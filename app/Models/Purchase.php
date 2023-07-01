@@ -9,6 +9,7 @@ use App\Models\Warehouse;
 use App\Models\Supplier;
 use App\Models\PurchaseDetails;
 use App\Contracts\TransactionInterface;
+use App\Models\PurchaseReturn;
 
 class Purchase extends Model implements TransactionInterface
 {
@@ -78,5 +79,9 @@ class Purchase extends Model implements TransactionInterface
 
     public function getUrlAttribute() {
         return route('purchase.receive', ['id' => $this->id]);
+    }
+
+    public function returns() {
+        return $this->hasMany(PurchaseReturn::class, 'purchase_id');
     }
 }

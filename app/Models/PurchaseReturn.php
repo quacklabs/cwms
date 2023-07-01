@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PurchaseReturnDetail;
+use App\Models\Purchase;
 
 class PurchaseReturn extends Model
 {
@@ -17,9 +18,16 @@ class PurchaseReturn extends Model
         'discount','receivable','received'
     ];
 
+    public function due() {
+        return floatval($this->receivable - $this->received);
+    }
 
     public function details() {
         return $this->hasMany(PurchaseReturnDetail::class, 'purchase_id');
+    }
+
+    public function purchase() {
+        return $this->belongsTo(Purchase::class, 'purchase_id');
     }
 
 }

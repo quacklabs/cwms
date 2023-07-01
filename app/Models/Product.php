@@ -45,12 +45,14 @@ class Product extends Model
         return $ean13;
     }
 
-    public function getStockAttribute() {
-        return $this->productStock->sum('quantity');
-    }
+    // public function getStockAttribute() {
+    //     return count($this->totalInStock()->all());
+    // }
 
-    public function totalInStock() {
-        return $this->productStock->sum('quantity');
+    public function totalInStock($id) {
+        return ProductStock::where('warehouse_id', $id)
+        ->where('product_id', $this->id)
+        ->where('sold', false)->count();
     }
 
     public function productStock(){

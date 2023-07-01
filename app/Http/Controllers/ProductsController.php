@@ -42,13 +42,20 @@ class ProductsController extends Controller {
             return redirect()->route('product.products')->with('success', 'Product Addedd successfully');
         }
 
+        // if($user->hasRole('admin')) {
+        //     // $products = ;
+        // } else {
+        //     $products = 
+        // }
+
         $data = [
             'title' => 'Products',
-            'products' =>ProductService::getAllProducts(),
+            'products' => ProductService::getAllProducts(),
             'product' => null,
             'categories' => ProductService::categories(),
             'brands' => ProductService::brands(),
-            'units' => ProductService::units()
+            'units' => ProductService::units(),
+            'user' => $user
         ];
         
         return parent::render($data, 'product.products');

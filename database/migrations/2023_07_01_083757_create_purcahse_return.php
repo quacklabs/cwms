@@ -24,6 +24,8 @@ class CreatePurcahseReturn extends Migration
             $table->decimal('received', 28,2)->default(0.00);
             $table->text('notes')->nullable();
             $table->timestamps();
+
+            $table->foreign('purchase_id')->references('id')->on('purchase')->onDelete('cascade');
         });
     }
 
