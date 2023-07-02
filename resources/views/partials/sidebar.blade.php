@@ -115,7 +115,7 @@
                         <span>Sales</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="{{ Str::contains(Route::currentRouteName(), '/sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.sales') }}">All Sales</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), '/sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.view') }}">All Sales</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'return_sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.returned') }}">Returned Sales</a></li>
                     </ul>
                 </li>

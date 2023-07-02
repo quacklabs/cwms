@@ -120,6 +120,29 @@ Breadcrumbs::for('purchase.returned', function (BreadcrumbTrail $trail) {
     $trail->push('Returned Purchases');
 });
 
+// Dashboard > Sale > Return Sale
+Breadcrumbs::for('sale.returned', function (BreadcrumbTrail $trail) {
+    $trail->push('Sales', route('sale.view'));
+    $trail->push('Returned Sales');
+});
+
+Breadcrumbs::for('sale.create', function (BreadcrumbTrail $trail) {
+    $trail->push('Sales', route('sale.view'));
+    $trail->push('New Sale');
+});
+
+Breadcrumbs::for('sale.view', function (BreadcrumbTrail $trail) {
+    // $trail->push('Sales', route('sale.view'));
+    $trail->parent('dashboard');
+    $trail->push('Sales');
+});
+
+Breadcrumbs::for('sale.return', function (BreadcrumbTrail $trail) {
+    $trail->push('Sales', route('sale.view'));
+    $trail->push('Returned Sales', route('sale.returned'));
+    $trail->push('Return Sale');
+});
+
 Breadcrumbs::for('transactions.sale', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Sales');

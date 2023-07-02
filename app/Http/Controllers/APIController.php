@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\User;
 use App\Contracts\ProductResponse;
 use League\Csv\Reader;
 use Maatwebsite\Excel\Facades\Excel;
@@ -41,20 +42,30 @@ class APIController extends Controller
 
     public function products(Request $request) {
         $search = $request->input('query');
+        $user_id = $request->input('user');
+
         $response = [];
-        if(!$search){
+        if(!$search || !$user_id){
             $response['status'] = false;
             $response['data'] = null;
         }
         $products = Product::where('name', 'LIKE', '%' . $search . '%')
         ->orWhere('sku', 'LIKE', '%' . $search . '%')
         ->get();
+        $user = User::find($user_id);
+        if(!$user) {
+            $response['status'] = false;
+            $response['data'] = null;
+            return response()->json($response);
+        }
+        
         if($products != null) {
             // dd($products->all());
             $response['status'] = true;
-            $response['data'] = array_map(function($product) {
+            $response['data'] = array_map(function($product) use($user) {
                 // dd($product->id);
-                return new ProductResponse($product->id, $product->name, $product->totalInStock());
+
+                return new ProductResponse($product->id, $product->name, $product->totalInStock($user));
             }, $products->all());
 
             // dd($response);

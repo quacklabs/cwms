@@ -52,9 +52,10 @@
                                 <input type="hidden" name="order" id="order" value="{{ old('order') }}">
                                 <input type="hidden" name="discount_amount" id="discount" value="{{ old('discount_amount') }}">
                                 <input type="hidden" name="total_price" id="order_amount" value="{{ old('total_price') }}">
+                                <input type="hidden" name="notes" id="notes">
                                 <div class="form-group col-md-3">
                                     <label for="inputEmail4">Invoice No</label>
-                                    <input name="invoice_no" type="text" class="form-control" value="{{ old('invoice_no') ?? $invoice_no }}" readonly required>
+                                    <input name="invoice_no" type="text" class="form-control" value="{{ old('invoice_no') ?? $invoice_no }}" required>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="inputPassword4">{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}</label>
@@ -130,7 +131,7 @@
                                     <!-- this is where we display rows for each product added -->
                                 </tbody>
 
-                                <tfoot id="grand_total" style="display: none;">
+                                <!-- <tfoot >
                                     <tr>
                                         <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Discount Amount</td>
                                         <th  class="text-right font-weight-bold">
@@ -141,16 +142,33 @@
                                         <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Total</td>
                                         <th id="total_amount" class="text-right font-weight-bold">&#8358;0.00</th>
                                     </tr>
-                                </tfoot>
+                                </tfoot> -->
                             </table>
                         </div>
                     </div>
 
                     <div class="card-footer">
-                        <div class="float-right">
-                           
+                        <hr>
+                        <div class="row" id="grand_total" style="display: none;">
+                            <div class="col-md-8">
+                                <label>Notes</label>
+                                <textarea class="form-control" name="notes" id="user_notes"></textarea>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-row mb-3">
+                                    <label>Discount Amount  (&#8358;)</label>
+                                    <input id="discount_amount" class="value-input form-control text-right col-12" type="text" value="0">
+                                </div>
+
+                                <div class="form-row">
+                                    <label>Receivable Amount (&#8358;)</label>
+                                    <input id="total_amount" class="value-input form-control text-right col-12" type="text" value="0" readonly>
+                                </div>
+                                
+
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -193,7 +211,7 @@
         })
         const discount = $("#discount_amount").val()
         grand = parseFloat(grand) - parseFloat(discount)
-        $("#total_amount").html('&#8358;'+grand)
+        $("#total_amount").val(grand)
         return grand
     }
 
@@ -260,6 +278,8 @@
             $("#order").val(arg)
             $("#discount").val(discount)
             $("#order_amount").val(grand_total)
+            const notes = $("#user_notes").val()
+            $("#notes").val(notes)
             $("#orderForm").submit()
         } else {
             swal({
@@ -448,6 +468,7 @@
     }
 
     function search(url, query, callback) {
+        const user = "{{ auth()->user()->id }}"
         $.ajax({
             url: url,
             type: 'POST',
@@ -457,7 +478,7 @@
                 'Authorization': "Bearer {{ $api_token }}",
                 'X-XSRF-TOKEN': "{{ $x_token }}"
             },
-            data: JSON.stringify({ query: query }),
+            data: JSON.stringify({ query: query, user: user }),
             error: function() {
                 console.log('failed');
                 callback();

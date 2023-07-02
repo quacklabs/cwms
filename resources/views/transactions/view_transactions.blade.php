@@ -54,6 +54,7 @@
                             <table class="table table-striped ">
                                 <thead class="bg-dark text-white">
                                     <tr class="text-left">
+                                        <th></th>
                                         <th class="text-white">Invoice | Date</th>
                                         <th class="text-white">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }} | Mobile</th>
                                         <th class="text-white">Amount | Warehouse</th>
@@ -69,6 +70,20 @@
                                     @else
                                         @foreach($items as $transaction)
                                         <tr class="text-left">
+                                            <td>
+                                                @if(count($transaction->returns->all()) > 0)
+                                                    <!-- <span data-toggle="tooltip" class="beep" >
+                                                        
+                                                    </span> -->
+                                                    <span class="badge badge-warning badge-pill beep" data-toggle="tooltip" data-placement="top" title="" data-original-title="Returned">
+                                                        {{ $loop->iteration}}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-primary badge-pill">
+                                                        {{ $loop->iteration}}
+                                                    </span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <strong>#{{ $transaction->invoice_no }}</strong>
                                                 <span class="text-muted">
@@ -106,23 +121,28 @@
                                             <td>
                                                 <div class="buttons">
                                                     @can('approve-'.$flag)
-                                                        @if (floatval($transaction->due) > floatval(0.00))
+                                                        @if($transaction->returns != null)
+
+                                                        @else
+                                                            @if (floatval($transaction->due) > floatval(0.00) )
                                                             <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                 <i class="fas fa-money-check-alt" ></i>
                                                             </a>
+                                                            @endif
                                                             <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->
                                                                 
                                                             <!-- </a> -->
                                                         @endif
                                                     @endcan
 
-
-                                                    @if(floatval($transaction->due)  != 0.00)
-                                                    @can('create-purchase-return')
-                                                        <a href="{{ route('purchase.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
-                                                            <i class="fas fa-reply"></i>
-                                                        </a>
-                                                    @endcan
+                                                    @if(count($transaction->returns->all()) == 0)
+                                                        @if(floatval($transaction->due) != 0.00)
+                                                            @can('create-'.$flag.'-return')
+                                                                <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
+                                                                    <i class="fas fa-reply"></i>
+                                                                </a>
+                                                            @endcan
+                                                        @endif
                                                     @endif
 
 
@@ -231,7 +251,9 @@
 
         $("#btn-modal").on('click', function() {
             const details = $(this).data('transaction')
+            // console.log(details)
             $("#due").val(details.due.toLocaleString())
+
             $("#moneyForm").prop('action', details.url)
             $("#myModal").modal('show');
         })

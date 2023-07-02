@@ -62,7 +62,7 @@
                                     <label for="inputPassword4">{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}</label>
                                     <div class="form-control p-0">
                                         <select data-name="{{ ($flag == 'purchase' ? 'Supplier' : 'Customer') }}" id="partner_select" name="partner_id" class="p-0 mb-0 form-control" readonly required>
-                                            <option value="{{ ($flag == 'purchase') ? $transaction->supplier_id : $transaction->customer_id }}">{{ ($flag == 'purchase') ? $transaction->owner->name : $transaction->customer->name }}</option>
+                                            <option value="{{ ($flag == 'purchase') ? $transaction->supplier_id : $transaction->customer_id }}">{{ $transaction->owner->name }}</option>
                                         </select>
 
                                     </div>
@@ -89,47 +89,18 @@
 
                         <div class="table-responsive">
                             <table class="table table-striped">
-                                @if ($flag == 'purchase')
                                 <thead>
                                     <th></th>
                                     <th>Name</th>
-                                    <th class="text-right">Purchase Qty</th>
-                                    <th class="text-right">Stock Qty</th>
+                                    <th class="text-right">{{ ucwords($flag) }} Qty</th>
+                                    <th class="text-right">In Stock</th>
                                     <th class="text-right">Return Qty</th>
                                     <th class="text-right">Price</th>
                                     <th class="text-right">Total</th>
                                 </thead>
-                                    
-                                @else
-                                <thead>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>In Stock</th>
-                                    <th class="text-right">Price</th>
-                                    <th class="text-right">Quantity</th>
-                                    <th class="text-right">Amount</th>
-                                </thead>
-                                @endif
                                 
                                 <tbody id="items">
-                                @if($flag == 'sale')
-                                    @foreach ($transaction->details as $detail)
-                                        <tr id="row" data-id="">
-                                            <td>{{ $loop->iteration }}</td>
-                                        </tr>
-                                    @endforeach
-                                
-                                
-                                    <!-- ' +
-                                    '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
-                                    '<td>'+name+'</td>' +
-                                    '<td id="stock">'+stock+'</td>'+
-                                    '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
-                                    '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
-                                    '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
-                                    '</tr>'; -->
-                                @else
-                                    @foreach ($transaction->details as $detail)
+                                @foreach ($transaction->details as $detail)
                                         <tr id="row{{$detail->id}}" data-id="{{$detail->id}}">
                                             <td>
                                                 <div class="btn-group mb-3" role="group">
@@ -140,7 +111,7 @@
                                             </td>
                                             <td>{{ $detail->product->name }}</td>
                                             <td class="text-right">{{ $detail->quantity }}</td>
-                                            <td class="text-right">{{ $detail->stock }}</td>
+                                            <td class="text-right">{{ $detail->product->totalInStock() }}</td>
                                             <td>
                                                 <input data-quantity="{{ $detail->quantity }}" data-price="{{ $detail->price }}" data-row="{{ $detail->id }}" class="value-input form-control text-right" type="number" value="0">
                                             </td>
@@ -148,21 +119,6 @@
                                             <td data-name="total">&#8358;0</td>
                                         </tr>
                                     @endforeach
-                                    <!-- <tr id="row'+id+'" data-id="'+id+'">' +
-                                    '<td>'+
-                                        '<div class="buttons">'+
-                                        '<input data-row="'+id+'" data-name="file" class="file-input" type="file" style="display: none;" accept=".csv, .xls, .xlsx">'+
-                                        '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
-                                        ''+
-                                        '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark"><i class="fas fa-upload"> Upload Serial Numbers</i></button>'+
-                                        '</div>'+
-                                    '</td>' +
-                                    '<td>'+name+'</td>' +
-                                    '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
-                                    '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
-                                    '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
-                                    '</tr>'; -->
-                                @endif
                                     <!-- this is where we display rows for each product added -->
                                 </tbody>
                                 <!-- <hr> -->
@@ -388,6 +344,45 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+
+        const warehouse_options = {
+            valueField: 'id', // Specify the key for option value
+            labelField: 'name', // Specify the key for option innerHTML
+            searchField: 'name', // Specify the key for search field
+            closeAfterSelect: true,
+            create: false,
+            render: {
+                option: function(item, escape) {
+                    return '<div class="option" data-selectable="" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
+                }
+            },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                search("{{ route('api.findWarehouse') }}", query, callback)
+            }
+        }
+
+        const partner_options = {
+            valueField: 'id', // Specify the key for option value
+            labelField: 'name', // Specify the key for option innerHTML
+            searchField: 'name', // Specify the key for search field
+            create: false,
+            closeAfterSelect: true,
+            render: {
+                option: function(item, escape) {
+                    return '<div data-name="'+escape(item.name)+'" class="option" data-selectable="" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
+                }
+            },
+            load: function(query, callback) {
+                if (!query.length) return callback();
+                search("{{ route('api.findPartner', ['flag' => $flag]) }}", query, callback)
+            }
+        }
+
+       
+
+        $("#partner_select").selectize(partner_options)
+        $("#warehouse_select").selectize(warehouse_options)
         
     })
 

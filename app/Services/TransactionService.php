@@ -17,6 +17,8 @@ use App\Models\ProductStock;
 use App\Models\Product;
 use App\Models\PurchaseReturn;
 use App\Models\PurchaseReturnDetail;
+use App\Models\SaleReturn;
+use App\Models\SaleReturnDetail;
 
 use Faker\Factory;
 use Faker\Provider\Barcode;
@@ -43,7 +45,8 @@ class TransactionService implements TransactionInterface {
                     'warehouse_id' => $data['warehouse_id'],
                     'total_price' => $data['total_price'],
                     'discount_amount' => $data['discount_amount'],
-                    'date' => Carbon::parse($data['date'])
+                    'date' => Carbon::parse($data['date']),
+                    'notes' => $data['notes']
                 ]);
                 break;
             case 'purchase':
@@ -53,7 +56,8 @@ class TransactionService implements TransactionInterface {
                     'warehouse_id' => $data['warehouse_id'],
                     'total_price' => $data['total_price'],
                     'discount_amount' => $data['discount_amount'],
-                    'date' => Carbon::parse($data['date'])
+                    'date' => Carbon::parse($data['date']),
+                    'note' => $data['notes'] ?? NULL
                 ]);
                 break;
             default:
@@ -101,16 +105,12 @@ class TransactionService implements TransactionInterface {
                     $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
                     ->where('product_id', $order['product_id'])
                     ->where('sold', false)->take($order['quantity'])->get();
-                    if($stock->quantity < $order['quantity']) {
-                        $transaction->total_price = $transaction->total->price - $order['total_price'];
-                        $transaction->save();
-                    } else {
-                        foreach($stock as $item) {
-                            $item->sold = true;
-                            $item->sold_by = auth()->user()->id;
-                            $item->sold_from = $data['warehouse_id'];
-                            $item->save();
-                        }
+
+                    foreach($stock as $item) {
+                        $item->sold = true;
+                        $item->sold_by = auth()->user()->id;
+                        $item->sold_from = $data['warehouse_id'];
+                        $item->save();
                     }
                 }
             }
@@ -130,7 +130,7 @@ class TransactionService implements TransactionInterface {
 
     public static function getSales(User $user) {
         if($user->hasRole('admin')) {
-            return Purchase::orderBy('created_at', 'desc')->paginate(25);
+            return Sale::orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
             $warehouse = $user->warehouse->first();
@@ -207,10 +207,58 @@ class TransactionService implements TransactionInterface {
     }
 
     public function returnedPurchases(int $id) {
-        $returns = PurchaseReturn::whereHas('purchase', function ($query) use ($id) {
+        $returns = PurchaseReturn::whereHas('owner', function ($query) use ($id) {
             $query->where('warehouse_id', $id);
         })->paginate(25);
         return $returns;
+    }
+
+    public function returnedSales(int $id) {
+        $returns = SaleReturn::whereHas('owner', function ($query) use ($id) {
+            $query->where('warehouse_id', $id);
+        })->paginate(25);
+        return $returns;
+    }
+
+    public static function returnSale(array $data, Sale $sale) {
+        $receivable = floatval($data['total_price']) - floatval($data['discount_amount']);
+        $return = SaleReturn::create([
+            'sale_id' => $sale->id,
+            'customer_id' => $sale->customer_id,
+            'date' => Carbon::parse($data['date']),
+            'total_price' => $data['total_price'],
+            'discount' => $data['discount_amount'] ?? 0.00,
+            'receivable' => $receivable,
+            'notes' => $data['notes']
+        ]);
+
+        $orders =  json_decode($data['order']);
+
+        foreach($orders as $order) {
+            $products = ProductStock::where('product_id', $order->id)
+            ->where('warehouse_id', $data['warehouse_id'])
+            ->where('sold', true)->take($order->quantity)->get();
+
+            $details = array_map(function($product) use ($return, $order) {
+                return [
+                    'return_id' => $return->id,
+                    'product_id' => $product->id,
+                    'serial' => $product->serial,
+                    'price' => $order->price
+                ];
+            }, $products->all());
+
+            $product_ids = array_map(function($product) {
+                return $product->id;
+            }, $products->all());
+            SaleReturnDetail::insert($details);
+            ProductStock::whereIn('id', $product_ids)->update([
+                'sold' => false,
+                'sold_by' => null,
+                'sold_from' => null
+            ]);
+        }
+        return;
     }
 
 }

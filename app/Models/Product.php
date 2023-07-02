@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\Unit;
 use App\Models\Brand;
@@ -49,10 +50,23 @@ class Product extends Model
     //     return count($this->totalInStock()->all());
     // }
 
-    public function totalInStock($id) {
-        return ProductStock::where('warehouse_id', $id)
-        ->where('product_id', $this->id)
-        ->where('sold', false)->count();
+    public function totalInStock(User $user=NULL) {
+        if($user == null) {
+            $user = Auth::user();
+        }
+        if($user->hasRole('admin')) {
+            $warehouse = null;
+        } else {
+            $warehouse = $user->warehouse->first()->id;
+        }
+        if($warehouse != null) {
+            return ProductStock::where('warehouse_id', $warehouse)
+            ->where('product_id', $this->id)
+            ->where('sold', false)->count();
+        } else {
+            return ProductStock::where('product_id', $this->id)
+            ->where('sold', false)->count();
+        }
     }
 
     public function productStock(){

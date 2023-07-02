@@ -90,17 +90,20 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('returned', 'PurchaseController@returned')->name('returned');
                 Route::get('delete/{id}', 'PurchaseController@delete')->middleware('permission:delete-purchase')->name('delete');
                 Route::match(['get','post'], 'edit/{id}', 'PurchaseController@edit')->middleware('permisson:edit-purchase')->name('edit');
-                Route::post('receive/{id}', 'PurchaseController@receive')->middleware('permission:approve-purchase')->name('receive');
+                Route::post('receive/{id}', 'PurchaseController@receive')->middleware('permission:approve-purchase-return')->name('receive');
                 Route::match(['get', 'post'], 'return/{id}', 'PurchaseController@return_purchase')->middleware('permission:create-purchase-return')->name('return');
             });
 
 
             Route::prefix('sale')->name('sale.')->group(function() {
-                Route::match(['get','post'], 'create', 'SaleController@create')->name('create');
-                Route::get('sales', 'SaleController@view')->name('sales');
-                Route::get('purchase/{id}', 'SaleController@view_single')->name('view_single');
-                Route::get('returned', 'SaleController@returned')->name('returned');
-                Route::get('delete/{id}', 'SaleController@delete')->middleware('permission:delete-sale')->name('delete');
+                Route::match(['get','post'], 'create', 'SalesController@create')->name('create');
+                Route::get('view', 'SalesController@view')->name('view');
+                Route::get('purchase/{id}', 'SalesController@view_single')->name('view_single');
+                Route::get('returned', 'SalesController@returned')->name('returned');
+                Route::post('payment/{id}', 'SalesController@payment')->name('payment');
+                Route::post('receive/{id}', 'SalesController@receive')->middleware('permission:approve-sale')->name('receive');
+                Route::get('delete/{id}', 'SalesController@delete')->middleware('permission:delete-sale')->name('delete');
+                Route::match(['get', 'post'], 'return/{id}', 'SalesController@return_sale')->middleware('permission:create-sale-return')->name('return');
             });
 
             // Route::prefix('transactions')->name('transaction.')->group(function() {

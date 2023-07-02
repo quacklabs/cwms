@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\PurchaseReturnDetail;
 use App\Models\Purchase;
+use App\Models\Supplier;
 
 class PurchaseReturn extends Model
 {
@@ -18,16 +19,32 @@ class PurchaseReturn extends Model
         'discount','receivable','received'
     ];
 
+    protected $appends = [
+        'url', 'due'
+    ];
+
+    public function getDueAttribute() {
+        return $this->due();
+    }
+
     public function due() {
         return floatval($this->receivable - $this->received);
     }
 
-    public function details() {
-        return $this->hasMany(PurchaseReturnDetail::class, 'purchase_id');
+    public function partner() {
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-    public function purchase() {
+    public function details() {
+        return $this->hasMany(PurchaseReturnDetail::class, 'return_id');
+    }
+
+    public function owner() {
         return $this->belongsTo(Purchase::class, 'purchase_id');
+    }
+
+    public function getUrlAttribute() {
+        return route('purchase.receive', ['id' => $this->id]);
     }
 
 }

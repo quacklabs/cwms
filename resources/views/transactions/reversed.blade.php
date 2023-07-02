@@ -72,16 +72,16 @@
                                             </td>
 
                                             <td class="p-2">
-                                                <strong>{{ $transaction->purchase->owner->name }}</strong>
+                                                <strong>{{ $transaction->partner->name }}</strong>
                                                 <span class="text-muted">
-                                                    <p>{{ $transaction->purchase->owner->mobile_no }}</p>
+                                                    <p>{{ $transaction->partner->mobile_no }}</p>
                                                 </span>
                                             </td>
                                             
                                             <td class="p-3">
                                                 <strong>&#8358;{{ number_format($transaction->total_price, 2) }}</strong>
                                                 <span class="text-muted">
-                                                    <p>{{ $transaction->purchase->warehouse->name }}</p>
+                                                    <p>{{ $transaction->owner->warehouse->name }}</p>
                                                 </span>
                                             </td>
 
@@ -93,15 +93,15 @@
                                             </td>
 
                                             <td>
-                                                <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}">&#8358;{{ number_format($transaction->due(),2) }} </strong>
+                                                <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}"> &#8358;{{ number_format($transaction->received, 2) }}</strong>
                                                 <span class="text-muted">
-                                                    <p>&#8358;{{ number_format($transaction->received, 2) }}</p>
+                                                    <p>&#8358;{{ number_format($transaction->due(),2) }} </p>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="buttons">
                                                     @can('approve-'.$flag)
-                                                        @if (floatval($transaction->due()) > floatval(0.00))
+                                                        @if (floatval($transaction->due()) > floatval(0.00) || $transaction->returns() != null)
                                                             <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                 <i class="fas fa-money-check-alt" ></i>
                                                             </a>
@@ -112,23 +112,15 @@
                                                     @endcan
 
 
-                                                    @if(floatval($transaction->due())  != 0.00)
-                                                    @can('create-purchase-return')
-                                                        <a href="{{ route('purchase.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
-                                                            <i class="fas fa-reply"></i>
-                                                        </a>
-                                                    @endcan
-                                                    @endif
-
-
-
-                                                    
-
                                                     @can('delete-purchase')
-                                                        <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale' }}">
+                                                        <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale Return' }}">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     @endcan
+
+                                                    <a href="#" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Download Details' }}">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -226,6 +218,7 @@
 
         $("#btn-modal").on('click', function() {
             const details = $(this).data('transaction')
+            // console.log(details)
             $("#due").val(details.due.toLocaleString())
             $("#moneyForm").prop('action', details.url)
             $("#myModal").modal('show');

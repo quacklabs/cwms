@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Warehouse;
 use App\Models\Customer;
-use App\Model\SaleDetails;
+use App\Models\SaleDetails;
 
 use App\Contracts\TransactionInterface;
 
@@ -18,12 +18,13 @@ class Sale extends Model implements TransactionInterface
     protected $table = "sale";
 
     protected $fillable = [
-        'supplier_id',
+        'customer_id',
         'invoice_no',
         'warehouse_id',
-        'total_amount',
+        'total_price',
         'discount_amount',
         'paid_amount',
+        'date',
         'note',
         'return_status'
     ];
@@ -78,6 +79,10 @@ class Sale extends Model implements TransactionInterface
     }
 
     public function getUrlAttribute() {
-        return route('transaction.enter_ledger', ['flag' => 'sale', 'id' => $this->id]);
+        return route('sale.receive', ['id' => $this->id]);
+    }
+
+    public function returns() {
+        return $this->hasMany(SaleReturn::class, 'sale_id');
     }
 }
