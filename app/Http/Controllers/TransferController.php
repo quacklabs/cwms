@@ -17,8 +17,8 @@ class TransferController extends Controller
         if($user->hasRole('admin')) {
             $transfers = TransferService::getAllPaginated();
         } else {
-            $my_warehouse = $user->warehouse->first()->id;
-            $transfers = TransferService::getByWarehouse($my_warehouse);
+            $id = $user->warehouse->first()->id;
+            $transfers = TransferService::getByWarehouse($id);
         }
         $data = [
             'title' => 'Transfers',

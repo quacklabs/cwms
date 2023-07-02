@@ -8,12 +8,13 @@ use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Product;
-use App\Models\ProductStock;
+// use App\Models\ProductStock;
 use App\Models\User;
 use App\Contracts\ProductResponse;
 use League\Csv\Reader;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MyDataImport;
+use App\Services\StockService;
 
 class APIController extends Controller
 {
@@ -85,21 +86,15 @@ class APIController extends Controller
             $response['status'] = false;
             $response['data'] = null;
         }
-        $stock = ProductStock::with('product')->where('warehouse_id', $id)
-        ->whereHas('product', function ($query) use ($keyword) {
-            $query->where('name', 'like', '%' . $keyword . '%')->orWhere('sku', 'LIKE', '%' . $keyword . '%');
-        })->get();
+        $stock = StockService::searchByWarehouse($id, $keyword);
 
-        // dd($products);
         if($stock != null) {
             // dd($products->all());
             $response['status'] = true;
             $response['data'] = array_map(function($detail) {
-                // dd($product->id);
-                return new ProductResponse($detail->product_id, $detail->product->name, $detail->quantity);
+                return new ProductResponse($detail['product']->id, $detail['product']->name, $detail['stock']);
             }, $stock->all());
-
-            // dd($response);
+    
         } else {
             $response['status'] = false;
             $response['data'] = [];

@@ -253,7 +253,7 @@
                 const warehouse = $("#from_warehouse")
                 if(warehouse.val() == '' || warehouse.val() == undefined) {
                     swal({
-                        title: "Warehouse Required",
+                        title: "Source Warehouse Required",
                         text: "Please select a warehouse to transfer from",
                         icon: 'error'
                     })
@@ -336,6 +336,7 @@
 
 
     function search(url, query, callback) {
+        const user = "{{ auth()->user()->id }}"
         $.ajax({
             url: url,
             type: 'POST',
@@ -345,13 +346,19 @@
                 'Authorization': "Bearer {{ $api_token }}",
                 'X-XSRF-TOKEN': "{{ $x_token }}"
             },
-            data: JSON.stringify({ query: query }),
+            data: JSON.stringify({ query: query, user: user }),
             error: function() {
                 console.log('failed');
                 callback();
             },
             success: function(res) {
-                callback(res.data);
+                console.log(res);
+                const transformedData = Object.values(res.data).map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    stock: item.stock
+                }));
+                callback(transformedData);
             }
         });
     }

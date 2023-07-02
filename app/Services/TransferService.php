@@ -19,7 +19,8 @@ class TransferService {
 
 
     public static function getByWarehouse(int $id) {
-        return Transfer::where('from_warehouse', $my_warehouse)->orWhere('to_warehouse', $id)->paginate(25);
+        
+        return Transfer::where('from_warehouse', $id)->orWhere('to_warehouse', $id)->paginate(25);
     }
 
     public static function createTranser($data) {

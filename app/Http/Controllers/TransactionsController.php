@@ -27,7 +27,7 @@ class TransactionsController extends Controller {
         if(!$flag) {
             return redirect()->route('dashboard');
         }
-
+ 
         if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
             $transactions = Transaction::getPurchases(Auth::user());
         } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
