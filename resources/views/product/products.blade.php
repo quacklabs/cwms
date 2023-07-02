@@ -90,8 +90,8 @@
                                             <td class="p-3">
                                             {{ $product->categories->name }}
                                             </td>
-                                            <td>{{ $product->totalInStock($user->warehouse->first()->id) }}</td>
-                                            <td class="p-3">
+                                            <td>{{ $product->totalInStock($user) }}</td>
+                                             <td class="p-3">
                                                 {{ $product->totalSale() }}
                                                 <span class="text-muted">
                                                     <p>{{ $product->alert }} {{ $product->unit->name }}</p>
