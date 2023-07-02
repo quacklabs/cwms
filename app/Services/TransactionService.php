@@ -206,14 +206,14 @@ class TransactionService implements TransactionInterface {
         return;
     }
 
-    public function returnedPurchases(int $id) {
+    public static function returnedPurchases(int $id) {
         $returns = PurchaseReturn::whereHas('owner', function ($query) use ($id) {
             $query->where('warehouse_id', $id);
         })->paginate(25);
         return $returns;
     }
 
-    public function returnedSales(int $id) {
+    public static function returnedSales(int $id) {
         $returns = SaleReturn::whereHas('owner', function ($query) use ($id) {
             $query->where('warehouse_id', $id);
         })->paginate(25);
