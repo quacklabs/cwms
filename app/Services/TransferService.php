@@ -19,11 +19,11 @@ class TransferService {
 
 
     public static function getByWarehouse(int $id) {
-        
-        return Transfer::where('from_warehouse', $id)->orWhere('to_warehouse', $id)->paginate(25);
+
+        return Transfer::orderBy('created_at', 'desc')->where('from_warehouse', $id)->orWhere('to_warehouse', $id)->paginate(25);
     }
 
-    public static function createTranser($data) {
+    public static function createTransfer($valid) {
         $faker = Faker::create();
         $transfer = Transfer::create([
             'tracking_no' => strtoupper($faker->bothify('???########')),
@@ -34,6 +34,7 @@ class TransferService {
         ]);
         $job = new TransferProducts($transfer, json_decode($valid['items']));
         dispatch($job);
+        return;
     }
     
 }
