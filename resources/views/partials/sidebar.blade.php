@@ -178,6 +178,19 @@
                 </li>
                     
                 @endcan
+
+                @can('view-entry-report')
+                <li class="dropdown">
+                    <a class="nav-link has-dropdown" href="#">
+                        <i class="fas fa-scanner-keyboard"></i><span>Data Entry Reports</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.product_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.product_entry') }}">Product</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.customer_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.customer_entry') }}">Customer</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.supplier_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.supplier_entry') }}">Supplier</a></li>
+                    </ul>
+                </li>
+                @endcan
                 
             @endcan
 

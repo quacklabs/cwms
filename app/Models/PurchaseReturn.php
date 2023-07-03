@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\PurchaseReturnDetail;
 use App\Models\Purchase;
 use App\Models\Supplier;
+use App\Traits\ActionTakenBy;
 
 class PurchaseReturn extends Model
 {
-    use HasFactory;
+    use HasFactory, ActionTakenBy;
 
     protected $table = 'purchase_return';
 

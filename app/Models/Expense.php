@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\ExpenseType;
 use App\Models\User;
+use App\Traits\ActionTakenBy;
 
 class Expense extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = "expense";
 

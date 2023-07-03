@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Traits\ActionTakenBy;
 
 class Brand extends Model
 {
-    use HasFactory;
+    use HasFactory, ActionTakenBy;
     protected $table = "brands";
 
     protected $fillable = ["name", "status"];

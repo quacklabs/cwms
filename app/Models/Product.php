@@ -11,12 +11,15 @@ use App\Models\Brand;
 use Faker\Factory;
 use App\Models\ProductStock;
 use App\Models\SaleDetails;
+use App\Traits\ActionTakenBy;
+use App\Models\Action;
 
 class Product extends Model
 {
     protected $table = 'products';
 
-    use HasFactory;
+    use HasFactory, ActionTakenBy;
+
     protected $fillable = [
         'name',
         'sku',
@@ -27,7 +30,7 @@ class Product extends Model
         'image_url',
         'notes'
     ];
-    
+
     public function categories() {
         return $this->belongsTo(Category::class, 'category_id');
     }
@@ -82,4 +85,7 @@ class Product extends Model
         return $this->hasMany(SaleDetails::class);
     }
 
+    public function actions(): MorphMany {
+        return $this->morphMany(Action::class, 'model_type');
+    }
 }

@@ -10,10 +10,11 @@ use App\Policies\WarehousePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Purchase;
 use App\Models\Transfer;
+use App\Traits\ActionTakenBy;
 
 class Warehouse extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = 'warehouse';
     protected $fillable = ["name","address","status", 'manager_id'];

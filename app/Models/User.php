@@ -16,11 +16,11 @@ use App\Models\Store;
 use App\Models\PermissionGroup;
 use Illuminate\Support\Facades\Session;
 use App\Models\Expense;
-
+use App\Traits\ActionTakenBy;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, ActionTakenBy;
 
     protected $policy = UserPolicy::class;
 

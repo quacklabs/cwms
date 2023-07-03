@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Warehouse;
-
+use App\Traits\ActionTakenBy;
 use App\Models\AdjustmentDetail;
 
 class Adjustment extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = "adjustment";
 

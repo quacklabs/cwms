@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Supplier;
 use App\Models\Purchase;
+use App\Traits\ActionTakenBy;
+
 use Carbon\Carbon;
 
 class SupplierPayment extends Model {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = 'supplier_payments';
 

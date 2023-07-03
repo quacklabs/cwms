@@ -190,7 +190,8 @@ class RolesSeeder extends Seeder
                 'view-reports',
                 'view-payment-report',
                 'view-stock-report',
-                'view-data-report'
+                'view-data-report',
+                'view-entry-report'
             ]
         ];
     }

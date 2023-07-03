@@ -143,7 +143,7 @@
                                             <td>{{ $item->sku }}</td>
                                             <td>{{ ucwords($item->categories->name) }}</td>
                                             <td>{{ ucwords($item->brands->name) }}</td>
-                                            <td>{{ ucwords($item->productStock->first()->stock_count ) }}</td>
+                                            <td>{{ ucwords($item->totalInStock() ) }}</td>
                                         </tr>
                                             
                                         @endforeach

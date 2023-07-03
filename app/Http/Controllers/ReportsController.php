@@ -19,9 +19,6 @@ class ReportsController extends Controller
         } else {
             $payments = ReportService::getSupplierPaymentByWarehouse($user->warehouse->first()->id);
         }
-
-        // dd($payments);
-
         $data = [
             'title' => 'Supplier Payments',
             'flag' => 'supplier',
@@ -77,5 +74,37 @@ class ReportsController extends Controller
         ];
 
         return parent::render($data, 'reports.stock');
+    }
+
+    public function product_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllProductActions();
+        } else {
+            $actions = ReportService::getProductActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Product Data Entry',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.product');
+    }
+
+    public function customer_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllCustomerActions();
+        } else {
+            $actions = ReportService::getCustomerActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Customer Payment Entry',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.customer');
     }
 }

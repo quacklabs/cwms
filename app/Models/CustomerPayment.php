@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Customer;
 use App\Models\Sale;
+use App\Traits\ActionTakenBy;
 
 use Carbon\Carbon;
 
 class CustomerPayment extends Model
 {
+    use ActionTakenBy;
+
     protected $table = 'customer_payment';
 
     protected $casts= [

@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TransferDetail;
+use App\Traits\ActionTakenBy;
 
 class Transfer extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
     protected $table = 'transfer';
     protected $fillable = [
         'tracking_no', 'from_warehouse', 'to_warehouse','transfer_date','note','balanced'

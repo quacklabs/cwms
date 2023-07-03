@@ -11,10 +11,11 @@ use App\Models\PurchaseDetails;
 use App\Contracts\TransactionInterface;
 use App\Models\PurchaseReturn;
 use App\Models\SupplierPayment;
+use App\Traits\ActionTakenBy;
 
 class Purchase extends Model implements TransactionInterface
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = 'purchase';
     protected $fillable = [

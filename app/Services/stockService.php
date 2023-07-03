@@ -34,9 +34,9 @@ class StockService {
     }
 
     public static function getStockByWarehouse($id) {
+
         $all_stock = Product::with(['productStock' => function ($query) use ($id) {
             $query->select('product_id')
-            ->selectRaw('SUM(1) as stock_count')
             ->where('warehouse_id', $id)
             ->groupBy('product_id');
         }])->paginate(25);

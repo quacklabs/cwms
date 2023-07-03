@@ -9,12 +9,13 @@ use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\SaleDetails;
 use App\Models\CustomerPayment;
+use App\Traits\ActionTakenBy;
 
 use App\Contracts\TransactionInterface;
 
 class Sale extends Model implements TransactionInterface
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, ActionTakenBy;
 
     protected $table = "sale";
 
@@ -38,6 +39,7 @@ class Sale extends Model implements TransactionInterface
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
+
 
     public function warehouse() {
         return $this->belongsTo(Warehouse::class);
