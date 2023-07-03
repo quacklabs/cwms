@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Supplier;
 use App\Models\SupplierPayment;
 use App\Models\Purchase;
+use App\Models\PurchaseReturn;
 use App\Models\Sale;
 use App\Models\Customer;
 use App\Models\CustomerPayment;
@@ -80,6 +81,18 @@ class ReportService {
     public static function getPurchaseActionsByWarehouse($id) {
         $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
         $logs = Action::where('model_type', Purchase::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getAllPurchaseReturnActions() {
+
+    }
+
+    public static function getPurchaseReturnActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', PurchaseReturn::class)->with('model')
             ->whereIn('user_id', $staff)
             ->paginate(30);
         return $logs;

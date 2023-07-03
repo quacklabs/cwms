@@ -22,7 +22,7 @@ class CreatePurcahseReturnDetail extends Migration
             $table->timestamps();
 
             $table->foreign('return_id')->references('id')->on('purchase_return')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

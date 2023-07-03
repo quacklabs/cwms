@@ -143,16 +143,16 @@ class ReportsController extends Controller
     public function purchase_return_entry(Request $request) {
         $user = Auth::user();
         if($user->hasRole('admin')) {
-            $actions = ReportService::getAllSupplierActions();
+            $actions = ReportService::getAllPurchaseReturnActions();
         } else {
-            $actions = ReportService::getSupplierActionsByWarehouse($user->warehouse->first()->id);
+            $actions = ReportService::getPurchaseReturnActionsByWarehouse($user->warehouse->first()->id);
         }
 
         $data = [
-            'title' => 'Supplier Entry Reports',
+            'title' => 'Purchase Return Entry Reports',
             'actions' => $actions
         ];
 
-        return parent::render($data, 'reports.entry.supplier');
+        return parent::render($data, 'reports.entry.purchase_return');
     }
 }

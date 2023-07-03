@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\PurchaseReturn;
+use App\Models\Product;
 
 class PurchaseReturnDetail extends Model
 {
@@ -16,6 +17,10 @@ class PurchaseReturnDetail extends Model
     protected $fillable = [
         'return_id','product_id','serial', 'price'
     ];
+
+    public function product() {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 
 
     public function return() {

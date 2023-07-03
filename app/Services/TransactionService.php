@@ -171,10 +171,11 @@ class TransactionService implements TransactionInterface {
 
     public static function returnPurchase(array $data, Purchase $purchase) {
         $receivable = floatval($data['total_price']) - floatval($data['discount_amount']);
-        $return = PurchaseReturn::create([
+        $return = PurchaseReturn::firstOrCreate([
             'purchase_id' => $purchase->id,
-            'supplier_id' => $purchase->supplier_id,
-            'date' => Carbon::parse($data['date']),
+            'supplier_id' => $purchase->supplier_id],
+
+            ['date' => Carbon::parse($data['date']),
             'total_price' => $data['total_price'],
             'discount' => $data['discount_amount'] ?? 0.00,
             'receivable' => $receivable,
@@ -187,20 +188,23 @@ class TransactionService implements TransactionInterface {
             $products = ProductStock::where('product_id', $order->id)
             ->where('warehouse_id', $data['warehouse_id'])
             ->where('sold', false)->take($order->quantity)->get();
+            // dd($products);
 
             $details = array_map(function($product) use ($return, $order) {
                 return [
-                    'return_id' => $return->id,
-                    'product_id' => $product->id,
+                    'product_id' => $order->id,
                     'serial' => $product->serial,
                     'price' => $order->price
                 ];
             }, $products->all());
 
+            // dd($details);
+
             $product_ids = array_map(function($product) {
                 return $product->id;
             }, $products->all());
-            PurchaseReturnDetail::insert($details);
+            $return->details()->createMany($details);
+            // PurchaseReturnDetail::insert($details);
             ProductStock::whereIn('id', $product_ids)->delete();
         }
         return;

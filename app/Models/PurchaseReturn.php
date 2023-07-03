@@ -8,6 +8,7 @@ use App\Models\PurchaseReturnDetail;
 use App\Models\Purchase;
 use App\Models\Supplier;
 use App\Traits\ActionTakenBy;
+use App\Models\Action;
 
 class PurchaseReturn extends Model
 {
@@ -46,6 +47,10 @@ class PurchaseReturn extends Model
 
     public function getUrlAttribute() {
         return route('purchase.receive', ['id' => $this->id]);
+    }
+
+    public function actions(): MorphMany {
+        return $this->morphMany(Action::class, 'model_type');
     }
 
 }
