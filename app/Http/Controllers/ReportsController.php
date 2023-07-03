@@ -101,7 +101,7 @@ class ReportsController extends Controller
         }
 
         $data = [
-            'title' => 'Customer Payment Entry',
+            'title' => 'Customer Entry Reports',
             'actions' => $actions
         ];
 

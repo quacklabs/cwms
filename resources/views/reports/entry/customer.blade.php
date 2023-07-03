@@ -11,7 +11,7 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-        <h1>{{$title }}</h1>
+        <h1>{{ $title }}</h1>
         
         {{ Breadcrumbs::render() }}
         </div>
@@ -65,7 +65,7 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>SKU</th>
+                                        <th>Mobile</th>
                                         <th>Type</th>
                                         <th>Action By</th>
                                         <th>Time</th>
@@ -80,7 +80,7 @@
                                         @foreach ($actions as $action)
                                             <tr>
                                                 <td>{{ $action->model->first()->name }}</td>
-                                                <td>{{ $action->model->first()->sku }}</td>
+                                                <td>{{ $action->model->first()->mobile_no }}</td>
                                                 <td>{{ $action->action }}</td>
                                                 <td>{{ $action->user->first()->username }}</td>
                                                 <td>{{ $action->updated_at ?? $action->created_at }}</td>

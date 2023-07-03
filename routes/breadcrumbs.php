@@ -233,3 +233,8 @@ Breadcrumbs::for('report.product_entry', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Product Entry Report');
 });
+
+Breadcrumbs::for('report.customer_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Product Entry Report');
+});

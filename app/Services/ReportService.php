@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Models\SupplierPayment;
 use App\Models\Purchase;
 use App\Models\Sale;
+use App\Models\Customer;
 use App\Models\CustomerPayment;
 use App\Models\Action;
 use App\Models\Warehouse;
 use App\Models\Product;
+// use 
 
 class ReportService {
     
@@ -42,7 +44,7 @@ class ReportService {
         $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
         $logs = Action::where('model_type', Product::class)->with('model')
             ->whereIn('user_id', $staff)
-            ->paginate(100);
+            ->paginate(30);
         return $logs;
     }   
 
@@ -52,9 +54,9 @@ class ReportService {
 
     public static function getCustomerActionsByWarehouse($id) {
         $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
-        $logs = Action::where('model_type', Product::class)->with('model')
+        $logs = Action::where('model_type', Customer::class)->with('model')
             ->whereIn('user_id', $staff)
-            ->paginate(100);
+            ->paginate(30);
         return $logs;
     } 
 }
