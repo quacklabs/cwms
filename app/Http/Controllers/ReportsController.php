@@ -107,4 +107,20 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.customer');
     }
+
+    public function supplier_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllSupplierActions();
+        } else {
+            $actions = ReportService::getSupplierActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Supplier Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.supplier');
+    }
 }

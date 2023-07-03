@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
 use App\Traits\ActionTakenBy;
+use App\Models\Action;
 
 class Supplier extends Model
 {
@@ -23,5 +24,9 @@ class Supplier extends Model
 
     public function returns() {
         return $this->hasMany(PurchaseReturn::class, 'supplier_id');
+    }
+
+    public function actions(): MorphMany {
+        return $this->morphMany(Action::class, 'model_type');
     }
 }
