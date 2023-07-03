@@ -58,7 +58,7 @@ class RolesSeeder extends Seeder
             'delete-adjustment',
             'modify-expense-type',
             'delete-expense',
-            'delete-expsense-type',
+            'delete-expsense-type'
         ])->get();
     
         $manager_perms = array_map(function($permission) {
@@ -106,7 +106,11 @@ class RolesSeeder extends Seeder
             'create-expense-type',
             'delete-expsense-type',
             'modify-expense-type',
-            'delete-expense'
+            'delete-expense',
+            'view-reports',
+            'view-payment-report',
+            'view-stock-report',
+            'view-data-report'
         ])->get();
         $staff_role->syncPermissions($staff_perms);
     }
@@ -181,6 +185,12 @@ class RolesSeeder extends Seeder
                 'create-expense',
                 'delete-expense'
 
+            ],
+            'reports' => [
+                'view-reports',
+                'view-payment-report',
+                'view-stock-report',
+                'view-data-report'
             ]
         ];
     }

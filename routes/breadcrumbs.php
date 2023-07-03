@@ -210,3 +210,10 @@ Breadcrumbs::for('expense.types', function (BreadcrumbTrail $trail) {
     $trail->push('Expenses', route('expense.expenses'));
     $trail->push('Create Expense Type');
 });
+
+
+// Dashboard > Reports
+Breadcrumbs::for('report.supplier_payment', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Supplier Payments');
+});

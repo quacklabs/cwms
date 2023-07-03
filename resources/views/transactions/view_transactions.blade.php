@@ -115,13 +115,18 @@
                                             <td>
                                                 <strong class="{{ ($transaction->due() == 0.00) ? '' : 'text-danger' }}">&#8358;{{ number_format($transaction->due,2) }} </strong>
                                                 <span class="text-muted">
-                                                    <p>&#8358;{{ number_format($transaction->paid_amount, 2) }}</p>
+                                                    <p>&#8358;{{ number_format($transaction->received, 2) }}</p>
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="buttons">
                                                     @can('approve-'.$flag)
                                                         @if($transaction->returns != null)
+                                                            @if (floatval($transaction->due) > floatval(0.00) )
+                                                            <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                <i class="fas fa-money-check-alt" ></i>
+                                                            </a>
+                                                            @endif
 
                                                         @else
                                                             @if (floatval($transaction->due) > floatval(0.00) )

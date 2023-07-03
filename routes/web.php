@@ -137,6 +137,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('delete-expense-type/{id}', 'ExpenseController@delete_type')->middleware('permission:delete-expense-type')->name('delete_type');
                 Route::get('download-invoice', 'ExpenseController@download')->name('download');
             });
+
+            Route::prefix('reports')->name('report.')->group(function() {
+                Route::get('supplier_payment', 'ReportsController@supplier_payment')->middleware('permission:view-payment-report')->name('supplier_payment');
+                Route::get('customer_payment', 'ReportsController@customer_payment')->middleware('permission:view-payment-report')->name('customer_payment');
+            });
         });
     });
 });

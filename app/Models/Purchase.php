@@ -10,6 +10,7 @@ use App\Models\Supplier;
 use App\Models\PurchaseDetails;
 use App\Contracts\TransactionInterface;
 use App\Models\PurchaseReturn;
+use App\Models\SupplierPayment;
 
 class Purchase extends Model implements TransactionInterface
 {
@@ -65,7 +66,7 @@ class Purchase extends Model implements TransactionInterface
 
     public function due(): float {
         $full = $this->total_price - $this->discount_amount;
-        return $full - $this->paid_amount;
+        return $full - $this->received;
     }
 
     public static function purchase(int $id): Purchase {
@@ -83,5 +84,9 @@ class Purchase extends Model implements TransactionInterface
 
     public function returns() {
         return $this->hasMany(PurchaseReturn::class, 'purchase_id');
+    }
+
+    public function supplierPayments() {
+        return $this->hasMany(SupplierPayment::class, 'purchase_id');
     }
 }

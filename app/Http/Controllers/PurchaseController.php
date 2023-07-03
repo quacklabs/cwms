@@ -6,13 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
+
 use App\Rules\Decimal;
 
 use App\Services\TransactionService;
+use App\Events\SupplierPaymentReceived;
 
 
 use App\Models\Supplier;
 use App\Rules\DecimalComparison;
+
 
 
 class PurchaseController extends Controller
@@ -92,6 +96,8 @@ class PurchaseController extends Controller
             $user = Auth::user();
             $transaction->received = $transaction->received + $paid;
             $transaction->save();
+
+            event(new SupplierPaymentReceived($transaction, $paid));
             return redirect()->route('purchase.view')->with('success', 'Payment processed successfully');
         }
     }
