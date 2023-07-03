@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\SaleDetails;
+use App\Models\CustomerPayment;
 
 use App\Contracts\TransactionInterface;
 
@@ -84,5 +85,9 @@ class Sale extends Model implements TransactionInterface
 
     public function returns() {
         return $this->hasMany(SaleReturn::class, 'sale_id');
+    }
+
+    public function customerPayments() {
+        return $this->hasMany(CustomerPayment::class, 'purchase_id');
     }
 }

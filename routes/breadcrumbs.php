@@ -217,3 +217,8 @@ Breadcrumbs::for('report.supplier_payment', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Supplier Payments');
 });
+
+Breadcrumbs::for('report.customer_payment', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Customer Payments');
+});

@@ -9,6 +9,8 @@ use App\Models\Supplier;
 use App\Rules\DecimalComparison;
 use App\Rules\Decimal;
 
+use App\Events\CustomerPaymentReceived;
+
 class SalesController extends Controller
 {
     //
@@ -58,7 +60,7 @@ class SalesController extends Controller
     public function receive(Request $request) {
         $id = $request->route('id');
         if(!$id) {
-            return redirect()->route('purchase.view');
+            return redirect()->route('sale.view');
         }
 
         $transaction = TransactionService::sale($id);
@@ -78,6 +80,9 @@ class SalesController extends Controller
             $user = Auth::user();
             $transaction->paid_amount = $transaction->paid_amount + $paid;
             $transaction->save();
+
+            event(new CustomerPaymentReceived($transaction, $paid));
+            
             return redirect()->route('sale.view')->with('success', 'Payment processed successfully');
         }
     }

@@ -1,6 +1,10 @@
 @extends('layout')
 @section('title') {{ config('app.name') }} | {{ $title }} @endsection
 
+@section('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endsection
+
 @section('content')
 <!-- Main Content -->
 <div class="main-content">
@@ -34,12 +38,23 @@
                         <h4>All Payments</h4>
                         <div class="card-header-form">
                             <form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                <div class="row">
+                                    <div class="input-group col-6">
+                                        <input id="date-range" type="text" class="form-control" placeholder="Start Date - End Date">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                        </div>
                                     </div>
+                                    <div class="input-group col-6">
+                                        <input type="text" class="form-control" placeholder="TRX Search">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+
                                 </div>
+                                
+                                
                             </form>
                         </div>
                     </div>
@@ -105,5 +120,14 @@
 
 
 @section('js')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+$(function() {
+    flatpickr("#date-range", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+    });
+});
+</script>
 
 @endsection

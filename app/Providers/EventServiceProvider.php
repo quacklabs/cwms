@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Event;
 
 use App\Events\SupplierPaymentReceived;
 use App\Listeners\EnterSupplierPayment;
+use App\Events\CustomerPaymentReceived;
+use App\Listeners\EnterCustomerPayment;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
 
         SupplierPaymentReceived::class => [
             EnterSupplierPayment::class
+        ],
+        CustomerPaymentReceived::class => [
+            EnterCustomerPayment::class
         ],
     ];
 
