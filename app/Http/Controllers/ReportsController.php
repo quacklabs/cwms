@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\ReportService;
 use App\Services\StockService;
 
+use App\Models\Warehouse;
+
 class ReportsController extends Controller
 {
     //
@@ -50,18 +52,28 @@ class ReportsController extends Controller
 
     public function stock_report(Request $request) {
         $user = Auth::user();
-        if($user->hasRole('admin') || $user->hasRole('sub-admin')) {
-            $stock = StockService::getAllProductStock();
+
+        $warehouse_id = $request->input('warehouse');
+        $product_id = $request->input('product');
+
+        if($warehouse_id != null && $warehouse_id != "") {
+            $stock = StockService::getStockByWarehouse($warehouse_id);
+        } else if($product_id != null && $product_id != "") {
+            $stock = StockService::getStockByProduct($product_id, $user->warehouse->first()->id);
         } else {
-            $stock = StockService::getStockByWarehouse($user->warehouse->first()->id);
+            if($user->hasRole('admin') || $user->hasRole('sub-admin')) {
+                $stock = StockService::getAllProductStock();
+            } else {
+                $stock = StockService::getStockByWarehouse($user->warehouse->first()->id);
+            }
         }
 
-        // dd($stock);
 
         $data = [
             'title' => 'Stock Report',
             'flag' => 'customer',
-            'stock' => $stock
+            'stock' => $stock,
+            'warehouses' => Warehouse::orderBy('created_at', 'desc')->take(10)->get()
         ];
 
         return parent::render($data, 'reports.stock');
