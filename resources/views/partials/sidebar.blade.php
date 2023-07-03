@@ -158,19 +158,26 @@
 
             @can('view-reports')
             <li class="menu-header text-danger">Reports</li>
-            @can('view-payment-report')
-            <li class="dropdown">
-                <a class="nav-link has-dropdown" href="#">
-                    <i class="fas fa-shopping-cart"></i> <span>Payment Reports</span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li class="{{ Str::contains(Route::currentRouteName(), 'report.supplier_payment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.supplier_payment') }}">Supplier Payments</a></li>
-                    <li class="{{ Str::contains(Route::currentRouteName(), 'report.customer_payment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.customer_payment') }}">Customer Payments</a></li>
-                </ul>
-            </li>
+                @can('view-payment-report')
+                <li class="dropdown">
+                    <a class="nav-link has-dropdown" href="#">
+                        <i class="fas fa-file-chart-line"></i> <span>Payment Reports</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.supplier_payment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.supplier_payment') }}">Supplier Payments</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.customer_payment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.customer_payment') }}">Customer Payments</a></li>
+                    </ul>
+                </li>
+                @endcan
 
-                
-            @endcan
+                @can('view-stock-report')
+                <li class="{{ Str::startsWith(Route::currentRouteName(), 'report.stock') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('report.stock') }}">
+                        <i class="fas fa-file-chart-pie"></i> <span>Stock Report</span>
+                    </a>
+                </li>
+                    
+                @endcan
                 
             @endcan
 

@@ -1,10 +1,6 @@
 @extends('layout')
 @section('title') {{ config('app.name') }} | {{ $title }} @endsection
 
-@section('css')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-@endsection
-
 @section('content')
 <!-- Main Content -->
 <div class="main-content">
@@ -15,7 +11,7 @@
         {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
-        <h2 class="section-title">Manage {{ $flag }} payments</h2>
+        <h2 class="section-title">View Stock Reports</h2>
         <!-- <p class="section-lead">
             Each staff must be assigned to a warehouse
         </p> -->
@@ -30,13 +26,47 @@
             </div>
         @endif
 
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Filter Stock</h4>
+                        <div class="card-header-form">
+                            <form>
+                                <div class="row">
+                                    <div class="input-group col-md-6">
+                                        <label>Filter By Warehouse</label>
+                                        <input id="date-range" type="text" class="form-control" placeholder="Start Date - End Date">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="input-group col-md-6">
+                                        <label>Filter By Product</label>
+                                        <input type="text" class="form-control" placeholder="TRX Search">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                
+                                
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
         
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>All Payments</h4>
-                        <div class="card-header-form">
+                        <h4>Product Stock</h4>
+                        <!-- <div class="card-header-form">
                             <form>
                                 <div class="row">
                                     <div class="input-group col-6">
@@ -56,7 +86,7 @@
                                 
                                 
                             </form>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -64,35 +94,32 @@
                                 <thead>
                                     <tr>
                                         <th>S.N</th>
-                                        <th>Invoice No.</th>
-                                        <th>Date</th>
-                                        <th>{{ ucwords($flag) }}</th>
-                                        <th>TRX</th>
-                                        <th>Reason</th>
-                                        <th>Amount</th>
+                                        <th>Name.</th>
+                                        <th>SKU</th>
+                                        <th>Category</th>
+                                        <th>Brand</th>
+                                        <th>Stock</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @empty('payments')
-                                    <tr>
-                                        <td colspan="7">No payments found</td>
-                                    </tr>
+                                    @empty('stock')
+
+
                                     @else
-                                        @foreach ($payments as $payment)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $payment->transaction->invoice_no }}</td>
-                                                <td>{{ $payment->date }}</td>
-                                                <td>{{ $payment->owner->name }}</td>
-                                                <td>{{ $payment->trx }}</td>
-                                                <td>{{ $payment->remarks }}</td>
-                                                <td><strong>&#x20A6;{{ number_format($payment->amount, 2) }}</strong></td>
-                                            </tr>
+                                        @foreach ($stock as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->name }}</td>
+                                            <td>{{ $item->sku }}</td>
+                                            <td>{{ ucwords($item->categories->name) }}</td>
+                                            <td>{{ ucwords($item->brands->name) }}</td>
+                                            <td>{{ ucwords($item->productStock->first()->stock_count ) }}</td>
+                                        </tr>
+                                            
                                         @endforeach
+                                        
                                     @endempty
                                     
-
-                            
                                 </tbody>
                             </table>
                         </div>
@@ -100,13 +127,13 @@
 
                     <div class="card-footer">
                         <div class="float-right">
-                            @empty('payments')
+                        @empty('stock')
 
-                            @else
+                        @else
+
+                            {{ $stock->links() }}
                             
-                            {{ $payments->link() }}
-                                
-                            @endempty
+                        @endempty
                            
                         </div>
                     </div>
@@ -127,14 +154,5 @@
 
 
 @section('js')
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
-$(function() {
-    flatpickr("#date-range", {
-        mode: "range",
-        dateFormat: "Y-m-d",
-    });
-});
-</script>
 
 @endsection

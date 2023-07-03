@@ -222,3 +222,8 @@ Breadcrumbs::for('report.customer_payment', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Customer Payments');
 });
+
+Breadcrumbs::for('report.stock', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Product Stock Report');
+});

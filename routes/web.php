@@ -141,6 +141,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             Route::prefix('reports')->name('report.')->group(function() {
                 Route::get('supplier_payment', 'ReportsController@supplier_payment')->middleware('permission:view-payment-report')->name('supplier_payment');
                 Route::get('customer_payment', 'ReportsController@customer_payment')->middleware('permission:view-payment-report')->name('customer_payment');
+                Route::get('stock', 'ReportsController@stock_report')->middleware('permission:view-stock-report')->name('stock');
             });
         });
     });

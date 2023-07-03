@@ -3,9 +3,9 @@
 namespace App\Services;
 use App\Models\ProductStock;
 use App\Models\Product;
+use App\Contracts\ProductStockResponse;
 
-class StockService
-{
+class StockService {
     
     public function searchByWarehouse(int $warehouse_id, string $keyword) {
         $all_stock = ProductStock::with('product')->where('warehouse_id', $warehouse_id)
@@ -22,5 +22,20 @@ class StockService
             ];
         });
         return $map;
+    }
+
+    public function getAllProductStock() {
+        
+    }
+
+    public function getStockByWarehouse($id) {
+        $all_stock = Product::with(['productStock' => function ($query) use ($id) {
+            $query->select('product_id')
+            ->selectRaw('SUM(1) as stock_count')
+            ->where('warehouse_id', $id)
+            ->groupBy('product_id');
+        }])->paginate(25);
+
+        return $all_stock;
     }
 }

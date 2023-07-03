@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ReportService;
+use App\Services\StockService;
 
 class ReportsController extends Controller
 {
@@ -45,5 +46,24 @@ class ReportsController extends Controller
         ];
 
         return parent::render($data, 'reports.payments');
+    }
+
+    public function stock_report(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin') || $user->hasRole('sub-admin')) {
+            $stock = StockService::getAllProductStock();
+        } else {
+            $stock = StockService::getStockByWarehouse($user->warehouse->first()->id);
+        }
+
+        // dd($stock);
+
+        $data = [
+            'title' => 'Stock Report',
+            'flag' => 'customer',
+            'stock' => $stock
+        ];
+
+        return parent::render($data, 'reports.stock');
     }
 }
