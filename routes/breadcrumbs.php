@@ -243,3 +243,13 @@ Breadcrumbs::for('report.supplier_entry', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Supplier Entry Report');
 });
+
+Breadcrumbs::for('report.purchase_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Purchase Entry Report');
+});
+
+Breadcrumbs::for('report.purchase_return_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Purchase Return Entry Report');
+});

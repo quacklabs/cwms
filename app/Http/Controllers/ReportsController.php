@@ -123,4 +123,36 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.supplier');
     }
+
+    public function purchase_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllPurchaseActions();
+        } else {
+            $actions = ReportService::getPurchaseActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Purchase Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.purchase');
+    }
+
+    public function purchase_return_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllSupplierActions();
+        } else {
+            $actions = ReportService::getSupplierActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Supplier Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.supplier');
+    }
 }

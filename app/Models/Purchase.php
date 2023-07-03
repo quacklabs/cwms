@@ -12,6 +12,7 @@ use App\Contracts\TransactionInterface;
 use App\Models\PurchaseReturn;
 use App\Models\SupplierPayment;
 use App\Traits\ActionTakenBy;
+use App\Models\Action;
 
 class Purchase extends Model implements TransactionInterface
 {
@@ -89,5 +90,9 @@ class Purchase extends Model implements TransactionInterface
 
     public function supplierPayments() {
         return $this->hasMany(SupplierPayment::class, 'purchase_id');
+    }
+
+    public function actions(): MorphMany {
+        return $this->morphMany(Action::class);
     }
 }

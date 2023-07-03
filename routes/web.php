@@ -145,6 +145,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('product_entry', 'ReportsController@product_entry')->name('product_entry');
                 Route::get('customer_entry', 'ReportsController@customer_entry')->name('customer_entry');
                 Route::get('supplier_entry', 'ReportsController@supplier_entry')->name('supplier_entry');
+                Route::get('purchase_entry', 'ReportsController@purchase_entry')->name('purchase_entry');
+                Route::get('purchase_return_entry', 'ReportsController@purchase_return_entry')->name('purchase_return_entry');
             });
         });
     });

@@ -44,7 +44,7 @@ trait ActionTakenBy {
 
     public function logs()
     {
-        return $this->morphMany(Action::class, 'model_type');
+        return $this->morphMany(Action::class, 'model');
     }
 
     public function createdBy()

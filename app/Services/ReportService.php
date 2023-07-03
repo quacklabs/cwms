@@ -72,4 +72,16 @@ class ReportService {
             ->paginate(30);
         return $logs;
     } 
+
+    public static function getAllPurchaseActions() {
+
+    }
+
+    public static function getPurchaseActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', Purchase::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
 }
