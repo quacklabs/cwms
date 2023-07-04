@@ -14,6 +14,7 @@ use App\Models\Action;
 use App\Models\Warehouse;
 use App\Models\Product;
 use App\Models\Adjustment;
+use App\Models\Transfer;
 // use 
 
 class ReportService {
@@ -131,6 +132,18 @@ class ReportService {
     public static function getAdjustmentActionsByWarehouse($id) {
         $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
         $logs = Action::where('model_type', Adjustment::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getTransferActions() {
+
+    }
+
+    public static function getTransferActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', Transfer::class)->with('model')
             ->whereIn('user_id', $staff)
             ->paginate(30);
         return $logs;

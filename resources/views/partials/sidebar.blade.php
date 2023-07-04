@@ -193,6 +193,7 @@
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.sale_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.sale_entry') }}">Sale</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.sale_return_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.sale_return_entry') }}">Sale Return</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.adjustment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.adjustment') }}">Adjustment</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.transfer') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.transfer') }}">Transfer</a></li>
                     </ul>
 
                 </li>

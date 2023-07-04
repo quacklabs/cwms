@@ -203,4 +203,20 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.adjustment');
     }
+
+    public function transfer(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllTransferActions();
+        } else {
+            $actions = ReportService::getTransferActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Transfer Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.transfer');
+    }
 }

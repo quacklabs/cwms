@@ -268,3 +268,8 @@ Breadcrumbs::for('report.adjustment', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Adjustment Entry Report');
 });
+
+Breadcrumbs::for('report.transfer', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Transfer Entry Report');
+});
