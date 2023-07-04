@@ -190,7 +190,11 @@
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.supplier_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.supplier_entry') }}">Supplier</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.purchase_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.purchase_entry') }}">Purchase</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.purchase_return_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.purchase_return_entry') }}">Purchase Return</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.sale_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.sale_entry') }}">Sale</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.sale_return_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.sale_return_entry') }}">Sale Return</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.adjustment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.adjustment') }}">Adjustment</a></li>
                     </ul>
+
                 </li>
                 @endcan
                 

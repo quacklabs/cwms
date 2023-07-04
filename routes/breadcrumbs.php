@@ -253,3 +253,18 @@ Breadcrumbs::for('report.purchase_return_entry', function (BreadcrumbTrail $trai
     $trail->parent('dashboard');
     $trail->push('Purchase Return Entry Report');
 });
+
+Breadcrumbs::for('report.sale_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Sale Entry Report');
+});
+
+Breadcrumbs::for('report.sale_return_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Sale Return Entry Report');
+});
+
+Breadcrumbs::for('report.adjustment', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Adjustment Entry Report');
+});

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Warehouse;
 use App\Traits\ActionTakenBy;
 use App\Models\AdjustmentDetail;
+use App\Models\Action;
 
 class Adjustment extends Model
 {
@@ -29,5 +30,9 @@ class Adjustment extends Model
 
     public function details() {
         return $this->hasMany(AdjustmentDetail::class, 'adjustment_id');
+    }
+
+    public function actions() {
+        return $this->morphMany(Action::class);
     }
 }

@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\SaleReturn;
 use App\Models\Sale;
 use App\Models\Customer;
+use App\Traits\ActionTakenBy;
 
 class SaleReturn extends Model
 {
-    use HasFactory;
+    use HasFactory, ActionTakenBy;
 
     protected $table = 'sale_return';
 
@@ -45,6 +46,6 @@ class SaleReturn extends Model
     }
 
     public function getUrlAttribute() {
-        return route('sale.payment', ['id' => $this->id]);
+        return route('sale.return_payment', ['id' => $this->id]);
     }
 }

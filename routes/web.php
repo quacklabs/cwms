@@ -101,6 +101,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('purchase/{id}', 'SalesController@view_single')->name('view_single');
                 Route::get('returned', 'SalesController@returned')->name('returned');
                 Route::post('payment/{id}', 'SalesController@payment')->name('payment');
+                Route::post('return_payment/{id}', 'SalesController@return_payment')->name('return_payment');
                 Route::post('receive/{id}', 'SalesController@receive')->middleware('permission:approve-sale')->name('receive');
                 Route::get('delete/{id}', 'SalesController@delete')->middleware('permission:delete-sale')->name('delete');
                 Route::match(['get', 'post'], 'return/{id}', 'SalesController@return_sale')->middleware('permission:create-sale-return')->name('return');
@@ -147,6 +148,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('supplier_entry', 'ReportsController@supplier_entry')->name('supplier_entry');
                 Route::get('purchase_entry', 'ReportsController@purchase_entry')->name('purchase_entry');
                 Route::get('purchase_return_entry', 'ReportsController@purchase_return_entry')->name('purchase_return_entry');
+                Route::get('sale_entry', 'ReportsController@sale_entry')->name('sale_entry');
+                Route::get('sale_return_entry', 'ReportsController@sale_return_entry')->name('sale_return_entry');
+                Route::get('adjustment', 'ReportsController@adjustment')->name('adjustment');
             });
         });
     });

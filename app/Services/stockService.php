@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\ProductStock;
 use App\Models\Product;
 use App\Contracts\ProductStockResponse;
+use App\Models\Adjustment;
+use Faker\Factory as Faker;
+use Carbon\Carbon;
 
 class StockService {
     
@@ -53,5 +57,50 @@ class StockService {
         }])->paginate(1);
 
         return $all_stock;
+    }
+
+    public static function store_adjustment($data) {
+        $faker = Faker::create();
+        $adjustment = Adjustment::create([
+            'warehouse_id' => $data['warehouse_id'],
+            'adjust_date' => Carbon::parse($data['adjust_date']),
+            'tracking_no' => $faker->bothify("???########"),
+        ]);
+
+        if($data['notes']) {
+            $adjustment->note = $data['notes'];
+        }
+
+        $orders = array_map(function($order) {
+            return [
+                'product_id' => $order->product_id,
+                'quantity' => $order->quantity,
+                'adjust_type' => $order->adjust_type
+            ];
+        }, json_decode($data['items']));
+        $adjustment->details()->createMany($orders);
+
+        foreach($orders as $order) {
+            
+            switch($order['adjust_type']) {
+                case 1:
+                    $remove = ProductStock::where('warehouse_id', $adjustment->warehouse_id)
+                    ->where('product_id', $order['product_id'])
+                    ->where('sold', false)->take($order['quantity'])->pluck('id')->flatten()->all();
+                    ProductStock::destroy($remove);
+                    break;
+                case 2:
+                    $range = range(1, $order['quantity']);
+                    foreach($range as $item) {
+                        ProductStock::create([
+                            'warehouse_id' => $adjustment->warehouse_id,
+                            'product_id' => $order['product_id'],
+                            'serial' => $faker->ean13
+                        ]);
+                    }
+                    break;
+            }
+        }
+        return $adjustment;
     }
 }

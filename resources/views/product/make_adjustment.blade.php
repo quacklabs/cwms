@@ -307,6 +307,7 @@
     }
 
     function search(url, query, callback) {
+        const user = "{{ auth()->user()->id }}"
         $.ajax({
             url: url,
             type: 'POST',
@@ -316,7 +317,7 @@
                 'Authorization': "Bearer {{ $api_token }}",
                 'X-XSRF-TOKEN': "{{ $x_token }}"
             },
-            data: JSON.stringify({ query: query }),
+            data: JSON.stringify({ query: query, user: user }),
             error: function() {
                 console.log('failed');
                 callback();
@@ -356,12 +357,12 @@
         console.log('type: '+type)
         switch (type) {
             case '1':
-                var adjustedValue = current_stock.val() - quantity.val()
+                var adjustedValue = parseInt(current_stock.val()) - parseInt(quantity.val())
                 adjusted_stock.val(adjustedValue)
                 console.log(adjustedValue)
                 break
             case '2':
-                var adjusted_value = current_stock.val() + quantity.val()
+                var adjusted_value = parseInt(current_stock.val()) + parseInt(quantity.val())
                 adjusted_stock.val(adjusted_value)
                 console.log(adjusted_value)
                 break

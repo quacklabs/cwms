@@ -7,11 +7,13 @@ use App\Models\SupplierPayment;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
 use App\Models\Sale;
+use App\Models\SaleReturn;
 use App\Models\Customer;
 use App\Models\CustomerPayment;
 use App\Models\Action;
 use App\Models\Warehouse;
 use App\Models\Product;
+use App\Models\Adjustment;
 // use 
 
 class ReportService {
@@ -93,6 +95,42 @@ class ReportService {
     public static function getPurchaseReturnActionsByWarehouse($id) {
         $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
         $logs = Action::where('model_type', PurchaseReturn::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getAllSaleActions() {
+
+    }
+
+    public static function getSaleActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', Sale::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getAllSaleReturnActions() {
+
+    }
+
+    public static function getSaleReturnActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', SaleReturn::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getAdjustmentActions() {
+
+    }
+
+    public static function getAdjustmentActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', Adjustment::class)->with('model')
             ->whereIn('user_id', $staff)
             ->paginate(30);
         return $logs;

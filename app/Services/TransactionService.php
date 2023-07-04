@@ -155,6 +155,10 @@ class TransactionService implements TransactionInterface {
         return Sale::findOrFail($id);
     }
 
+    public static function sale_return($id): SaleReturn {
+        return SaleReturn::findOrFail($id);
+    }
+
     public function payable(): float {
 
     }
@@ -226,10 +230,11 @@ class TransactionService implements TransactionInterface {
 
     public static function returnSale(array $data, Sale $sale) {
         $receivable = floatval($data['total_price']) - floatval($data['discount_amount']);
-        $return = SaleReturn::create([
+        $return = SaleReturn::firstOrCreate([
             'sale_id' => $sale->id,
-            'customer_id' => $sale->customer_id,
-            'date' => Carbon::parse($data['date']),
+            'customer_id' => $sale->customer_id],
+
+            ['date' => Carbon::parse($data['date']),
             'total_price' => $data['total_price'],
             'discount' => $data['discount_amount'] ?? 0.00,
             'receivable' => $receivable,
@@ -246,16 +251,18 @@ class TransactionService implements TransactionInterface {
             $details = array_map(function($product) use ($return, $order) {
                 return [
                     'return_id' => $return->id,
-                    'product_id' => $product->id,
+                    'product_id' => $order->id,
                     'serial' => $product->serial,
                     'price' => $order->price
                 ];
             }, $products->all());
+            // dd($details);
+            $return->details()->createMany($details);
 
             $product_ids = array_map(function($product) {
                 return $product->id;
             }, $products->all());
-            SaleReturnDetail::insert($details);
+
             ProductStock::whereIn('id', $product_ids)->update([
                 'sold' => false,
                 'sold_by' => null,

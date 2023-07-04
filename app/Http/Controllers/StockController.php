@@ -9,6 +9,7 @@ use App\Models\AdjustmentDetail;
 use App\Models\ProductStock;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
+use App\Services\StockService;
 
 use App\Models\Warehouse;
 
@@ -43,7 +44,7 @@ class StockController extends Controller {
                 'items' => ['required']
             ]);
 
-            $adjustment = $this->store($valid);
+            $adjustment = StockService::store_adjustment($valid);
             if($adjustment) {
                 return redirect()->route('stock.adjustments')->with('success','Adjustment added successfully');
             }
@@ -52,7 +53,7 @@ class StockController extends Controller {
         if(auth()->user()->hasRole('admin')) {
             $warehouses = Warehouse::orderBy('created_at', 'desc')->paginate(65);
         } else {
-            $warehouses = auth()->user()->warehouse->first();
+            $warehouses = auth()->user()->warehouse;
         }
 
         $data = [
@@ -73,45 +74,5 @@ class StockController extends Controller {
         // }
 
         // $adjustment = 
-    }
-
-
-    private function store($data) {
-        $faker = Faker::create();
-        $adjustment = Adjustment::create([
-            'warehouse_id' => $data['warehouse_id'],
-            'adjust_date' => Carbon::parse($data['adjust_date']),
-            'tracking_no' => $faker->bothify("???########"),
-        ]);
-
-        if($data['notes']) {
-            $adjustment->note = $data['notes'];
-        }
-
-        $orders = array_map(function($order) {
-            return [
-                'product_id' => $order->product_id,
-                'quantity' => $order->quantity,
-                'adjust_type' => $order->adjust_type
-            ];
-        }, json_decode($data['items']));
-        $adjustment->details()->createMany($orders);
-
-        foreach($orders as $order) {
-            $product_stock = ProductStock::where('warehouse_id', $adjustment->warehouse_id)->where('product_id', $order['product_id'])->first();;
-            if($product_stock) {
-                switch($order['adjust_type']) {
-                    case 1:
-                        $product_stock->quantity = $product_stock->quantity - $order['quantity'];
-                        break;
-                    case 2:
-                        $product_stock->quantity = $product_stock->quantity + $order['quantity'];
-                        break;
-                }
-                $product_stock->save();
-            }
-        }
-
-        return $adjustment;
     }
 }

@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Adjustment;
-use App\Traits\ActionTakenBy;
 
 class AdjustmentDetail extends Model
 {
-    use HasFactory, SoftDeletes, ActionTakenBy;
+    use HasFactory, SoftDeletes;
 
     protected $table = "adjustment_detail";
 

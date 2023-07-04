@@ -101,8 +101,8 @@
                                             <td>
                                                 <div class="buttons">
                                                     @can('approve-'.$flag)
-                                                        @if (floatval($transaction->due()) > floatval(0.00) || $transaction->returns() != null)
-                                                            <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
+                                                        @if (floatval($transaction->due()) > floatval(0.00))
+                                                            <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Receive Payment' : 'Give Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                 <i class="fas fa-money-check-alt" ></i>
                                                             </a>
                                                             <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->

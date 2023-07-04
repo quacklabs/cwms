@@ -161,4 +161,34 @@ class SalesController extends Controller
 
         return redirect()->route('sale.returned');
     }
+
+
+    public function return_payment(Request $request) {
+        $id = $request->route('id');
+        if(!$id) {
+            return redirect()->route('sale.returned');
+        }
+
+        $transaction = TransactionService::sale_return($id);
+
+        if(!$transaction) {
+            return redirect()->route('sale.returned')->with('error', 'Unable to adjust payment. Invalid transaction');
+        }
+
+        if($request->method() == 'POST') {
+            $valid = $request->validate([
+                'amount' => ['required', 'decimal', new DecimalComparison('due')],
+                'due' => ['required', 'decimal'],
+            ]);
+
+            $paid = str_replace(',','', $valid['amount']);
+            $due = str_replace(',','', $valid['due']);
+            $user = Auth::user();
+            $transaction->received = $transaction->received + $paid;
+            $transaction->save();
+            return redirect()->route('sale.returned')->with('success', 'Payment processed successfully');
+        }
+
+        return redirect()->route('sale.returned');
+    }
 }

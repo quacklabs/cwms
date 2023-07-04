@@ -155,4 +155,52 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.purchase_return');
     }
+
+    public function sale_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllSaleActions();
+        } else {
+            $actions = ReportService::getSaleActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Sale Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.purchase');
+    }
+
+    public function sale_return_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllSaleReturnActions();
+        } else {
+            $actions = ReportService::getSaleReturnActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Sale Return Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.purchase_return');
+    }
+
+    public function adjustment(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllAdjustmentActions();
+        } else {
+            $actions = ReportService::getAdjustmentActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Adjustment Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.adjustment');
+    }
 }
