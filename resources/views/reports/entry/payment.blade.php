@@ -63,13 +63,12 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>S.N</th>
-                                        <th>Invoice No.</th>
-                                        <th>Date</th>
+                                        <th>TRX NO.</th>
                                         <th>{{ ucwords($flag) }}</th>
-                                        <th>TRX</th>
-                                        <th>Reason</th>
                                         <th>Amount</th>
+                                        <th>Type</th>
+                                        <th>Action By</th>
+                                        <th>Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,13 +79,12 @@
                                     @else
                                         @foreach ($payments as $payment)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $payment->transaction->invoice_no }}</td>
-                                                <td>{{ $payment->date }}</td>
-                                                <td>{{ $payment->owner->name }}</td>
-                                                <td>{{ $payment->trx }}</td>
-                                                <td>{{ $payment->remarks }}</td>
-                                                <td><strong>&#x20A6;{{ number_format($payment->amount, 2) }}</strong></td>
+                                                <td>{{ $payment->model->first()->trx }}</td>
+                                                <td>{{ $payment->model->first()->owner->name }}</td>
+                                                <td><strong>&#x20A6;{{ number_format($payment->model->first()->amount, 2) }}</strong></td>
+                                                <td>{{ $payment->action }}</td>
+                                                <td>{{ $payment->user->first()->username }}</td>
+                                                <td>{{ $payment->created_at }}</td>
                                             </tr>
                                         @endforeach
                                     @endempty

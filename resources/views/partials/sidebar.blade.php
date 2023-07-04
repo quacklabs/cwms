@@ -195,6 +195,8 @@
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.adjustment') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.adjustment') }}">Adjustment</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.transfer') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.transfer') }}">Transfer</a></li>
                         <li class="{{ Str::contains(Route::currentRouteName(), 'report.expense') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.expense') }}">Expense</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.supplier_payment_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.supplier_payment_entry') }}">Supplier Payment</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'report.customer_payment_entry') ? 'active' : '' }}"><a class="nav-link" href="{{ route('report.customer_payment_entry') }}">Customer Payment</a></li>
 
                     </ul>
 

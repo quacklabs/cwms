@@ -154,6 +154,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('adjustment', 'ReportsController@adjustment')->name('adjustment');
                 Route::get('transfer', 'ReportsController@transfer')->name('transfer');
                 Route::get('expense', 'ReportsController@expense')->name('expense');
+                Route::get('supplier_payment_entry', 'ReportsController@supplier_payment_entry')->middleware('permission:view-payment-report')->name('supplier_payment_entry');
+                Route::get('customer_payment_entry', 'ReportsController@customer_payment_entry')->middleware('permission:view-payment-report')->name('customer_payment_entry');
             });
         });
     });

@@ -278,3 +278,13 @@ Breadcrumbs::for('report.expense', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Expense Entry Report');
 });
+
+Breadcrumbs::for('report.supplier_payment_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Supplier Payment Entry Report');
+});
+
+Breadcrumbs::for('report.customer_payment_entry', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Customer Payment Entry Report');
+});

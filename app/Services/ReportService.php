@@ -161,4 +161,28 @@ class ReportService {
             ->paginate(30);
         return $logs;
     } 
+
+    public static function getSupplierPaymentActions() {
+
+    }
+
+    public static function getSupplierPaymentActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', SupplierPayment::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
+
+    public static function getCustomerPaymentActions() {
+
+    }
+
+    public static function getCustomerPaymentActionsByWarehouse($id) {
+        $staff = Warehouse::find($id)->staff()->get()->pluck('id')->flatten()->all();
+        $logs = Action::where('model_type', CustomerPayment::class)->with('model')
+            ->whereIn('user_id', $staff)
+            ->paginate(30);
+        return $logs;
+    } 
 }

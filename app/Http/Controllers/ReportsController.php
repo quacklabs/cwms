@@ -235,4 +235,39 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.expense');
     }
+
+    public function customer_payment_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllCustomerPaymentActions();
+        } else {
+            $actions = ReportService::getCustomerPaymentActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Customer Payment Entry Reports',
+            'payments' => $actions,
+            'flag' => 'customer'
+        ];
+
+        return parent::render($data, 'reports.entry.payment');
+    }
+
+
+    public function supplier_payment_entry(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllSupplierPaymentActions();
+        } else {
+            $actions = ReportService::getSupplierPaymentActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Supplier Payment Entry Reports',
+            'payments' => $actions,
+            'flag' => 'supplier'
+        ];
+
+        return parent::render($data, 'reports.entry.payment');
+    }
 }
