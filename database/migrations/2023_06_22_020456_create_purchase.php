@@ -16,13 +16,13 @@ class CreatePurchase extends Migration
     {
         Schema::create('purchase', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_no');
+            $table->string('invoice_no')->unique();
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('warehouse_id');
             $table->date('date');
-            $table->decimal('total_price', 28,2);
-            $table->decimal('discount_amount', 28,2)->default(0.00);
-            $table->decimal('received', 28,2)->default(0.00);
+            $table->decimal('total_price', 28,8);
+            $table->decimal('discount_amount', 28,8)->default(0.00);
+            $table->decimal('received', 28,8)->default(0.00);
             $table->text('note')->nullable();
             $table->boolean('return_status')->default(false);
             $table->softDeletes();

@@ -18,7 +18,7 @@ class CreateExpense extends Migration
             $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('created_by');
             $table->date('date');
-            $table->decimal('amount', 8,2);
+            $table->decimal('amount', 28,8);
             $table->softDeletes();
             $table->timestamps();
 

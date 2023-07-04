@@ -22,7 +22,7 @@ class CreateWarehouseTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->unique('manager_id');
-            $table->foreign('manager_id')->references('id')->on('users')->onDelete('cascade');
+            
         });
     }
 

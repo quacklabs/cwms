@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Purchase;
 use App\Models\Transfer;
 use App\Traits\ActionTakenBy;
+use App\Models\UserWarehouse;
 
 class Warehouse extends Model
 {
@@ -21,7 +22,7 @@ class Warehouse extends Model
     protected $policy = WarehousePolicy::class;
 
     public function staff() {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class, 'warehouse_id');
     }
 
     public function manager() {

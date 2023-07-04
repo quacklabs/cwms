@@ -18,8 +18,8 @@ class PurchaseDetails extends Migration
             $table->unsignedBigInteger('purchase_id');
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
-            $table->decimal('price');
-            $table->decimal('total'); // paid amount
+            $table->decimal('price', 28,8);
+            $table->decimal('total',28,8); // paid amount
             $table->softDeletes();
             $table->timestamps();
 

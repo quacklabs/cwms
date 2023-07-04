@@ -27,9 +27,11 @@ class WarehouseSeeder extends Seeder
         $staff = User::role($staff_role)->get();
 
         foreach($warehouses as $index => $warehouse) {
-            $warehouse->manager_id = $managers[$index]->id;
-            $warehouse->staff()->attach($managers[$index]);
-            $warehouse->save();
+            $managers[$index]->warehouse_id = $warehouse->id;
+            $managers[$index]->save();
+            // $warehouse->manager_id = $managers[$index]->id;
+            // $warehouse->staff()->attach($managers[$index]);
+            // $warehouse->save();
         }
 
         

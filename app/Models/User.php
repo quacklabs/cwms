@@ -85,11 +85,11 @@ class User extends Authenticatable
     }
 
     public function warehouse() {
-        return $this->belongsToMany(Warehouse::class);
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
     public function managedWarehouse() {
-        return $this->hasOne(Warehouse::class, 'manager_id')->whereNotNull('manager_id');
+        return Warehouse::where('manager_id', $this->id)->first();
     }
 
     public function store() {

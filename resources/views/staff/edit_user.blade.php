@@ -67,7 +67,7 @@
                                 <td>{{ $manager->username }}</td>
                                 <td>{{ $manager->email }}</td>
                                 <td>
-                                    {{ $manager->warehouse->first()->name ?? 'None' }}
+                                    {{ $manager->warehouse->name ?? 'None' }}
                                 </td>
                             </tr>
                         </tbody>
@@ -141,6 +141,7 @@
 
                                     @else
                                         @foreach($warehouses as $warehouse)
+                                        <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
 
 
 

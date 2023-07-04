@@ -70,7 +70,7 @@
                                 <tbody>
                                     
 
-                                    @empty(@products)
+                                    @empty($products)
                                     
                                     @else
                                         @foreach ($products as $product)
@@ -172,7 +172,7 @@
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="inputEmail4">Category</label>
                                 <select class="form-control" name="category_id">
-                                    @empty(@categories)
+                                    @empty($categories)
                                     <option>No Categories</option>
                                     @else
                                         @foreach ($categories as $category)
@@ -185,7 +185,7 @@
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="inputEmail4">Unit</label>
                                 <select class="form-control" name="unit_id">
-                                    @empty(@units)
+                                    @empty($units)
                                     <option>No Units</option>
                                     @else
                                         @foreach ($units as $unit)
@@ -200,7 +200,7 @@
                             <div class="form-group col-md-6 col-sm-12">
                                 <label for="inputEmail4">Brand Name</label>
                                 <select class="form-control" name="brand_id">
-                                    @empty(@brands)
+                                    @empty($brands)
                                     <option>No Brands</option>
                                     @else
                                         @foreach ($brands as $brand)

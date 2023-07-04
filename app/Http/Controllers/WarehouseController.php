@@ -113,6 +113,19 @@ class WarehouseController extends Controller {
             return redirect()->back()->with('error', 'Warehouse already deleted');
         }
         $managerRole = Role::where('name', 'manager')->first();
+
+        if($request->method() == 'POST') {
+            $details = $request->validate([
+                'manager_id' => 'required'
+            ]);
+            $existing = Warehouse::where('manager_id', $details['manager_id'])->first();
+            if($existing) {
+                $existing->manager_id = null;
+                $existing->save();
+            }
+            $warehouse->update($details);
+            return redirect()->route('warehouse.all_warehouses')->with('success', 'Warehouse reassigned successfully');
+        }
         $data = [
             "title" => 'Reassign Warehouse',
             "warehouse" => $warehouse,
@@ -120,13 +133,7 @@ class WarehouseController extends Controller {
             "managers" => User::role($managerRole)->paginate(100),
         ];
 
-        if($request->method() == 'POST') {
-            $details = $request->validate([
-                'manager_id' => 'required'
-            ]);
-            $warehouse->update($details);
-            return redirect()->route('warehouse.all_warehouses')->with('success', 'Warehouse reassigned successfully');
-        }
+        
         return parent::render($data, 'warehouse.reassign_warehouse');
     }
 

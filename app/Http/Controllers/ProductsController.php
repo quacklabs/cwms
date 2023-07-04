@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ProductService;
 
+use App\Models\Category;
+use App\Models\Brand;
+use App\Models\Unit;
+
 
 class ProductsController extends Controller {
     // protected ProductService $service = new ProductService();

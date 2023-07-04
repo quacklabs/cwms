@@ -25,14 +25,15 @@ class StaffController extends Controller
 
     public function manager(Request $request) {
         $managerRole = Role::where('name', 'manager')->first();
+        
+        if($request->method() == "POST") {
+            $this->create_user($request, $managerRole);
+        }
         $data = [
             "title" => "Managers",
             "managers" => User::role($managerRole)->paginate(30),
             "warehouses" => Warehouse::all()
         ];
-        if($request->method() == "POST") {
-            $this->create_user($request, $managerRole);
-        }
         return parent::render($data, 'staff/managers');
     }
 
@@ -46,11 +47,12 @@ class StaffController extends Controller
             if($user) {
                 $data = [
                     "title" => "Edit ".$user->name,
-                    "manager" => $user
+                    "manager" => $user,
+                    'warehouses' => Warehouse::all()
                 ];
 
                 if($request->method() == "POST") {
-                    return $this->edit_profile($request);
+                    return $this->edit_profile($request, $user);
                 }   
         
                 return $this->render($data, 'staff/edit_user');
@@ -74,27 +76,26 @@ class StaffController extends Controller
 
         $user = User::create($user_info);
         $user->assignRole($role);
+        $user->save();
 
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
             $warehouse = Warehouse::find($data['assigned_to']);
-            $managerRole = Role::findByName('manager');
+            // $managerRole = Role::findByName('manager');
                         
             if($warehouse){
-                if($user->role->name == $managerRole->name) {
-                    if($warehouse->manager == null) {
-                        $warehouse->manager_id = $user->id;
-                    }
+                $user->warehouse_id = $warehouse->id;
+                $user->save();
+                if($user->hasRole('manager')) {
+                    $warehouse->manager_id = $user->id;
+                    $warehouse->save();
                 }
-                $warehouse->staff()->attach([$manager]);
             }
-
-            
         }
         return redirect()->route('staff.managers')->with('success', 'Manager Added Successfully');
     }
 
-    protected function edit_profile(Request $request) {
+    protected function edit_profile(Request $request, User $user) {
         $data = $request->validate([
             'name' => ['required', 'string'],
             'email' => ['required', 'email'],
@@ -106,23 +107,14 @@ class StaffController extends Controller
 
         $user_info = $request->only(['name', 'email', 'password','username','mobile']);
         foreach($user_info as $key => $value) {
-            if($value != null && $value != ''){
-                if($value != $user->$key && User::where($key, $value)->first() == null) {
-                    $user->$key = $value;
-                }
+            if($value != NULL && $value != '') {
+                $user->$key = $value;
             }
+            
         }
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
-            if($staff->warehouse->first() != null) {
-                $old_warehouse = $user->warehouse->first();
-                $user->warehouse->detach($old_warehouse->id);
-               
-                $new_warehouse = Warehouse::find($data['assigned_to']);
-                if($warehouse){
-                    $warehouse->staff()->attach([$staff]);
-                }
-            }
+            $user->warehouse_id = $data['assigned_to'];
         }
         $user->save();
         return redirect()->route('staff.managers')->with('success', 'Staff modified successfully');

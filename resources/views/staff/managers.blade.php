@@ -73,7 +73,7 @@
                                     <td>{{ $manager->username }}</td>
                                     <td>{{ $manager->email }}</td>
                                     <td>
-                                        {{ $manager->warehouse->first()->name ?? 'None' }}
+                                        {{ $manager->managedWarehouse()->name ?? 'None' }}
                                     </td>
                                     <td>
                                     <div class="buttons">
@@ -180,16 +180,14 @@
                                 <input name="mobile"type="text" class="form-control" autocomplete="off" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputState">Asigned To Warehouse</label>
+                                <label for="inputState">Assigned To Warehouse</label>
                                 <select id="inputState" class="form-control">
                                     <option>Choose...</option>
                                     @empty($warehouses)
 
                                     @else
                                         @foreach($warehouses as $warehouse)
-
-
-
+                                        <option value="{{$warehouse->id}}">{{ $warehouse->name }}</option>
                                         @endforeach
                                     @endempty
                                 </select>
