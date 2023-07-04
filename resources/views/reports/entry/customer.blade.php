@@ -82,7 +82,7 @@
                                                 <td>{{ $action->model->first()->name }}</td>
                                                 <td>{{ $action->model->first()->mobile_no }}</td>
                                                 <td>{{ $action->action }}</td>
-                                                <td>{{ $action->user->first()->username }}</td>
+                                                <td>{{ $action->user->username ?? NUll }}</td>
                                                 <td>{{ $action->updated_at ?? $action->created_at }}</td>
                                                 
                                             </tr>

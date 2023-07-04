@@ -27,7 +27,7 @@ class Action extends Model
     }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return User::find($this->user_id);
     }
 
     // public function morphable(): 
