@@ -43,7 +43,8 @@ class ReportService {
     }
 
     public static function getAllProductActions() {
-
+        $logs = Action::where('model_type', Product::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getProductActionsByWarehouse($id) {
@@ -55,7 +56,8 @@ class ReportService {
     }   
 
     public static function getAllCustomerActions() {
-
+        $logs = Action::where('model_type', Customer::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getCustomerActionsByWarehouse($id) {
@@ -67,7 +69,8 @@ class ReportService {
     } 
 
     public static function getAllSupplierActions() {
-
+        $logs = Action::where('model_type', Supplier::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getSupplierActionsByWarehouse($id) {
@@ -79,7 +82,8 @@ class ReportService {
     } 
 
     public static function getAllPurchaseActions() {
-
+        $logs = Action::where('model_type', Purchase::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getPurchaseActionsByWarehouse($id) {
@@ -91,7 +95,8 @@ class ReportService {
     } 
 
     public static function getAllPurchaseReturnActions() {
-
+        $logs = Action::where('model_type', PurchaseReturn::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getPurchaseReturnActionsByWarehouse($id) {
@@ -103,7 +108,8 @@ class ReportService {
     } 
 
     public static function getAllSaleActions() {
-
+        $logs = Action::where('model_type', Sale::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getSaleActionsByWarehouse($id) {
@@ -115,7 +121,8 @@ class ReportService {
     } 
 
     public static function getAllSaleReturnActions() {
-
+        $logs = Action::where('model_type', SaleReturn::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getSaleReturnActionsByWarehouse($id) {
@@ -127,7 +134,8 @@ class ReportService {
     } 
 
     public static function getAdjustmentActions() {
-
+        $logs = Action::where('model_type', Adjustment::class)->with('model')->paginate(30);
+        return $logs;
     }
 
     public static function getAdjustmentActionsByWarehouse($id) {
@@ -139,7 +147,9 @@ class ReportService {
     } 
 
     public static function getTransferActions() {
-
+        $logs = Action::where('model_type', Transfer::class)->with('model')
+            ->paginate(30);
+        return $logs;
     }
 
     public static function getTransferActionsByWarehouse($id) {
@@ -151,7 +161,9 @@ class ReportService {
     } 
 
     public static function getExpenseActions() {
-
+        $logs = Action::where('model_type', Expense::class)->with('model')
+            ->paginate(30);
+        return $logs;
     }
 
     public static function getExpenseActionsByWarehouse($id) {
@@ -163,7 +175,9 @@ class ReportService {
     } 
 
     public static function getSupplierPaymentActions() {
-
+        $logs = Action::where('model_type', SupplierPayment::class)->with('model')
+            ->paginate(30);
+        return $logs;
     }
 
     public static function getSupplierPaymentActionsByWarehouse($id) {
@@ -175,7 +189,9 @@ class ReportService {
     } 
 
     public static function getCustomerPaymentActions() {
-
+        $logs = Action::where('model_type', CustomerPayment::class)->with('model')
+            ->paginate(30);
+        return $logs;
     }
 
     public static function getCustomerPaymentActionsByWarehouse($id) {
