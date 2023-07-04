@@ -219,4 +219,20 @@ class ReportsController extends Controller
 
         return parent::render($data, 'reports.entry.transfer');
     }
+
+    public function expense(Request $request) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $actions = ReportService::getAllExpenseActions();
+        } else {
+            $actions = ReportService::getExpenseActionsByWarehouse($user->warehouse->first()->id);
+        }
+
+        $data = [
+            'title' => 'Expense Entry Reports',
+            'actions' => $actions
+        ];
+
+        return parent::render($data, 'reports.entry.expense');
+    }
 }

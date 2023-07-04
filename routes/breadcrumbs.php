@@ -273,3 +273,8 @@ Breadcrumbs::for('report.transfer', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Transfer Entry Report');
 });
+
+Breadcrumbs::for('report.expense', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Expense Entry Report');
+});

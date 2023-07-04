@@ -153,6 +153,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('sale_return_entry', 'ReportsController@sale_return_entry')->name('sale_return_entry');
                 Route::get('adjustment', 'ReportsController@adjustment')->name('adjustment');
                 Route::get('transfer', 'ReportsController@transfer')->name('transfer');
+                Route::get('expense', 'ReportsController@expense')->name('expense');
             });
         });
     });
