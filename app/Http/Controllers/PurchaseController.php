@@ -15,9 +15,8 @@ use App\Events\SupplierPaymentReceived;
 
 
 use App\Models\Supplier;
+use App\Models\Warehouse;
 use App\Rules\DecimalComparison;
-
-
 
 class PurchaseController extends Controller
 {
@@ -33,8 +32,8 @@ class PurchaseController extends Controller
         return parent::render($data, 'transactions.view_transactions');
     }
 
-    protected function create(Request $request) {
-
+    public function create(Request $request) {
+        $user = Auth::user();
         if($request->method() == 'POST') {
             $valid = $request->validate([
                 'partner_id' => ['required', 'numeric'],
@@ -61,13 +60,18 @@ class PurchaseController extends Controller
             // }
         }
         $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
+        if($user->hasRole('admin')) {
+            $warehouses = Warehouse::orderBy('created_at', 'asc')->paginate(50);
+        } else {
+            $warehouses = [$user->warehouse];
+        }
         $data = [
             'title' => 'Add Purchase',
             'flag' => 'purchase',
             'action' => route('purchase.create'),
             'invoice_no' => TransactionService::newInvoice(),
             'partners' => $partners,
-            'warehouses' => auth()->user()->warehouse->all()
+            'warehouses' => $warehouses
         ];
 
         return parent::render($data, 'transactions.add_transaction');

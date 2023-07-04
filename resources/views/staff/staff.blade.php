@@ -68,7 +68,7 @@
                                     <td>{{ $staff->username }}</td>
                                     <td>{{ $staff->email }}</td>
                                     <td>
-                                        {{ $staff->warehouse->first()->name ?? 'None' }}
+                                        {{ $staff->warehouse->name ?? 'None' }}
                                     </td>
                                     <td>
                                     <div class="buttons">
