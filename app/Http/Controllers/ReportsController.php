@@ -76,6 +76,70 @@ class ReportsController extends Controller
         return parent::render($data, 'reports.stock');
     }
 
+    public function stock_byWarehouse(Request $request) {
+        $user = Auth::user();
+        $warehouse_id = $request->input('warehouse');
+
+        if(!$warehouse_id || $warehouse_id == '') {
+            return redirect()->route('report.stock');
+        } 
+        $stock = StockService::getStockByWarehouse($warehouse_id);
+        $data = [
+            'title' => 'Stock Report',
+            'flag' => 'customer',
+            'stock' => $stock,
+            'warehouses' => Warehouse::orderBy('created_at', 'desc')->take(10)->get()
+        ];
+
+        return parent::render($data, 'reports.stock');
+    }
+
+    public function stock_byProduct(Request $request) {
+
+
+        $user = Auth::user();
+        $product_id = $request->input('product');
+
+        if(!$product_id || $product_id == '') {
+            return redirect()->route('report.stock');
+        } 
+        $warehouse = $user->warehouse->id ?? NULL;
+        $stock = StockService::getStockByProduct($product_id, $warehouse);
+        
+        $data = [
+            'title' => 'Stock Report',
+            'flag' => 'customer',
+            'stock' => $stock,
+            'warehouses' => Warehouse::orderBy('created_at', 'desc')->take(10)->get()
+        ];
+
+        return parent::render($data, 'reports.stock');
+
+
+        $user = Auth::user();
+
+        $warehouse_id = $request->input('warehouse');
+        
+
+        if($warehouse_id != null && $warehouse_id != "") {
+            $stock = StockService::getStockByWarehouse($warehouse_id);
+        } else if($product_id != null && $product_id != "") {
+            
+        } else {
+            
+        }
+
+
+        $data = [
+            'title' => 'Stock Report',
+            'flag' => 'customer',
+            'stock' => $stock,
+            'warehouses' => Warehouse::orderBy('created_at', 'desc')->take(10)->get()
+        ];
+
+        return parent::render($data, 'reports.stock');
+    }
+
     public function product_entry(Request $request) {
         $user = Auth::user();
         if($user->hasRole('admin')) {

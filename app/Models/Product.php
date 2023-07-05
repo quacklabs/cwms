@@ -73,7 +73,7 @@ class Product extends Model
     }
 
     public function productStock(){
-        return $this->hasMany(ProductStock::class);
+        return $this->hasMany(ProductStock::class, 'product_id');
     }
 
     public function totalSale(){

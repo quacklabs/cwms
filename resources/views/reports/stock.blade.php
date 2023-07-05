@@ -41,8 +41,7 @@
                         
                         <div class="row mr-0 ml-0">
                             <div class="col-md-6">
-                                <form method="GET" class="col-12" action="{{ route('report.stock') }}">
-                                    @csrf
+                                <form method="GET" class="col-12" action="{{ route('report.stock_byWarehouse') }}">
                                     <div class="form-group">
                                         <label>Filter By Warehouse</label>
                                         <div class="input-group">
@@ -63,8 +62,7 @@
                                 
                                 
                             <div class="col-md-6">
-                                <form class="col-12" action="{{ route('report.stock') }}" method="GET">
-                                    @csrf
+                                <form class="col-12" action="{{ route('report.stock_byProduct') }}" method="GET">
                                     <div class="form-group">
                                         <label>Filter By Product</label>
                                         <div class="input-group">
@@ -132,18 +130,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @empty('stock')
+                                    @empty($stock)
 
 
                                     @else
                                         @foreach ($stock as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->name }}</td>
-                                            <td>{{ $item->sku }}</td>
-                                            <td>{{ ucwords($item->categories->name) }}</td>
-                                            <td>{{ ucwords($item->brands->name) }}</td>
-                                            <td>{{ ucwords($item->totalInStock() ) }}</td>
+                                            <td>{{ $item->product->name }}</td>
+                                            <td>{{ $item->product->sku }}</td>
+                                            <td>{{ ucwords($item->product->categories->name) }}</td>
+                                            <td>{{ ucwords($item->product->brands->name) }}</td>
+                                            <td>{{ $item->stock }}</td>
                                         </tr>
                                             
                                         @endforeach
