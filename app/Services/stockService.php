@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class StockService {
 
     
-    public function searchByWarehouse(int $warehouse_id, string $keyword) {
+    public static function searchByWarehouse(int $warehouse_id, string $keyword) {
         $all_stock = ProductStock::with('product')->where('warehouse_id', $warehouse_id)
         ->where('sold', false)
         ->whereHas('product', function ($query) use ($keyword) {
