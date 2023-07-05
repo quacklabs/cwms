@@ -13,6 +13,7 @@ use App\Models\PurchaseReturn;
 use App\Models\SupplierPayment;
 use App\Traits\ActionTakenBy;
 use App\Models\Action;
+use Carbon\Carbon;
 
 class Purchase extends Model implements TransactionInterface
 {
@@ -32,14 +33,18 @@ class Purchase extends Model implements TransactionInterface
     ];
 
     protected $casts = [
-        'date' => 'datetime:Y-m-d H:i:s',
+        'date' => 'datetime:Y-m-d',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     protected $appends = [
-        'due', 'payable', 'url'
+        'due', 'payable', 'url', 'date'
     ];
+
+    // public function getDateAttribute() {
+    //     return Carbon::parse($this->date)->toDateString();
+    // }
 
     public function details() {
         return $this->hasMany(PurchaseDetails::class, 'purchase_id');

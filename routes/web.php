@@ -159,6 +159,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('supplier_payment_entry', 'ReportsController@supplier_payment_entry')->middleware('permission:view-payment-report')->name('supplier_payment_entry');
                 Route::get('customer_payment_entry', 'ReportsController@customer_payment_entry')->middleware('permission:view-payment-report')->name('customer_payment_entry');
             });
+
+            Route::prefix('export')->name('export.')->group(function() {
+                Route::get('export-transactions/{flag}/{start}/{end}/{format}', 'ExportsController@export_transactions')->name('export_details');
+            });
         });
     });
 });
