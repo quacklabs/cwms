@@ -80,7 +80,7 @@
                                         @foreach ($actions as $action)
                                             <tr>
                                                 <td>{{ ucwords($action->model->first()->type->name) }}</td>
-                                                <td>{{ $action->model->first()->amount }}</td>
+                                                <td>{{ number_format($action->model->first()->amount,2) }}</td>
                                                 <td>{{ $action->action }}</td>
                                                 <td>{{ $action->user->first()->username }}</td>
                                                 <td>{{ $action->updated_at ?? $action->created_at }}</td>

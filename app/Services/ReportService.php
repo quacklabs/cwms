@@ -146,7 +146,7 @@ class ReportService {
         return $logs;
     } 
 
-    public static function getTransferActions() {
+    public static function getAllTransferActions() {
         $logs = Action::where('model_type', Transfer::class)->with('model')
             ->paginate(30);
         return $logs;
@@ -160,7 +160,7 @@ class ReportService {
         return $logs;
     } 
 
-    public static function getExpenseActions() {
+    public static function getAllExpenseActions() {
         $logs = Action::where('model_type', Expense::class)->with('model')
             ->paginate(30);
         return $logs;

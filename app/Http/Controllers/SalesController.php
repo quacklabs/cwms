@@ -8,6 +8,7 @@ use App\Services\TransactionService;
 use App\Models\Supplier;
 use App\Rules\DecimalComparison;
 use App\Rules\Decimal;
+use App\Models\Warehouse;
 
 use App\Events\CustomerPaymentReceived;
 
@@ -27,8 +28,8 @@ class SalesController extends Controller
         return parent::render($data, 'transactions.view_transactions');
     }
 
-    protected function create(Request $request) {
-
+    public function create(Request $request) {
+        $user = Auth::user();
         if($request->method() == 'POST') {
             $valid = $request->validate([
                 'partner_id' => ['required', 'numeric'],
@@ -51,7 +52,7 @@ class SalesController extends Controller
             'action' => route('sale.create'),
             'invoice_no' => TransactionService::newInvoice(),
             'partners' => $partners,
-            'warehouses' => auth()->user()->warehouse->all()
+            'warehouses' => $user->warehouse ? [$user->warehouse] : Warehouse::take(10)->get()
         ];
 
         return parent::render($data, 'transactions.add_transaction');

@@ -40,6 +40,7 @@ class TransferController extends Controller
                 'transfer_date' => ['required', 'date']
             ]);
             TransferService::createTransfer($valid);
+            return redirect()->route('transfer.transfers')->with('success', 'Transfer processed successfully');
         }
 
         if($user->hasRole('admin')) {
