@@ -77,7 +77,7 @@
                                             </td>
 
                                             <td>
-                                                {{ $expense->amount }}
+                                                {{ number_format($expense->amount,2) }}
                                             </td>
 
                                             <td>
@@ -87,7 +87,7 @@
                                             <td>
                                                 <div class="buttons">
                                                     @can('delete-expense')
-                                                        <a href="{{ route('expense.delete_type', ['id' => $type->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Expense Type">
+                                                        <a href="{{ route('expense.delete_type', ['id' => $expense->type->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Expense Type">
                                                             <i class="fas fa-trash"></i>
                                                         </a>
                                                     @endcan
