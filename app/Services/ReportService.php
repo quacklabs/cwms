@@ -133,7 +133,7 @@ class ReportService {
         return $logs;
     } 
 
-    public static function getAdjustmentActions() {
+    public static function getAllAdjustmentActions() {
         $logs = Action::where('model_type', Adjustment::class)->with('model')->paginate(30);
         return $logs;
     }
@@ -174,7 +174,7 @@ class ReportService {
         return $logs;
     } 
 
-    public static function getSupplierPaymentActions() {
+    public static function getAllSupplierPaymentActions() {
         $logs = Action::where('model_type', SupplierPayment::class)->with('model')
             ->paginate(30);
         return $logs;
@@ -188,7 +188,7 @@ class ReportService {
         return $logs;
     } 
 
-    public static function getCustomerPaymentActions() {
+    public static function getAllCustomerPaymentActions() {
         $logs = Action::where('model_type', CustomerPayment::class)->with('model')
             ->paginate(30);
         return $logs;

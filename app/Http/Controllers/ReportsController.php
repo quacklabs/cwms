@@ -307,6 +307,7 @@ class ReportsController extends Controller
         } else {
             $actions = ReportService::getCustomerPaymentActionsByWarehouse($user->warehouse->first()->id);
         }
+        
 
         $data = [
             'title' => 'Customer Payment Entry Reports',
