@@ -39,7 +39,7 @@ class Purchase extends Model implements TransactionInterface
     ];
 
     protected $appends = [
-        'due', 'payable', 'url', 'date'
+        'due', 'payable', 'url'
     ];
 
     // public function getDateAttribute() {

@@ -74,9 +74,11 @@
 
 
                                 @else
-                                <a href="{{ route('export.export_details', ['flag' => $flag, 'start' => $items->last()->id, 'end' => $items->first()->id, 'format' => 'pdf']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> PDF</a>
-                                <a href="{{ route('export.export_details', ['flag' => $flag, 'start' => $items->last()->id, 'end' => $items->first()->id, 'format' => 'xls']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> XLS</a>
-                                <a href="#" class="btn btn-sm btn-primary rounded"><i class="fas fa-print"></i> Print</a>
+                                    @if(count($items) > 0)
+                                        <a target="_blank" href="{{ route('export.export_details', ['flag' => $flag, 'start' => $items->last()->id, 'end' => $items->first()->id, 'format' => 'pdf']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> PDF</a>
+                                        <a target="_blank" href="{{ route('export.export_details', ['flag' => $flag, 'start' => $items->last()->id, 'end' => $items->first()->id, 'format' => 'xls']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> XLS</a>
+                                        <a href="#" class="btn btn-sm btn-primary rounded"><i class="fas fa-print"></i> Print</a>
+                                    @endif
 
 
                                 @endempty
@@ -106,9 +108,6 @@
                                             <tr class="text-left">
                                                 <td>
                                                     @if(count($transaction->returns->all()) > 0)
-                                                        <!-- <span data-toggle="tooltip" class="beep" >
-                                                            
-                                                        </span> -->
                                                         <span class="badge badge-warning badge-pill beep" data-toggle="tooltip" data-placement="top" title="" data-original-title="Returned">
                                                             {{ $loop->iteration}}
                                                         </span>
@@ -121,7 +120,7 @@
                                                 <td>
                                                     <strong>#{{ $transaction->invoice_no }}</strong>
                                                     <span class="text-muted">
-                                                        <p>{{ $transaction->created_at }}</p>
+                                                        <p>{{ $transaction->date }}</p>
                                                     </span>
                                                 </td>
 

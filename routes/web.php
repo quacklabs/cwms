@@ -162,6 +162,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('export')->name('export.')->group(function() {
                 Route::get('export-transactions/{flag}/{start}/{end}/{format}', 'ExportsController@export_transactions')->name('export_details');
+                Route::get('export-returns/{flag}/{start}/{end}/{format}', 'ExportsController@export_returns')->name('export_returns');
             });
         });
     });

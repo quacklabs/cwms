@@ -17,6 +17,37 @@
             Please confirm quantities &amp; serial numbers.
         </p>
 
+        <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            
+                            <div class="row mr-0 ml-0">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Start Date</label>
+                                        <input class="form-control" type="text" name="start_date" id="start_date">
+                                    </div>
+                                </div>
+                                    
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>End Date</label>
+                                        <div class="input-group">
+                                            <input type="text" name="end_date" class="form-control">
+                                            
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         @if($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -33,16 +64,21 @@
                 <div class="card">
                     <div class="card-header">
                         <h4>All returned {{ $flag }}s</h4>
-                        <div class="card-header-form">
-                            <form>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        <div class="card-header-form buttons">
+                            @empty($transactions)
+
+
+                            @else
+                                @if(count($transactions) > 0)
+                                    <a target="_blank" href="{{ route('export.export_returns', ['flag' => $flag, 'start' => $transactions->last()->id, 'end' => $transactions->first()->id, 'format' => 'pdf']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> PDF</a>
+                                    <a target="_blank" href="{{ route('export.export_returns', ['flag' => $flag, 'start' => $transactions->last()->id, 'end' => $transactions->first()->id, 'format' => 'xls']) }}" class="btn btn-sm btn-primary rounded"><i class="fas fa-download"></i> XLS</a>
+                                    <a href="#" class="btn btn-sm btn-primary rounded"><i class="fas fa-print"></i> Print</a>
+                                @endif
+
+
+                            @endempty
+                                
+                        </div> 
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">

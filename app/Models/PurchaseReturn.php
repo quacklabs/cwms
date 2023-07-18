@@ -33,6 +33,11 @@ class PurchaseReturn extends Model
         return floatval($this->receivable - $this->received);
     }
 
+    public function payable(): float {
+        $full = $this->total_price - $this->discount;
+        return $full;
+    }
+
     public function partner() {
         return $this->belongsTo(Supplier::class, 'supplier_id');
     }

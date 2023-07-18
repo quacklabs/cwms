@@ -29,6 +29,11 @@ class SaleReturn extends Model
         return $this->due();
     }
 
+    public function payable(): float {
+        $full = $this->total_price - $this->discount;
+        return $full;
+    }
+
     public function due() {
         return floatval($this->receivable - $this->received);
     }

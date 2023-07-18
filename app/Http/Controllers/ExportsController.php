@@ -17,21 +17,18 @@ class ExportsController extends Controller
         if(!$flag || !$start || !$end || !$format) {
             return redirect()->route('dashboard');
         }
+        return ExportService::export_transactions($start, $end, $format, $flag);
+    }
 
-        $data = [
-            'title' => 'Details'
-        ];
+    public function export_returns(Request $request) {
+        $flag = $request->route('flag');
+        $start = $request->route('start');
+        $end = $request->route('end');
+        $format = $request->route('format');
 
-        
-
-        switch($flag) {
-            case 'purchase':
-                return ExportService::generate_purchase_details($start, $end, $format, $flag);
-            case 'sale':
-                return ExportService::generate_sale_details($start, $end, $format, $flag);
-            default:
-            break;
+        if(!$flag || !$start || !$end || !$format) {
+            return redirect()->route('dashboard');
         }
-        // return parent::render($data, $file);
+        return ExportService::export_returns($start, $end, $format, $flag);
     }
 }
