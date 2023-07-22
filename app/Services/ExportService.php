@@ -3,6 +3,7 @@
 namespace App\Services;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
@@ -15,7 +16,8 @@ class ExportService {
         $data = ($flag == 'sale') ? Sale::whereBetween('id', [$start, $end])->get() : Purchase::whereBetween('id', [$start, $end])->get();
         switch($format) {
             case 'pdf':
-                return self::sendPDF($data, 'export.transactions');
+                $title = ucwords($flag)." Details";
+                return self::sendPDF($data, 'export.transactions', $title, $flag);
                 break;
             case 'xls':
                 break;
@@ -26,7 +28,8 @@ class ExportService {
         $data = ($flag == 'sale') ? SaleReturn::whereBetween('id', [$start, $end])->get() : PurchaseReturn::whereBetween('id', [$start, $end])->get();
         switch($format) {
             case 'pdf':
-                return self::sendPDF($data, 'export.transactions');
+                $title = ucwords($flag)." Return Details";
+                return self::sendPDF($data, 'export.returns', $title, $flag);
                 break;
             case 'xls':
                 break;
@@ -38,12 +41,11 @@ class ExportService {
     }
 
 
-    public static function sendPDF($data, $template) {
+    public static function sendPDF($data, $template, $title, $flag = '') {
         $cssFile = file_get_contents(public_path('css/style.css'));
         $bootstrapFile = file_get_contents(public_path('css/bootstrap.css'));
         $componentsFile = file_get_contents(public_path('css/components.css'));
         $logo = base64_encode(file_get_contents(public_path('img/logo.png')));
-        $title = ucwords($flag)." Return Details";
         $page = [
             'bootstrap' => $bootstrapFile,
             'style' => $cssFile,
@@ -51,7 +53,8 @@ class ExportService {
             'title' => $title,
             'flag' => ucwords($flag),
             'items' => $data,
-            'logo' => $logo
+            'logo' => $logo,
+            'user' => Auth::user()
         ];
         $html = View::make($template, $page);
         

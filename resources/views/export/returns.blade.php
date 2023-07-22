@@ -25,7 +25,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="invoice-title">
-                                <h4>{{ $flag }} Report</h4>
+                                <h4>{{ $flag }} Returns Report</h4>
                                 <div class="invoice-number">
                                     <img src="data:image/jpeg;base64,{{ $logo }}" style="max-height: 80px; max-width: 100px;">
                                 </div>
@@ -56,9 +56,9 @@
                                             <th data-width="40" style="width: 40px;">S.N</th>
                                             <th>Invoice</th>
                                             <th class="text-left">Date</th>
-                                            <th class="text-left">{{ ($flag == 'Purchase') ? 'Supplier' : 'Customer' }}</th>
-                                            <th class="text-right">Warehouse</th>
-                                            <th>Payable</th>
+                                            <th class="text-left">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }}</th>
+                                            <th class="text-left">Warehouse</th>
+                                            <th>{{ ($flag == 'sale') ? 'Payable' : 'Receivable' }}</th>
                                             <th>Due</th>
                                         </tr>
 
@@ -68,20 +68,19 @@
                                             {{ $loop->iteration}}.
                                             </td>
                                             <td>
-                                                <strong>{{ $transaction->invoice_no }}</strong>
+                                                <strong>{{ $transaction->owner->invoice_no }}</strong>
                                             </td>
                                             <td>
                                                 {{ $transaction->date }}
                                             </td>
 
                                             <td class="">
-                                                {{ $transaction->owner->name }}
+                                                {{ $transaction->partner->name }}
+                                            </td>
+                                            <td>
+                                                {{ $transaction->owner->warehouse->name }}
                                             </td>
                                             
-                                            <td class="">
-                                                {{ number_format($transaction->total_price, 2) }}
-                                            </td>
-
                                             <td class="">
                                                 {{ number_format($transaction->payable(), 2) }}
                                             </td>
