@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Warehouse;
 use App\Models\Customer;
 use App\Models\SaleDetails;
@@ -91,5 +93,39 @@ class Sale extends Model implements TransactionInterface
 
     public function customerPayments() {
         return $this->hasMany(CustomerPayment::class, 'purchase_id');
+    }
+
+    public function scopePending($query) {
+        $raw = function($query) {
+            $query->selectRaw(1)
+            ->whereColumn('paid_amount', '>=', DB::raw('`total_price` - `discount_amount`'));
+        };
+
+        return Sale::where('paid_amount', '=', 0.00)->orWhereExists($raw);
+        
+    }
+
+    public function scopeComplete($query) {
+        $raw = function($query) {
+            $query->selectRaw(1)
+            ->whereColumn('paid_amount', '>=', DB::raw('`total_price` - `discount_amount`'));
+        };
+        return Sale::whereExists($raw);
+    }
+
+    public function scopeProducts($query) {
+
+        $raw = $query->whereHas('details')->get()->flatMap(function($sale) {
+            return $sale->details;
+        })->groupBy('product_id');
+        return $raw;
+    }
+
+    public function scopeCost($query) {
+        $cost = $query->get()->sum('total_price');
+        $discount = $query->get()->sum('discount_amount');
+
+        $net = $cost - $discount;
+        return floatval($net);
     }
 }

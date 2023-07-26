@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use App\Models\Warehouse;
 use App\Models\Supplier;
 use App\Models\PurchaseDetails;
@@ -26,7 +27,7 @@ class Purchase extends Model implements TransactionInterface
         'warehouse_id',
         'total_price',
         'discount_amount',
-        'paid_amount',
+        'received',
         'note',
         'return_status',
         'date'
@@ -99,5 +100,40 @@ class Purchase extends Model implements TransactionInterface
 
     public function actions(): MorphMany {
         return $this->morphMany(Action::class);
+    }
+
+    public function scopePending($query) {
+        $raw = function($query) {
+            $query->selectRaw(1)
+            ->whereColumn('received', '>=', DB::raw('`total_price` - `discount_amount`'));
+        };
+
+        return Purchase::where('received', '=', 0.00)->orWhereExists($raw);
+        
+    }
+
+    public function scopeComplete($query) {
+        $raw = function($query) {
+            $query->selectRaw(1)
+            ->whereColumn('received', '>=', DB::raw('`total_price` - `discount_amount`'));
+        };
+        return Purchase::whereExists($raw);
+    }
+
+
+    public function scopeProducts($query) {
+
+        $raw = $query->whereHas('details')->get()->flatMap(function($purchase) {
+            return $purchase->details;
+        })->groupBy('product_id');
+        return $raw;
+    }
+
+    public function scopeCost($query) {
+        $cost = $query->get()->sum('total_price');
+        $discount = $query->get()->sum('discount_amount');
+
+        $net = $cost - $discount;
+        return floatval($net);
     }
 }
