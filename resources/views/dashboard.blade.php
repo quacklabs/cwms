@@ -240,106 +240,124 @@
                 </div>
                 <div class="card-body" id="top-5-scroll" tabindex="2" style="height: 315px; overflow: hidden; outline: none;">
                     <ul class="list-unstyled list-unstyled-border">
+
+                        @foreach ($analytics->topProducts() as $product)
+                        
                         <li class="media">
-                        <img class="mr-3 rounded" width="55" src="http://localhost:8080/stisla-codeigniter/assets/img/products/product-3-50.png" alt="product">
-                        <div class="media-body">
-                            <div class="float-right"><div class="font-weight-600 text-muted text-small">86 Sales</div></div>
-                            <div class="media-title">oPhone S9 Limited</div>
-                            <div class="mt-1">
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-primary" data-width="64%" style="width: 64%;"></div>
-                                <div class="budget-price-label">$68,714</div>
-                            </div>
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-danger" data-width="43%" style="width: 43%;"></div>
-                                <div class="budget-price-label">$38,700</div>
-                            </div>
-                            </div>
-                        </div>
-                        </li>
-                        <li class="media">
-                        <img class="mr-3 rounded" width="55" src="http://localhost:8080/stisla-codeigniter/assets/img/products/product-4-50.png" alt="product">
-                        <div class="media-body">
-                            <div class="float-right"><div class="font-weight-600 text-muted text-small">67 Sales</div></div>
-                            <div class="media-title">iBook Pro 2018</div>
-                            <div class="mt-1">
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-primary" data-width="84%" style="width: 84%;"></div>
-                                <div class="budget-price-label">$107,133</div>
-                            </div>
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-danger" data-width="60%" style="width: 60%;"></div>
-                                <div class="budget-price-label">$91,455</div>
-                            </div>
-                            </div>
-                        </div>
-                        </li>
-                        <li class="media">
-                        <img class="mr-3 rounded" width="55" src="http://localhost:8080/stisla-codeigniter/assets/img/products/product-1-50.png" alt="product">
-                        <div class="media-body">
-                            <div class="float-right"><div class="font-weight-600 text-muted text-small">63 Sales</div></div>
-                            <div class="media-title">Headphone Blitz</div>
-                            <div class="mt-1">
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-primary" data-width="34%" style="width: 34%;"></div>
-                                <div class="budget-price-label">$3,717</div>
-                            </div>
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-danger" data-width="28%" style="width: 28%;"></div>
-                                <div class="budget-price-label">$2,835</div>
-                            </div>
-                            </div>
-                        </div>
-                        </li>
-                        <li class="media">
-                            <img class="mr-3 rounded" width="55" src="http://localhost:8080/stisla-codeigniter/assets/img/products/product-3-50.png" alt="product">
+                            <img class="mr-3 rounded" width="55" src="{{ $product->product->image_url ?? asset('img/avatar.png') }}" alt="product">
                             <div class="media-body">
-                                <div class="float-right"><div class="font-weight-600 text-muted text-small">28 Sales</div></div>
-                                <div class="media-title">oPhone X Lite</div>
+                                <div class="float-right">
+                                    <div class="font-weight-600 text-muted text-small">{{ number_format($product->total_quantity) }} Units Sold</div>
+                                </div>
+                                <div class="media-title">{{ $product->product->name }}</div>
                                 <div class="mt-1">
-                                <div class="budget-price">
-                                    <div class="budget-price-square bg-primary" data-width="45%" style="width: 45%;"></div>
-                                    <div class="budget-price-label">$13,972</div>
-                                </div>
-                                <div class="budget-price">
-                                    <div class="budget-price-square bg-danger" data-width="30%" style="width: 30%;"></div>
-                                    <div class="budget-price-label">$9,660</div>
-                                </div>
+                                    <div class="budget-price">
+                                        <div class="budget-price-square bg-primary" data-width="5%" style="width: 5%;"></div>
+                                        <div class="budget-price-label">&#x20A6;{{ $analytics->shortenMoney($product->total_value) }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </li>
-                        <li class="media">
-                        <img class="mr-3 rounded" width="55" src="http://localhost:8080/stisla-codeigniter/assets/img/products/product-5-50.png" alt="product">
-                        <div class="media-body">
-                            <div class="float-right"><div class="font-weight-600 text-muted text-small">19 Sales</div></div>
-                            <div class="media-title">Old Camera</div>
-                            <div class="mt-1">
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-primary" data-width="35%" style="width: 35%;"></div>
-                                <div class="budget-price-label">$7,391</div>
-                            </div>
-                            <div class="budget-price">
-                                <div class="budget-price-square bg-danger" data-width="28%" style="width: 28%;"></div>
-                                <div class="budget-price-label">$5,472</div>
-                            </div>
-                            </div>
-                        </div>
-                        </li>
+
+                        @endforeach
                     </ul>
                 </div>
                 <div class="card-footer pt-3 d-flex justify-content-center">
                   <div class="budget-price justify-content-center">
-                    <div class="budget-price-square bg-primary" data-width="20" style="width: 20px;"></div>
-                    <div class="budget-price-label">Selling Price</div>
-                  </div>
-                  <div class="budget-price justify-content-center">
                     <div class="budget-price-square bg-danger" data-width="20" style="width: 20px;"></div>
-                    <div class="budget-price-label">Budget Price</div>
+                    <div class="budget-price-label"><small>Figures does not include discounts</small></div>
                   </div>
                 </div>
               </div>
             </div>
             
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Latest Sales Returns</h4>
+                  <div class="card-header-action">
+                    <a href="{{ route('sale.returned')}}" class="btn btn-danger">View All<i class="fas fa-chevron-right"></i></a>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive table-invoice">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Invoice ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                </tr>
+
+                                @foreach ($analytics->recentSaleReturns() as $return)
+                                <tr>
+                                    <td>{{ $return->date }}</td>
+                                    <td>{{ $return->owner->invoice_no }}</td>
+                                    <td>{{ $return->partner->name }}</td>
+                                    <td>&#x20A6;{{ number_format($return->payable, 2) }}</td>
+                                </tr>
+                                    
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <div class="card card-hero">
+                <div class="card-header">
+                  <div class="card-icon">
+                  <i class="fas fa-battery-quarter"></i>
+                  </div>
+                  <h4>14</h4>
+                  <div class="card-description">Products are low on stock</div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="tickets-list">
+                    <a href="#" class="ticket-item">
+                      <div class="ticket-title">
+                        <h4>My order hasn't arrived yet</h4>
+                      </div>
+                      <div class="ticket-info">
+                        <div>Laila Tazkiah</div>
+                        <div class="bullet"></div>
+                        <div class="text-primary">1 min ago</div>
+                      </div>
+                    </a>
+                    <a href="#" class="ticket-item">
+                      <div class="ticket-title">
+                        <h4>Please cancel my order</h4>
+                      </div>
+                      <div class="ticket-info">
+                        <div>Rizal Fakhri</div>
+                        <div class="bullet"></div>
+                        <div>2 hours ago</div>
+                      </div>
+                    </a>
+                    <a href="#" class="ticket-item">
+                      <div class="ticket-title">
+                        <h4>Do you see my mother?</h4>
+                      </div>
+                      <div class="ticket-info">
+                        <div>Syahdan Ubaidillah</div>
+                        <div class="bullet"></div>
+                        <div>6 hours ago</div>
+                      </div>
+                    </a>
+                    <a href="http://localhost:8080/stisla-codeigniter/dist/features_tickets" class="ticket-item ticket-more">
+                      View All <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
         </div>
 
 
@@ -378,7 +396,7 @@ var all = []
 const allData = dataSetWeeks.forEach(element => {
     all = [...all, ...element.data]
 })
-const max = Math.max.apply(null, all) * 2
+const max = Math.max.apply(null, all) * 1.4
 var chart = new Chart(statistics_chart, {
     type: 'bar',
     data: {
@@ -387,7 +405,8 @@ var chart = new Chart(statistics_chart, {
     },
     options: {
         legend: {
-            display: true
+            display: true,
+            position: 'bottom'
         },
         scales: {
             yAxes: [
@@ -432,7 +451,7 @@ $(".chart-toggle").on('click', function(e) {
             all = [...all, ...element.data]
         })
         const max = Math.max.apply(null, all)
-        chart.options.scales.yAxes[0].ticks.stepSize = max * 2
+        chart.options.scales.yAxes[0].ticks.stepSize = max * 1.6
         chart.update()
     } else {
         chart.data = {
@@ -444,7 +463,7 @@ $(".chart-toggle").on('click', function(e) {
             all = [...all, ...element.data]
         })
         const max = Math.max.apply(null, all)
-        chart.options.scales.yAxes[0].ticks.stepSize = max * 2
+        chart.options.scales.yAxes[0].ticks.stepSize = max * 1.6
         chart.update()
     }
 });

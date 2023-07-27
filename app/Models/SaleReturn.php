@@ -17,7 +17,7 @@ class SaleReturn extends Model
     protected $table = 'sale_return';
 
     protected $appends = [
-        'url', 'due'
+        'url', 'due', 'payable'
     ];
 
     protected $fillable = [
@@ -27,6 +27,10 @@ class SaleReturn extends Model
 
     public function getDueAttribute() {
         return $this->due();
+    }
+
+    public function getPayableAttribute() {
+        return $this->payable();
     }
 
     public function payable(): float {

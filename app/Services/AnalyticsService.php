@@ -15,6 +15,8 @@ use App\Models\Sale;
 use App\Models\User;
 use App\Models\PurchaseReturn;
 use App\Models\SaleReturn;
+use App\Models\Product;
+use App\Models\SaleDetails;
 
 
 class AnalyticsService implements BusinessIntelligence {
@@ -109,6 +111,30 @@ class AnalyticsService implements BusinessIntelligence {
         return $purchases;
     }
 
+    public function recentSaleReturns() {
+        if($this->user->hasRole('admin')) {
+            $purchases = SaleReturn::take(10)->get();
+        } else {
+            $purchases = SaleReturn::where('warehouse_id', $this->user->warehouse->id)->take(10)->get();
+        }
+        return $purchases;
+    }
+
+    public function topProducts() {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfDay();
+
+
+        $topProducts = SaleDetails::select('product_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(total) as total_value'))
+        ->whereBetween('created_at', [$start, $end])
+        ->groupBy('product_id')
+        ->orderByDesc('total_quantity')
+        ->take(5)
+        ->with('product') // Eager loading the product details
+        ->get();
+        return $topProducts;
+    }
+
     public function monthlyTrend() {
         $startDate = Carbon::now()->startOfYear();
         $endDate = Carbon::now()->endOfDay();
@@ -184,8 +210,6 @@ class AnalyticsService implements BusinessIntelligence {
             $purchaseReturns = PurchaseReturn::where('warehouse_id', $this->user->warehouse->id)->whereBetween('created_at', [$startDate, $endDate])->get();
         }
 
-        // dd($sales);
-
         $salesTrend = new Trend();
         $salesTrend->label = "Sales";
         $salesTrend->data = $this->flattenWeek($sales, $startDate, $endDate);
@@ -227,7 +251,7 @@ class AnalyticsService implements BusinessIntelligence {
         return $flattened;
     }
 
-    private function shortenMoney($value) {
+    public function shortenMoney($value) {
         $suffixes = ["", "K", "M", "B"];
         $suffixIndex = 0;
 
