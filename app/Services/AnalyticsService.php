@@ -120,6 +120,17 @@ class AnalyticsService implements BusinessIntelligence {
         return $purchases;
     }
 
+    public function productLow() {
+        $productsLowStock = Product::whereHas('productStock', function ($query) {
+            $query->where('sold_by', '=', null);
+        })
+        ->select('products.*')
+        ->addSelect(DB::raw('(SELECT COUNT(*) FROM product_stock WHERE product_stock.product_id = products.id AND product_stock.sold_by IS NULL) as product_stock_count'))
+        ->having('product_stock_count', '<=', DB::raw('products.alert'))->get();
+
+        return $productsLowStock;
+    }
+
     public function topProducts() {
         $start = Carbon::now()->startOfYear();
         $end = Carbon::now()->endOfDay();

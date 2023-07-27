@@ -309,49 +309,34 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="col-md-4">
               <div class="card card-hero">
                 <div class="card-header">
                   <div class="card-icon">
                   <i class="fas fa-battery-quarter"></i>
                   </div>
-                  <h4>14</h4>
+                  <h4>{{ $analytics->productLow()->count() }}</h4>
                   <div class="card-description">Products are low on stock</div>
                 </div>
                 <div class="card-body p-0">
                   <div class="tickets-list">
+                    @foreach ($analytics->productLow() as $product)
                     <a href="#" class="ticket-item">
                       <div class="ticket-title">
-                        <h4>My order hasn't arrived yet</h4>
+                        <h4>{{ $product->name }}</h4>
                       </div>
                       <div class="ticket-info">
-                        <div>Laila Tazkiah</div>
+                        <div>In Stock</div>
                         <div class="bullet"></div>
-                        <div class="text-primary">1 min ago</div>
+                        <div class="text-primary">{{ $product->totalInStock() }}</div>
                       </div>
                     </a>
-                    <a href="#" class="ticket-item">
-                      <div class="ticket-title">
-                        <h4>Please cancel my order</h4>
-                      </div>
-                      <div class="ticket-info">
-                        <div>Rizal Fakhri</div>
-                        <div class="bullet"></div>
-                        <div>2 hours ago</div>
-                      </div>
-                    </a>
-                    <a href="#" class="ticket-item">
-                      <div class="ticket-title">
-                        <h4>Do you see my mother?</h4>
-                      </div>
-                      <div class="ticket-info">
-                        <div>Syahdan Ubaidillah</div>
-                        <div class="bullet"></div>
-                        <div>6 hours ago</div>
-                      </div>
-                    </a>
-                    <a href="http://localhost:8080/stisla-codeigniter/dist/features_tickets" class="ticket-item ticket-more">
+                        
+                    @endforeach
+                    
+                    
+                    <a href="{{ route('product.products') }}" class="ticket-item ticket-more">
                       View All <i class="fas fa-chevron-right"></i>
                     </a>
                   </div>
