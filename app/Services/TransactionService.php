@@ -214,11 +214,15 @@ class TransactionService implements TransactionInterface {
         return;
     }
 
-    public static function returnedPurchases(int $id) {
-        $returns = PurchaseReturn::whereHas('owner', function ($query) use ($id) {
-            $query->where('warehouse_id', $id);
-        })->paginate(25);
-        return $returns;
+    public static function returnedPurchases(int $id = null) {
+        if($id != NULL) {
+            $returns = PurchaseReturn::whereHas('owner');
+        } else {
+            $returns = PurchaseReturn::whereHas('owner', function ($query) use ($id) {
+                $query->where('warehouse_id', $id);
+            });
+        }
+        return $returns->paginate(25);
     }
 
     public static function returnedSales() {

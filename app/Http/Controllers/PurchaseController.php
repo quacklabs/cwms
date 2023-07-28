@@ -97,7 +97,12 @@ class PurchaseController extends Controller
 
     public function returned(Request $request) {
         $user = Auth::user();
-        $returns = TransactionService::returnedPurchases($user->warehouse->first()->id);
+        if($user->hasRole('admin')) {
+            $returns = TransactionService::returnedPurchases();
+        } else {
+            $returns = TransactionService::returnedPurchases($user->warehouse->id);
+        }
+        
         // dd($returns);
         $data = [
             'title' => 'Returned Purchases',

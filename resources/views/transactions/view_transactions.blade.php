@@ -1,6 +1,11 @@
 @extends('layout')
 @section('title') {{ config('app.name') }} | {{ $title }} @endsection
 
+@section('css')
+<link href="{{ asset('css/flatpickr.css') }}" rel="stylesheet">
+    
+@endsection
+
 @section('content')
 <!-- Main Content -->
 <div class="main-content">
@@ -30,16 +35,22 @@
                             <div class="row mr-0 ml-0">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Start Date</label>
-                                        <input class="form-control" type="text" name="start_date" id="start_date">
+                                        <label>Filter By Date Range</label>
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="date" id="start_date" placeholder="Start Date -> End Date">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                            </div>
+                                        </div>
+                                       
                                     </div>
                                 </div>
                                     
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>End Date</label>
+                                        <label>Invoice Search</label>
                                         <div class="input-group">
-                                            <input type="text" name="end_date" class="form-control">
+                                            <input type="text" name="invoice_no" class="form-control" placeholder="Invoice No">
                                             
                                             <div class="input-group-append">
                                                 <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
@@ -183,10 +194,6 @@
                                                             @endif
                                                         @endif
 
-
-
-                                                        
-
                                                         @can('delete-purchase')
                                                             <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale' }}">
                                                                 <i class="fas fa-trash"></i>
@@ -285,6 +292,7 @@
 
 
 @section('js')
+<script src="{{ asset('js/flatpickr.js') }}"></script>
 <script>
     $(function() {
 
@@ -296,7 +304,11 @@
             $("#moneyForm").prop('action', details.url)
             $("#myModal").modal('show');
         })
-        
+    });
+
+    flatpickr("#start_date", {
+        mode: "range",
+        dateFormat: "d-m-Y",
     })
 </script>
 
