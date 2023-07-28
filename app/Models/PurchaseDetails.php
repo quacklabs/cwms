@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Purchase;
 use App\Models\Product;
 use App\Models\ProductStock;
+// use App\Models\AnalyticsModels\Transaction;
 
-class PurchaseDetails extends Model
+use App\Models\AnalyticsModels\TransactionDetail;
+
+class PurchaseDetails extends TransactionDetail
 {
     use HasFactory, SoftDeletes;
 

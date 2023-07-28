@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 use App\Models\Warehouse;
 use App\Models\Customer;
@@ -14,8 +14,9 @@ use App\Models\CustomerPayment;
 use App\Traits\ActionTakenBy;
 
 use App\Contracts\TransactionInterface;
+use App\Models\AnalyticsModels\Transaction;
 
-class Sale extends Model implements TransactionInterface
+class Sale extends Transaction
 {
     use HasFactory, SoftDeletes, ActionTakenBy;
 
@@ -27,14 +28,14 @@ class Sale extends Model implements TransactionInterface
         'warehouse_id',
         'total_price',
         'discount_amount',
-        'paid_amount',
+        'received',
         'date',
         'note',
         'return_status'
     ];
 
     protected $appends = [
-        'due', 'payable','url'
+        'due', 'payable','url', 'returns'
     ];
 
     protected $casts = [
@@ -55,13 +56,13 @@ class Sale extends Model implements TransactionInterface
         return $this->hasMany(SaleDetails::class, 'sale_id');
     }
 
-    public static function purchase(int $id) : Purchase {
-        return new Purchase;
-    }
+    // public static function purchase(int $id) : Purchase {
+    //     return new Purchase;
+    // }
 
-    public static function sale(int $id) : Sale {
-        return self::find($id);
-    }
+    // public static function sale(int $id) : Sale {
+    //     return self::find($id);
+    // }
 
 
     public function payable(): float {
@@ -80,11 +81,15 @@ class Sale extends Model implements TransactionInterface
 
     public function due(): float {
         $full = $this->total_price - $this->discount_amount;
-        return $full - $this->paid_amount;
+        return $full - $this->received;
     }
 
     public function getUrlAttribute() {
         return route('sale.receive', ['id' => $this->id]);
+    }
+
+    public function getReturnsAttribute() {
+        return $this->returns();
     }
 
     public function returns() {
@@ -95,37 +100,37 @@ class Sale extends Model implements TransactionInterface
         return $this->hasMany(CustomerPayment::class, 'purchase_id');
     }
 
-    public function scopePending($query) {
-        $raw = function($query) {
-            $query->selectRaw(1)
-            ->whereColumn('paid_amount', '>=', DB::raw('`total_price` - `discount_amount`'));
-        };
+    // public function scopePending($query) {
+    //     $raw = function($query) {
+    //         $query->selectRaw(1)
+    //         ->whereColumn('received', '>=', DB::raw('`total_price` - `discount_amount`'));
+    //     };
 
-        return Sale::where('paid_amount', '=', 0.00)->orWhereExists($raw);
+    //     return Sale::where('received', '=', 0.00)->orWhereExists($raw);
         
-    }
+    // }
 
-    public function scopeComplete($query) {
-        $raw = function($query) {
-            $query->selectRaw(1)
-            ->whereColumn('paid_amount', '>=', DB::raw('`total_price` - `discount_amount`'));
-        };
-        return Sale::whereExists($raw);
-    }
+    // public function scopeComplete($query) {
+    //     $raw = function($query) {
+    //         $query->selectRaw(1)
+    //         ->whereColumn('received', '>=', DB::raw('`total_price` - `discount_amount`'));
+    //     };
+    //     return Sale::whereExists($raw);
+    // }
 
-    public function scopeProducts($query) {
+    // public function scopeProducts($query) {
 
-        $raw = $query->whereHas('details')->get()->flatMap(function($sale) {
-            return $sale->details;
-        })->groupBy('product_id');
-        return $raw;
-    }
+    //     $raw = $query->whereHas('details')->get()->flatMap(function($sale) {
+    //         return $sale->details;
+    //     })->groupBy('product_id');
+    //     return $raw;
+    // }
 
-    public function scopeCost($query) {
-        $cost = $query->get()->sum('total_price');
-        $discount = $query->get()->sum('discount_amount');
+    // public function scopeCost($query) {
+    //     $cost = $query->get()->sum('total_price');
+    //     $discount = $query->get()->sum('discount_amount');
 
-        $net = $cost - $discount;
-        return floatval($net);
-    }
+    //     $net = $cost - $discount;
+    //     return floatval($net);
+    // }
 }

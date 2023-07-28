@@ -79,7 +79,7 @@ class SalesController extends Controller
             $paid = str_replace(',','', $valid['amount']);
             $due = str_replace(',','', $valid['due']);
             $user = Auth::user();
-            $transaction->paid_amount = $transaction->paid_amount + $paid;
+            $transaction->received = $transaction->received + $paid;
             $transaction->save();
 
             event(new CustomerPaymentReceived($transaction, $paid));

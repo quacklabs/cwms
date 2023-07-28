@@ -21,7 +21,7 @@ class CreateSales extends Migration
             $table->date('date');
             $table->decimal('total_price', 28,8)->default(0.00);
             $table->decimal('discount_amount', 28,8)->default(0.00);
-            $table->decimal('paid_amount', 28,8)->default(0.00);
+            $table->decimal('received', 28,8)->default(0.00);
             $table->longText('notes')->nullable();
             $table->boolean('return_status')->default(false);
             $table->timestamps();
