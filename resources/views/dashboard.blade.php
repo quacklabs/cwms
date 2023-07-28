@@ -121,39 +121,40 @@
         </div>
 
         <div class="row">
-            
             <div class="col-lg-6 col-md-6 col-sm-12">
               <div class="card card-statistic-2">
                 <div class="card-chart"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
                   <canvas id="balance-chart" height="77" width="327" class="chartjs-render-monitor" style="display: block; width: 327px; height: 77px;"></canvas>
                 </div>
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
+                <div class="card-icon shadow-primary bg-dark">
+                  <i class="fas">&#x20A6;</i>
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
-                    <h4>Balance</h4>
+                    <h4>Total Sales</h4>
                   </div>
                   <div class="card-body">
-                    $187,13
+                  {{ number_format($analytics->totalSaleAmount(), 2) }}
                   </div>
                 </div>
               </div>
             </div>
+
+
             <div class="col-lg-6 col-md-6 col-sm-12">
               <div class="card card-statistic-2">
                 <div class="card-chart"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
                   <canvas id="sales-chart" height="77" width="327" class="chartjs-render-monitor" style="display: block; width: 327px; height: 77px;"></canvas>
                 </div>
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-shopping-bag"></i>
+                <div class="card-icon shadow-primary bg-dark">
+                  <i class="fas">&#x20A6;</i>
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
-                    <h4>Sales</h4>
+                    <h4>Total Purchase</h4>
                   </div>
                   <div class="card-body">
-                    4,732
+                  {{ number_format($analytics->totalPurchaseAmount(), 2) }}
                   </div>
                 </div>
               </div>
@@ -268,14 +269,14 @@
                 <div class="card-header">
                   <h4>Top 5 Products</h4>
                   <div class="card-header-action dropdown">
-                    <!-- <a href="#" data-toggle="dropdown" class="btn btn-danger dropdown-toggle">Month</a>
+                    <a href="#" data-toggle="dropdown" class="btn btn-danger dropdown-toggle">This Month</a>
                     <ul class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-                      <li class="dropdown-title">Select Period</li>
+                      <!-- <li class="dropdown-title">Select Period</li>
                       <li><a href="#" class="dropdown-item">Today</a></li>
-                      <li><a href="#" class="dropdown-item">Week</a></li>
+                      <li><a href="#" class="dropdown-item">Week</a></li> -->
                       <li><a href="#" class="dropdown-item active">Month</a></li>
-                      <li><a href="#" class="dropdown-item">This Year</a></li>
-                    </ul> -->
+                      <!-- <li><a href="#" class="dropdown-item">This Year</a></li> -->
+                    </ul>
                   </div>
                 </div>
                 <div class="card-body" id="top-5-scroll" tabindex="2" style="height: 315px; overflow: hidden; outline: none;">
@@ -397,6 +398,141 @@
 @section('js')
 <script src="{{ asset('js/chart.min.js') }}"></script>
 <script>
+
+var balance_chart = document.getElementById("balance-chart").getContext('2d');
+var balance_chart_bg_color = balance_chart.createLinearGradient(0, 0, 0, 70);
+balance_chart_bg_color.addColorStop(0, 'rgba(63,82,227,1)');
+balance_chart_bg_color.addColorStop(1, 'rgba(63,82,227,0)');
+
+const saleLabels = JSON.parse('{!! $analytics->salesReport() !!}').map(item => {
+    return item.name
+})
+
+const saleValues = JSON.parse('{!! $analytics->salesReport() !!}').map(item => {
+    return item.value
+})
+
+const maxInt = Math.max.apply(null, saleValues) * 2
+
+var sales = new Chart(balance_chart, {
+  type: 'line',
+  data: {
+    labels: saleLabels,
+    datasets: [{
+      label: 'Sales',
+      data: saleValues,
+      backgroundColor: balance_chart_bg_color,
+      borderWidth: 3,
+      borderColor: 'rgba(63,82,227,1)',
+      pointBorderWidth: 0,
+      pointBorderColor: 'transparent',
+      pointRadius: 3,
+      pointBackgroundColor: 'transparent',
+      pointHoverBackgroundColor: 'rgba(63,82,227,1)',
+    }]
+  },
+  options: {
+    layout: {
+      padding: {
+        bottom: -1,
+        left: -1
+      }
+    },
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        gridLines: {
+          display: false,
+          drawBorder: false,
+        },
+        ticks: {
+          beginAtZero: true,
+          display: false,
+          stepSize: maxInt
+        }
+      }],
+      xAxes: [{
+        gridLines: {
+          drawBorder: false,
+          display: false,
+        },
+        ticks: {
+          display: false
+        }
+      }]
+    },
+  }
+});
+
+var purchase_chart = document.getElementById("sales-chart").getContext('2d');
+var purchase_chart_bg_color = purchase_chart.createLinearGradient(0, 0, 0, 70);
+purchase_chart_bg_color.addColorStop(0, 'rgba(63,82,227,1)');
+purchase_chart_bg_color.addColorStop(1, 'rgba(63,82,227,0)');
+
+const purchaseLabels = JSON.parse('{!! $analytics->purchaseReport() !!}').map(item => {
+    return item.name
+})
+
+const purchaseValues = JSON.parse('{!! $analytics->purchaseReport() !!}').map(item => {
+    return item.value
+})
+
+const maxInteger = Math.max.apply(null, purchaseValues) * 2
+
+var sales = new Chart(purchase_chart, {
+  type: 'line',
+  data: {
+    labels: purchaseLabels,
+    datasets: [{
+      label: 'Purchases',
+      data: purchaseValues,
+      backgroundColor: purchase_chart_bg_color,
+      borderWidth: 3,
+      borderColor: 'rgba(63,82,227,1)',
+      pointBorderWidth: 0,
+      pointBorderColor: 'transparent',
+      pointRadius: 3,
+      pointBackgroundColor: 'transparent',
+      pointHoverBackgroundColor: 'rgba(63,82,227,1)',
+    }]
+  },
+  options: {
+    layout: {
+      padding: {
+        bottom: -1,
+        left: -1
+      }
+    },
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        gridLines: {
+          display: false,
+          drawBorder: false,
+        },
+        ticks: {
+          beginAtZero: true,
+          display: false,
+          stepSize: maxInteger
+        }
+      }],
+      xAxes: [{
+        gridLines: {
+          drawBorder: false,
+          display: false,
+        },
+        ticks: {
+          display: false
+        }
+      }]
+    },
+  }
+});
+
 var statistics_chart = document.getElementById("myChart").getContext('2d');
 
 var dataSetMonths = JSON.parse('{!! $analytics->monthlyTrend() !!}').map( item => {

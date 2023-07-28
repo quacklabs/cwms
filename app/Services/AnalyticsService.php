@@ -17,7 +17,8 @@ use App\Models\PurchaseReturn;
 use App\Models\SaleReturn;
 use App\Models\Product;
 use App\Models\SaleDetails;
-
+use App\Models\AnalyticsModels\ArrayObject;
+use Illuminate\Database\Eloquent\Builder;
 
 class AnalyticsService implements BusinessIntelligence {
 
@@ -133,6 +134,39 @@ class AnalyticsService implements BusinessIntelligence {
             })->with('owner')->get()->count();
         }
         return $purchases;
+    }
+
+    public function totalPurchaseAmount(): int {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfYear();
+        if($this->user->hasRole('admin')) {
+            $purchases = Purchase::whereBetween('created_at', [$start, $end])->get();
+        } else {
+            $purchases = Purchase::whereBetween('created_at', [$start, $end])
+            ->whereHas('owner', function($query) {
+                $query->where('warehouse_id', $this->user->warehouse->id);
+            })->with('owner')->get();
+        }
+        $total = $purchases->sum('total_price');
+        $discount = $purchases->sum('discount_amount');
+        return $total - $discount;
+    }
+
+    public function totalSaleAmount(): int {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfYear();
+        if($this->user->hasRole('admin')) {
+            $purchases = Sale::whereBetween('created_at', [$start, $end])->get();
+        } else {
+            $id = $this->user->warehouse->id;
+            $purchases = Sale::whereBetween('created_at', [$start, $end])
+            ->whereHas('owner', function($query) use ($id) { 
+                $query->where('warehouse_id', $id);
+            })->with('owner')->get();
+        }
+        $total = $purchases->sum('total_price');
+        $discount = $purchases->sum('discount_amount');
+        return $total - $discount;
     }
 
     public function recentSaleReturns() {
@@ -307,6 +341,81 @@ class AnalyticsService implements BusinessIntelligence {
                 array_push($flattened, 0);
             }
         }
+        return $flattened;
+    }
+
+
+    public function salesReport() {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfYear();
+
+        if($this->user->hasRole('admin')) {
+            $purchases = Sale::whereBetween('created_at', [$start, $end]);
+        } else {
+            $id = $this->user->warehouse->id;
+            $purchases = Sale::whereBetween('created_at', [$start, $end])
+            ->where('warehouse_id', $id);
+        }
+
+        $flattened = $this->flattenReport($purchases, $start, $end);
+        return json_encode($flattened);
+    }
+
+    public function purchaseReport() {
+        $start = Carbon::now()->startOfYear();
+        $end = Carbon::now()->endOfYear();
+
+        if($this->user->hasRole('admin')) {
+            $purchases = Purchase::whereBetween('created_at', [$start, $end]);
+        } else {
+            $id = $this->user->warehouse->id;
+            $purchases = Purchase::whereBetween('created_at', [$start, $end])
+            ->where('warehouse_id', $id);
+        }
+        $flattened = $this->flattenReport($purchases, $start, $end);
+        return json_encode($flattened);
+    }
+
+    function flattenReport(Builder $collection, $start, $end) {
+        $flattened = [];
+        
+        $result = $collection->get()->groupBy(function($record) {
+            return Carbon::parse($record->created_at)->format('Y-m');
+        })->map(function($group) {
+            $total = $group->sum('total_price');
+            $discount = $group->sum('discount_amount');
+            return $total - $discount;
+        })->all();
+
+        // dd($result);
+        $months = [];
+        $current_date = Carbon::now()->startOfYear();
+
+        while($current_date <= Carbon::parse($end)) {
+            $current_month = $current_date->format('Y-m');
+
+            if(isset($result[$current_month])) {
+             $value = new ArrayObject($current_month, $result[$current_month]);
+            } else {
+                $value = new ArrayObject($current_month, 0);
+            }
+            array_push($flattened, $value);
+            array_push($months, $current_date->format('n'));
+            $current_date->addMonth();
+        }
+
+        if(count($flattened) < 12) {
+            // $remainder = 12 - count($flattened);
+            for($i = 1; $i < 12; $i++) {
+                if(!in_array($i, $months)) {
+                    $year = Carbon::now()->year;
+                    $date = Carbon::parse("$i $year");
+                    $obj = new ArrayObject($date->format('Y-m'), 0);
+                    array_push($flattened, $obj);
+                }
+            }
+        }
+
         return $flattened;
     }
 
