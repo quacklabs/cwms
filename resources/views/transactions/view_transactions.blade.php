@@ -107,7 +107,7 @@
                                             @foreach($items as $transaction)
                                             <tr class="text-left">
                                                 <td>
-                                                    @if(count($transaction->returns->all()) > 0)
+                                                    @if(count($transaction->returns->get()) > 0)
                                                         <span class="badge badge-warning badge-pill beep" data-toggle="tooltip" data-placement="top" title="" data-original-title="Returned">
                                                             {{ $loop->iteration}}
                                                         </span>
@@ -173,7 +173,7 @@
                                                             @endif
                                                         @endcan
 
-                                                        @if(count($transaction->returns->all()) == 0)
+                                                        @if(count($transaction->returns->get()) == 0)
                                                             @if(floatval($transaction->due) != 0.00)
                                                                 @can('create-'.$flag.'-return')
                                                                     <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">

@@ -352,11 +352,31 @@
             },
             load: function(query, callback) {
                 if (!query.length) return callback();
-                search("{{ route('api.findWarehouse') }}", query, callback)
+                const partner_id = $("#partner_select").val()
+                const warehouse_id = $("#warehouse_select").val()
+                if (partner_id == null || partner_id == '' || partner_id == undefined) {
+                    swal({
+                        title: "{{ ($flag == 'sale') ? 'Customer' : 'Supplier' }} Required",
+                        text: "Please select a {{ ($flag == 'sale') ? 'customer' : 'supplier' }} to continue",
+                        icon: 'error'
+                    }) 
+                    return
+                } else if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
+                    swal({
+                        title: "Warehouse Required",
+                        text: "Please select a warehouse to continue",
+                        icon: 'error'
+                    })
+                    return
+                } else {
+                    search("{{ route('api.findWarehouse') }}", query, callback)
+                }
+                
             }
         }
 
         const partner_options = {
+            autocomplete: false,
             valueField: 'id', // Specify the key for option value
             labelField: 'name', // Specify the key for option innerHTML
             searchField: 'name', // Specify the key for search field
@@ -369,11 +389,28 @@
             },
             load: function(query, callback) {
                 if (!query.length) return callback();
-                search("{{ route('api.findPartner', ['flag' => $flag]) }}", query, callback)
+                if (partner_id == null || partner_id == '' || partner_id == undefined) {
+                    swal({
+                        title: "{{ ($flag == 'sale') ? 'Customer' : 'Supplier' }} Required",
+                        text: "Please select a {{ ($flag == 'sale') ? 'customer' : 'supplier' }} to continue",
+                        icon: 'error'
+                    }) 
+                    return
+                } else if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
+                    swal({
+                        title: "Warehouse Required",
+                        text: "Please select a warehouse to continue",
+                        icon: 'error'
+                    })
+                    return
+                } else {
+                    search("{{ route('api.findPartner', ['flag' => $flag]) }}", query, callback)
+                }
             }
         }
 
         const product_options = {
+            autocomplete: false,
             valueField: 'id', // Specify the key for option value
             labelField: 'name', // Specify the key for option innerHTML
             searchField: 'name', // Specify the key for search field
