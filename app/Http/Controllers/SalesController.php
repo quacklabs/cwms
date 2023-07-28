@@ -79,7 +79,7 @@ class SalesController extends Controller
             $paid = str_replace(',','', $valid['amount']);
             $due = str_replace(',','', $valid['due']);
             $user = Auth::user();
-            $transaction->paid_amount = $transaction->paid_amount + $paid;
+            $transaction->received = $transaction->received + $paid;
             $transaction->save();
 
             event(new CustomerPaymentReceived($transaction, $paid));
@@ -90,8 +90,12 @@ class SalesController extends Controller
 
     public function returned(Request $request) {
         $user = Auth::user();
-        $returns = TransactionService::returnedSales($user->warehouse->first()->id);
-        // dd($returns);
+        if($user->hasRole('admin')) {
+            $returns = TransactionService::returnedSales();
+        } else {
+            $returns = TransactionService::returnedSalesByWarehouse($user->warehouse->id);
+        }
+        
         $data = [
             'title' => 'Returned Sales',
             'flag' => $this->flag,

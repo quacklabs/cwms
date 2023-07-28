@@ -8,6 +8,7 @@
         "php": "^7.3|^8.0",
         "bensampo/laravel-enum": "^4.2",
         "diglactic/laravel-breadcrumbs": "^8.1",
+        "dompdf/dompdf": "^2.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
@@ -21,7 +22,6 @@
     "require-dev": {
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
-        "laravel-shift/blueprint": "^2.7",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.10",

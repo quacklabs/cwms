@@ -123,7 +123,7 @@ class TransactionService implements TransactionInterface {
             return Purchase::orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse->first();
+            $warehouse = $user->warehouse;
             return Purchase::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
         }
     }
@@ -221,7 +221,12 @@ class TransactionService implements TransactionInterface {
         return $returns;
     }
 
-    public static function returnedSales(int $id) {
+    public static function returnedSales() {
+        $returns = SaleReturn::whereHas('owner')->orderBy('created_at', 'desc')->paginate(25);
+        return $returns;
+    }
+
+    public static function returnedSalesByWarehouse(int $id) {
         $returns = SaleReturn::whereHas('owner', function ($query) use ($id) {
             $query->where('warehouse_id', $id);
         })->paginate(25);

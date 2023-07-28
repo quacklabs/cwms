@@ -24,7 +24,6 @@ trait ActionTakenBy {
     protected function logEntry($action, $model)
     {
         $userId = Auth::user()->id ?? null;
-        // $model->save();
 
         $log = Action::create([
             'action' => $action,
@@ -32,14 +31,7 @@ trait ActionTakenBy {
             'model_id' => $model,
             'user_id' => $userId,
         ]);
-        // $parent->actions()->save($action);
         $this->logs()->save($log);
-    
-        // Associate the logged model if available
-        // if ($this->exists) {
-        //     $log->model()->associate($this);
-        //     $log->save();
-        // }
     }
 
     public function logs()

@@ -23,7 +23,8 @@ class PurchaseController extends Controller
     //
 
     protected function view(Request $request) {
-        $transactions = TransactionService::getPurchases(Auth::user());
+        $user = Auth::user();
+        $transactions = TransactionService::getPurchases($user);
         $data = [
             'title' => 'View Purchases',
             'items' => $transactions,
@@ -44,20 +45,8 @@ class PurchaseController extends Controller
                 'total_price' => ['required', 'decimal'],
                 'invoice_no' => ['required']
             ]);
-
-            
            TransactionService::create($valid, 'purchase');
            return redirect()->route('purchase.view')->with('success', 'order added successfully');
-            // if($transaction == "ok") {
-            //     
-            // } else {
-            //     // Create a validation error manually
-            //     $errorMessage = $transaction;
-            //     $errors = session()->get('errors', new MessageBag);
-            //     $errors->add('serial', $errorMessage);
-            //     session()->flash('errors', $errors);
-            //     return redirect()->back()->withInput();
-            // }
         }
         $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
         if($user->hasRole('admin')) {

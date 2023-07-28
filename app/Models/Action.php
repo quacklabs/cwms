@@ -23,10 +23,11 @@ class Action extends Model
     }
 
     public function getUserAttribute() {
-        return $this->user();
+        return $this->actionUser();
     }
-    public function user()
-    {
+
+
+    protected function actionUser() {
         return User::find($this->user_id);
     }
 
