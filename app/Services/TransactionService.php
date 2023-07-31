@@ -141,6 +141,19 @@ class TransactionService implements TransactionInterface {
         }
     }
 
+    public static function getPurchasesByInvoice(User $user, $invoice) {
+        // dd($invoice);
+        if($user->hasRole('admin')) {
+            $result = Purchase::where("invoice_no", "LIKE", "%{$invoice}%")->get();
+        } else {
+            // Limit managers and staff to only their primary warehouse
+            $warehouse = $user->warehouse;
+            $result = Purchase::where('warehouse_id', $warehouse->id)
+            ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+        }
+        return $result;
+    }
+
     public static function getSales(User $user) {
         if($user->hasRole('admin')) {
             return Sale::orderBy('created_at', 'desc')->paginate(25);

@@ -54,13 +54,16 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Invoice Search</label>
-                                        <div class="input-group">
-                                            <input type="text" name="invoice_no" class="form-control" placeholder="Invoice No">
-                                            
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                        <form action="{{ ($flag == 'sale') ? route('sale.view') : route('purchase.view') }}" method="get">
+                                            @csrf
+                                            <div class="input-group">
+                                                <input type="text" name="invoice" class="form-control" placeholder="Invoice No">
+                                                
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
