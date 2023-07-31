@@ -19,7 +19,17 @@ class SalesController extends Controller
     protected $flag = 'sale';
 
     protected function view(Request $request) {
-        $transactions = TransactionService::getSales(Auth::user());
+        $user = Auth::user();
+        $range = request('dateRange');
+        $invoice = request('invoice');
+        if(isset($range)) {
+            $transactions = TransactionService::getSalesByRange($user, $range);
+        } else if(isset($invoice)) {
+            $transactions = TransactionService::getSalesByInvoice($user, $invoice);
+        } else {
+            $transactions = TransactionService::getSales($user);
+        }
+        
         $data = [
             'title' => 'View Sales',
             'items' => $transactions,

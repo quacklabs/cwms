@@ -164,6 +164,32 @@ class TransactionService implements TransactionInterface {
         }
     }
 
+    public static function getSalesByRange(User $user, $range) {
+        $dateRange = explode('to', $range);
+        $start = Carbon::parse($dateRange[0]);
+        $end = Carbon::parse($dateRange[1]);
+        if($user->hasRole('admin')) {
+            return Sale::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->paginate(25);
+        } else {
+            // Limit managers and staff to only their primary warehouse
+            $warehouse = $user->warehouse;
+            return Sale::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+        }
+    }
+
+    public static function getSalesByInvoice(User $user, $invoice) {
+        // dd($invoice);
+        if($user->hasRole('admin')) {
+            $result = Sale::where("invoice_no", "LIKE", "%{$invoice}%")->get();
+        } else {
+            // Limit managers and staff to only their primary warehouse
+            $warehouse = $user->warehouse;
+            $result = Sale::where('warehouse_id', $warehouse->id)
+            ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+        }
+        return $result;
+    }
+
     public static function warehouse(User $user) {
         if($user->hasRole('admin')) {
             return Warehouse::orderBy('created_at', 'desc')->paginate(25);
