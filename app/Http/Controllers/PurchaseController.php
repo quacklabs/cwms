@@ -24,7 +24,16 @@ class PurchaseController extends Controller
 
     protected function view(Request $request) {
         $user = Auth::user();
-        $transactions = TransactionService::getPurchases($user);
+        $range = request('dateRange');
+        $invoice = request('invoice');
+        if(isset($range)) {
+            $transactions = TransactionService::getPurchasesByRange($user, $range);
+        } else if(isset($invoice)) {
+            $transactions = TransactionService::getPurchasesByInvoice($user, $invoice);
+        } else {
+            $transactions = TransactionService::getPurchases($user);
+        }
+        
         $data = [
             'title' => 'View Purchases',
             'items' => $transactions,

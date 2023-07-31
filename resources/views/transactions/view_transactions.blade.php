@@ -36,12 +36,17 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Filter By Date Range</label>
-                                        <div class="input-group">
-                                            <input class="form-control" type="text" name="date" id="start_date" placeholder="Start Date -> End Date">
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                        <form action="{{ ($flag == 'sale') ? route('sale.view') : route('purchase.view') }}" method="get">
+                                            <div class="input-group">
+                                            
+                                                @csrf
+                                                <input class="form-control" type="text" name="dateRange" id="start_date" placeholder="Start Date -> End Date" value="{{ old('dateRange') ?? '' }}">
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                                                </div>
+                                        
                                             </div>
-                                        </div>
+                                        </form>
                                        
                                     </div>
                                 </div>

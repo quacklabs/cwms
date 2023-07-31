@@ -5,7 +5,7 @@ use Carbon\Carbon;
 use App\Contracts\TransactionInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
-
+use Illuminate\Support\Str;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -125,6 +125,19 @@ class TransactionService implements TransactionInterface {
             // Limit managers and staff to only their primary warehouse
             $warehouse = $user->warehouse;
             return Purchase::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+        }
+    }
+
+    public static function getPurchasesByRange(User $user, $range) {
+        $dateRange = explode('to', $range);
+        $start = Carbon::parse($dateRange[0]);
+        $end = Carbon::parse($dateRange[1]);
+        if($user->hasRole('admin')) {
+            return Purchase::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->paginate(25);
+        } else {
+            // Limit managers and staff to only their primary warehouse
+            $warehouse = $user->warehouse;
+            return Purchase::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
         }
     }
 
