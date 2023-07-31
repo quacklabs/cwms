@@ -60,7 +60,7 @@ class Product extends Model
         if($user->hasRole('admin')) {
             $warehouse = null;
         } else {
-            $warehouse = $user->warehouse->first()->id;
+            $warehouse = $user->warehouse->id;
         }
         if($warehouse != null) {
             return ProductStock::where('warehouse_id', $warehouse)
@@ -88,4 +88,17 @@ class Product extends Model
     public function actions(): MorphMany {
         return $this->morphMany(Action::class, 'model_type');
     }
+
+    // public function unsold($warehouse_id = null) {
+    //     if(isset($warehouse_id)) {
+    //         return $this->hasMany(ProductStock::class, 'product_id')->where(function ($query) use ($quantityThreshold) {
+    //             $query->where('quantity', '<=', $quantityThreshold);
+    //         });
+    //     } else {
+    //         return $this->hasMany(ProductStock::class, 'product_id')->where(function ($query) use ($quantityThreshold) {
+    //             $query->where('quantity', '<=', $quantityThreshold);
+    //         });
+    //     }
+        
+    // }
 }

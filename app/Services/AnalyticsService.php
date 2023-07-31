@@ -182,22 +182,13 @@ class AnalyticsService implements BusinessIntelligence {
     }
 
     public function productLow() {
-        if($this->user->hasRole('admin')) {
-            $productsLowStock = Product::whereHas('productStock', function ($query) {
-                $query->where('sold_by', '=', null);
-            });
-        } else {
-            $id = $this->user->warehouse->id;
-            $productsLowStock = Product::whereHas('productStock', function ($query) use ($id) {
-                $query->where('sold_by', '=', null)->where('warehouse_id', $id);
-            });
-        }
-
-        $productsLowStock->select('products.*')
-        ->addSelect(DB::raw('(SELECT COUNT(*) FROM product_stock WHERE product_stock.product_id = products.id AND product_stock.sold_by IS NULL) as product_stock_count'))
-        ->having('product_stock_count', '<=', DB::raw('products.alert'))->get();
-
-        return $productsLowStock;
+        $user = $this->user;
+        
+        $products = Product::with('productStock')
+        ->get()->filter(function($product) use($user) {
+            return $product->totalInStock($user) <= $product->alert;
+        });
+        return $products;
     }
 
     public function topProducts() {

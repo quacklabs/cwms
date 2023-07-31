@@ -131,7 +131,7 @@
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
-                    <h4>Total Sales</h4>
+                    <h4>Total Sales - {{ date('Y') }}</h4>
                   </div>
                   <div class="card-body">
                   {{ number_format($analytics->totalSaleAmount(), 2) }}
@@ -151,7 +151,7 @@
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
-                    <h4>Total Purchase</h4>
+                    <h4>Total Purchase - {{ date('Y') }}</h4>
                   </div>
                   <div class="card-body">
                   {{ number_format($analytics->totalPurchaseAmount(), 2) }}
@@ -373,7 +373,6 @@
                         <div class="text-primary">{{ $product->totalInStock() }}</div>
                       </div>
                     </a>
-                        
                     @endforeach
                     
                     
