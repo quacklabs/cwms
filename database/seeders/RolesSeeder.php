@@ -110,7 +110,7 @@ class RolesSeeder extends Seeder
             'view-reports',
             'view-payment-report',
             'view-stock-report',
-            'view-data-report'
+            'view-data-report',
         ])->get();
         $staff_role->syncPermissions($staff_perms);
     }
@@ -163,6 +163,8 @@ class RolesSeeder extends Seeder
                 'create-store',
                 'delete-store',
                 'modify-store',
+                'view-store-inventory',
+                'view-store-analytics'
             ],
             'transactions' => [
                 'view-purchase',

@@ -13,6 +13,7 @@ use Database\Seeders\ProductSeeder;
 use Database\Seeders\StoreSeeder;
 use Database\Seeders\PartnerSeeder;
 use Database\Seeders\TransactionSeeder;
+use Illuminate\Support\Facades\Auth;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,6 +35,11 @@ class DatabaseSeeder extends Seeder
         $this->call(StoreSeeder::class);
         $this->call(PartnerSeeder::class);
         // $this->call(TransactionSeeder::class);
+        $credentials = [
+            "username" => "admin",
+            "password" => "12345678"
+        ];
+        Auth::attempt($credentials);
 
     }
 }

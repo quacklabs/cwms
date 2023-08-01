@@ -39,14 +39,14 @@
                     <div class="card-header">
                         <h4>All Stores</h4>
                         <div class="card-header-form">
-                            <form>
+                            <!-- <form>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search">
                                     <div class="input-group-btn">
                                         <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -57,7 +57,7 @@
                                         <th></th>
                                         <th>Name</th>
                                         <th>Location</th>
-                                        <th>Warehouse</th>
+                                        <!-- <th>Staff</th> -->
                                         <th>Actions</th>
                                     </tr>
 
@@ -85,12 +85,33 @@
                                             </td>
                                             <td>{{ $store->name }}</td>
                                             <td>{{ $store->address }}</td>
-                                            <td>{{ $store->warehouse->name ?? 'Unassigned' }}</td>
+                                            <!-- <td>{{ $store->warehouse->name ?? 'Unassigned' }}</td> -->
                                             <td>
                                                 <div class="buttons">
                                                     <!-- <a href="{{ route('store.view', ['id' => $store->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View store">
                                                         <i class="fas fa-eye"></i>
                                                     </a> -->
+                                                    @can('view-store-inventory')
+                                                        <a href="{{ route('store.inventory', ['id' => $store->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Inventory">
+                                                            <i class="fas">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512">
+                                                                    <style>svg{fill:#ffffff}</style>
+                                                                    <path d="M208 320h384c8.8 0 16-7.2 16-16V48c0-8.8-7.2-16-16-16H448v128l-48-32-48 32V32H208c-8.8 0-16 7.2-16 16v256c0 8.8 7.2 16 16 16zm416 64H128V16c0-8.8-7.2-16-16-16H16C7.2 0 0 7.2 0 16v32c0 8.8 7.2 16 16 16h48v368c0 8.8 7.2 16 16 16h82.9c-1.8 5-2.9 10.4-2.9 16 0 26.5 21.5 48 48 48s48-21.5 48-48c0-5.6-1.2-11-2.9-16H451c-1.8 5-2.9 10.4-2.9 16 0 26.5 21.5 48 48 48s48-21.5 48-48c0-5.6-1.2-11-2.9-16H624c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16z"/>
+                                                                </svg>
+                                                            </i>
+                                                        </a>
+                                                    @endcan
+                                                    @can('view-store-analytics')
+                                                        <a href="{{ route('store.analytics', ['id' => $store->id]) }}" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Reports & Analytics">
+                                                            <i class="text-white">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                                <!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                                                                <style>svg{fill:#ffffff}</style>
+                                                                <path d="M332.8 320h38.4c6.4 0 12.8-6.4 12.8-12.8V172.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V76.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-288 0h38.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zM496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"/>
+                                                            </svg>
+                                                            </i>
+                                                        </a>
+                                                    @endcan
                                                     @can('suspend-store')
                                                         @if($store->status == true)
                                                         <a href="{{ route('store.toggle', ['id' => $store->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate store">
@@ -189,21 +210,6 @@
                             <div class="form-group col-12">
                                 <label for="inputEmail4">Address</label>
                                 <input id="sku" name="address" type="text" class="form-control" autocomplete="off" required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-12">
-                                <label for="site-description">Warehouse</label>
-                                <select class="form-control" name="warehouse_id">
-                                    @empty($warehouses)
-                                    
-                                    @else
-                                        @foreach ($warehouses as $warehouse)
-                                        <option value="{{$warehouse->id}}">{{ $warehouse->name }}</option>
-                                        @endforeach
-                                    @endempty
-                                </select>
                             </div>
                         </div>
 

@@ -19,10 +19,23 @@ class CreateStore extends Migration
             $table->longText('address');
             $table->boolean('status')->default(true);
             $table->longText('notes')->nullable();
-            $table->unsignedBigInteger('warehouse_id')->nullable();
+            // $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->timestamps();
 
-            $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');
+            // $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');
+        });
+
+        Schema::create('store_user', function (Blueprint $table) {
+            // $table->id();
+            // $table->string('name');
+            // $table->longText('address');
+            // $table->boolean('status')->default(true);
+            // $table->longText('notes')->nullable();
+            $table->unsignedBigInteger('store_id');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamps();
+            $table->foreign('store_id')->references('id')->on('store')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -34,5 +47,6 @@ class CreateStore extends Migration
     public function down()
     {
         Schema::dropIfExists('store');
+        Schema::dropIfExists('store_user');
     }
 }

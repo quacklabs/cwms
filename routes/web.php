@@ -73,6 +73,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('toggle-store/{id}/{action}', 'StoreController@toggle')->name('toggle');
                 Route::get('delete-store/{id}', 'StoreController@delete')->middleware('can:delete-store')->name('delete');
                 Route::match(['get', 'post'], 'edit-store/{id}', 'StoreController@edit')->middleware('can:modify-store')->name('edit');
+                Route::get('view-analytics/{id}', 'StoreController@view_analytics')->name('analytics');
+                Route::get('view-inventory/{id}', 'StoreController@view_inventory')->name('inventory');
             });
 
             Route::prefix('partners')->name('partner.')->group(function() {

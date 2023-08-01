@@ -15,21 +15,16 @@ class StoreController extends Controller
             $valid = $request->validate([
                 'name' => ['required'],
                 'address' => ['required'],
-                'warehouse_id' => ['required'],
                 'notes' => ['nullable']
             ]);
-
             Store::create($valid);
-
             return redirect()->route('store.stores')->with('success', 'Store Added successfully');
         }
 
         $stores = Store::orderBy('created_at', 'desc')->paginate(25);
-        $warehouses = Warehouse::orderBy('created_at', 'desc')->get();
         $data = [
             'title' => 'Stores',
             'stores' => $stores,
-            'warehouses' => $warehouses
         ];
         return parent::render($data, 'store.stores');
     }
@@ -102,5 +97,13 @@ class StoreController extends Controller
         }
         $store->delete();
         return redirect()->route('store.all_stores')->with('success', 'Store removed successfully');
+    }
+
+    public function view_inventory(Request $request) {
+
+    }
+
+    public function view_analytics(Request $request) {
+        
     }
 }
