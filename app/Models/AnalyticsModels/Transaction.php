@@ -3,8 +3,12 @@ namespace App\Models\AnalyticsModels;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Contracts\TransactionInterface;
 
-abstract class Transaction extends Model {
+use App\Models\AnalyticsModels\TransactionDetail;
+
+abstract class Transaction extends Model implements TransactionInterface {
 
     public function scopeProducts($query) {
 
@@ -15,8 +19,6 @@ abstract class Transaction extends Model {
         })->reject(function($where) {
             return $where['type'] === 'Exists';
         })->values()->all();
-
-        // dd($builder);
 
         $result = $builder->get()->flatMap(function($transaction) {
             $model = static::class;
@@ -61,6 +63,21 @@ abstract class Transaction extends Model {
         $net = $cost - $discount;
         return floatval($net);
     }
+
+    // public function purchase(int $id): Purchase {
+    //     $model = static::class;
+    //     $transaction = $model::find($id);
+    // }
+
+    // public function sale(int $id): Sale {
+    //     $model = static::class;
+    //     $transaction = $model::find($id);
+    // }
+
+    abstract public function details(): HasMany;
+    abstract public function payable(): float;
+    abstract public function due(): float;
+    abstract public function origin(): Model;
 
     // public function purchase(int $id): Purchase {
     //     return self::find($id);

@@ -362,7 +362,7 @@
                 </div>
                 <div class="card-body p-0">
                   <div class="tickets-list">
-                    @foreach ($analytics->productLow() as $product)
+                    @foreach ($analytics->productLow()->take(3) as $product)
                     <a href="#" class="ticket-item">
                       <div class="ticket-title">
                         <h4>{{ $product->name }}</h4>

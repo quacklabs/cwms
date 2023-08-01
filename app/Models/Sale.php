@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 // use Illuminate\Support\Facades\DB;
 
 use App\Models\Warehouse;
@@ -31,7 +32,8 @@ class Sale extends Transaction
         'received',
         'date',
         'note',
-        'return_status'
+        'return_status',
+        'sale_point'
     ];
 
     protected $appends = [
@@ -52,22 +54,9 @@ class Sale extends Transaction
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-    public function details() {
+    public function details(): HasMany {
         return $this->hasMany(SaleDetails::class, 'sale_id');
-    }
-
-    // public static function purchase(int $id) : Purchase {
-    //     return new Purchase;
-    // }
-
-    // public static function sale(int $id) : Sale {
-    //     return self::find($id);
-    // }
-
-
-    public function payable(): float {
-        $full = $this->total_price - $this->discount_amount;
-        return $full;
+        // dd($rel);
     }
 
     public function getPayableAttribute() {
@@ -98,6 +87,15 @@ class Sale extends Transaction
 
     public function customerPayments() {
         return $this->hasMany(CustomerPayment::class, 'purchase_id');
+    }
+
+    public function payable(): float {
+        $full = $this->total_price - $this->discount_amount;
+        return $full;
+    }
+
+    public function origin(): Model {
+        
     }
 
     // public function scopePending($query) {

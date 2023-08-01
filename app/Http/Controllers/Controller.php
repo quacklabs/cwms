@@ -15,8 +15,8 @@ class Controller extends BaseController
 
     public function render(array $data, string $page) {
         // you can add other data to be used on admin before rendering
-        // $data['api_token'] = session('api_token') ?? '';
-        // $data['x_token'] = csrf_token();
+        $data['api_token'] = session('api_token') ?? '';
+        $data['x_token'] = csrf_token();
         return view($page)->with($data);
     }
 

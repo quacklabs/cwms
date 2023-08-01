@@ -16,7 +16,8 @@ use Faker\Factory;
 use Faker\Provider\Barcode;
 
 use App\Rules\DecimalComparison;
-use App\Http\Helpers\Transaction;
+// use App\Http\Helpers\Transaction;
+use App\Services\TransactionService;
 
 
 class TransactionsController extends Controller {
@@ -99,9 +100,9 @@ class TransactionsController extends Controller {
         }
 
         if(TransactionType::isEqual($flag, TransactionType::PURCHASE)) {
-            $transaction = Transaction::purchase($id);
+            $transaction = TransactionService::getPurchase($id);
         } else if(TransactionType::isEqual($flag, TransactionType::SALE)) {
-            $transaction = Transaction::sale($id);
+            $transaction = TransactionService::getSale($id);
         } else {
             return redirect()->route('dashboard');
         }

@@ -23,7 +23,7 @@ use App\Models\SaleReturnDetail;
 use Faker\Factory;
 use Faker\Provider\Barcode;
 
-class TransactionService implements TransactionInterface {
+class TransactionService {
     
     public static function create(array $data, $flag): TransactionInterface {
 
@@ -118,6 +118,14 @@ class TransactionService implements TransactionInterface {
         return $transaction;
     }
 
+    public static function getPurchase($id): Purchase {
+        return Purchase::find($id)->first();
+    }
+
+    public static function getSale($id): Purchase {
+        return Sale::find($id)->get();
+    }
+
     public static function getPurchases(User $user) {
         if($user->hasRole('admin')) {
             return Purchase::orderBy('created_at', 'desc')->paginate(25);
@@ -200,24 +208,24 @@ class TransactionService implements TransactionInterface {
         }
     }
 
-    public static function purchase(int $id): Purchase {
-        return Purchase::findOrFail($id);
-    }
-    public static function sale(int $id): Sale {
-        return Sale::findOrFail($id);
-    }
+    // public static function purchase(int $id): Purchase {
+    //     return Purchase::findOrFail($id);
+    // }
+    // public static function sale(int $id): Sale {
+    //     return Sale::findOrFail($id);
+    // }
 
-    public static function sale_return($id): SaleReturn {
-        return SaleReturn::findOrFail($id);
-    }
+    // public static function sale_return($id): SaleReturn {
+    //     return SaleReturn::findOrFail($id);
+    // }
 
-    public function payable(): float {
+    // public function payable(): float {
 
-    }
+    // }
     
-    public function due(): float {
+    // public function due(): float {
 
-    }
+    // }
 
     public static function newInvoice() {
         $faker = Factory::create();

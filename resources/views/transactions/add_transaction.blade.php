@@ -377,12 +377,18 @@
         }
 
         const product_options = {
+            create: true,
             autocomplete: false,
             valueField: 'id', // Specify the key for option value
             labelField: 'name', // Specify the key for option innerHTML
             searchField: 'name', // Specify the key for search field
             create: false,
             closeAfterSelect: true,
+            onInitialize: function () {
+                this.$control_input.attr('autocomplete', 'off');
+                this.$control_input.attr('name', 'product');
+                this.$control_input.attr('autofill', 'disabled');
+            },
             render: {
                 option: function(item, escape) {
                     // return null
@@ -393,16 +399,17 @@
                 if (!query.length) return callback();
                 const partner_id = $("#partner_select").val()
                 const warehouse_id = $("#warehouse_select").val()
-                if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
-                    swal({
-                        title: "Warehouse Required",
-                        text: "Please select a warehouse to continue",
-                        icon: 'error'
-                    })
-                    return
-                } else {
-                    search("{{ route('api.findProductInWarehouse') }}", query, callback)
-                }
+                search("{{ ($flag == 'purchase') ? route('api.findProduct') : route('api.findProductByWarehouse', ['id' => $user->hasRole('admin') ? '0' : $user->warehouse->id]) }}", query, callback)
+                // if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
+                //     swal({
+                //         title: "Warehouse Required",
+                //         text: "Please select a warehouse to continue",
+                //         icon: 'error'
+                //     })
+                //     return
+                // } else {
+                    
+                // }
                 
             },
             onChange: function(value) {

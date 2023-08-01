@@ -24,6 +24,7 @@ class CreateSales extends Migration
             $table->decimal('received', 28,8)->default(0.00);
             $table->longText('notes')->nullable();
             $table->boolean('return_status')->default(false);
+            $table->string('origin')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

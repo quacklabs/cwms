@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form id="orderForm" action="{{ route('transfer.create') }}" method="POST">
+                        <form id="orderForm" action="{{ route('transfer.add', ['flag' => $flag]) }}" method="POST">
                             @csrf
                             <input id="note" type="hidden" name="notes">
                             <input type="hidden" name="items" id="order">

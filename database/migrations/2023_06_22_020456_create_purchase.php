@@ -25,6 +25,7 @@ class CreatePurchase extends Migration
             $table->decimal('received', 28,8)->default(0.00);
             $table->text('note')->nullable();
             $table->boolean('return_status')->default(false);
+            $table->string('origin')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');

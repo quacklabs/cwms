@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Warehouse;
 use App\Models\Supplier;
@@ -43,15 +44,11 @@ class Purchase extends Transaction {
         'due', 'payable', 'url', 'returns'
     ];
 
-    // public function getDateAttribute() {
-    //     return Carbon::parse($this->date)->toDateString();
-    // }
-
     public function getReturnsAttribute() {
         return $this->returns();
     }
 
-    public function details() {
+    public function details(): HasMany {
         return $this->hasMany(PurchaseDetails::class, 'purchase_id');
     }
 
@@ -95,5 +92,9 @@ class Purchase extends Transaction {
 
     public function actions(): MorphMany {
         return $this->morphMany(Action::class);
+    }
+
+    public function origin(): Model {
+        return null;
     }
 }

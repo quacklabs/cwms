@@ -129,8 +129,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('transfer')->name('transfer.')->group(function() {
                 Route::get('view/{flag}', 'TransferController@transfers')->middleware('permission:view-transfer')->name('view');
-                Route::match(['get', 'post'], 'transfer-warehouse', 'TransferController@create_transfer')->middleware('permission:transfer-product')->name('warehouse');
-                Route::match(['get', 'post'], 'transfer-stores', 'TransferController@stores_transfer')->middleware('permission:transfer-product')->name('stores');
+                Route::match(['get', 'post'], 'add/{flag}', 'TransferController@create_transfer')->middleware('permission:transfer-product')->name('add');
+                // Route::match(['get', 'post'], 'transfer-stores', 'TransferController@stores_transfer')->middleware('permission:transfer-product')->name('stores');
                 // Route::get('approve-transfer', )
             });
 

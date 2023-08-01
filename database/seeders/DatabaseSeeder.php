@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(BrandSeeder::class);
         $this->call(UnitSeeder::class);
-        // $this->call(ProductSeeder::class);
+        $this->call(ProductSeeder::class);
         $this->call(StoreSeeder::class);
         $this->call(PartnerSeeder::class);
         // $this->call(TransactionSeeder::class);

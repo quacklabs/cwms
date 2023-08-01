@@ -187,14 +187,14 @@ Breadcrumbs::for('stock.make_adjustment', function (BreadcrumbTrail $trail) {
 });
 
 // Dashboard > Transfer
-Breadcrumbs::for('transfer.transfers', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('transfer.view', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Transfers');
 });
 
-Breadcrumbs::for('transfer.create', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('transfer.add', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
-    $trail->push('Transfers', route('transfer.transfers'));
+    $trail->push('Transfers', route('transfer.view', ['flag' => 'warehouse']));
     $trail->push('Make Transfer');
 });
 

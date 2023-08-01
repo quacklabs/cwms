@@ -86,7 +86,10 @@
 
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.product') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('product.products') }}">
-                    <i class="fas fa-apple-crate"></i> <span>Products</span>
+                    <i class="fas">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z"/></svg>
+                    </i> 
+                    <span>Products</span>
                 </a>
             </li>
 
@@ -145,9 +148,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class=""><a class="nav-link" href="{{ route('transfer.view', ['flag' => 'warehouse']) }}">Warehouse Transfers</a></li>
-                        <li class=""><a class="nav-link" href="{{ route('transfer.warehouse') }}">Transer To Warehouse</a></li>
                         <li class=""><a class="nav-link" href="{{ route('transfer.view', ['flag' => 'store']) }}">Store Transfers</a></li>
-                        <li class=""><a class="nav-link" href="{{ route('transfer.stores') }}">Transfer To Store</a></li>
                     </ul>
                 </li>
                

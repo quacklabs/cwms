@@ -81,7 +81,7 @@ class PurchaseController extends Controller
             return redirect()->route('purchase.view');
         }
 
-        $transaction = TransactionService::purchase($id);
+        $transaction = TransactionService::getPurchase($id);
 
         if(!$transaction) {
             return redirect()->route('purchase.view')->with('error', 'Unable to adjust payment. Invalid transaction');
@@ -126,7 +126,7 @@ class PurchaseController extends Controller
         if(!$id) {
             return redirect()->route('purchase.view');
         }
-        $purchase = TransactionService::purchase($id);
+        $purchase = TransactionService::getPurchase($id);
         if(!$purchase) {
             return redirect()->route('purchase.view')->with('error', 'Invalid Transaction ID');
         }

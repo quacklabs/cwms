@@ -9,18 +9,19 @@
         <h1>{{ ucwords($flag) }} {{$title }}</h1>
         @can('transfer-product')
         <div class="section-header-button">
-            <!-- <a class="btn btn-primary" href="#">Add New</a> -->
+            <a class="btn btn-primary" href="{{ route('transfer.add', ['flag' => $flag]) }}">Add New</a>
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
         @endcan
         
-        {{ Breadcrumbs::render('transfer.transfers') }}
+        {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
         <h2 class="section-title">Manage Transfers</h2>
         <p class="section-lead">
             
         </p>
+        
 
         @if($errors->any())
             <div class="alert alert-danger">
@@ -39,6 +40,33 @@
                     <div class="card-header">
                         <h4>All Transfers</h4>
                         <div class="card-header-form">
+                            <!-- <div class="buttons row mb-2 ml-1">
+                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon btn-flat" data-toggle="tooltip" data-placement="top" title="" data-original-title="Print"  data-transaction="#" >
+                                    <i class="fas fa-money-check-alt" ></i>
+                                </a>
+                            </div> -->
+                            <div class="buttons row">
+                                <div class="input-group col-6">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                                <div class="input-group col-6">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- <div class="row">
+
+                            </div> -->
+                            <!-- <form>
+                                
+                            </form>
+
                             <form>
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search">
@@ -46,7 +74,7 @@
                                         <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
                     <div class="card-body p-0">
