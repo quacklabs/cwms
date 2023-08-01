@@ -128,17 +128,29 @@
                 @can('adjust-stock')
                 <li class="{{ Str::startsWith(Route::currentRouteName(), 'stock.adjustments') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('stock.adjustments') }}">
-                        <i class="fas fa-apple-crate"></i> <span>Adjustment</span>
+                        <i class="fas fa-apple-crate">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"/></svg>
+                        </i> <span>Adjustment</span>
                     </a>
                 </li>
                 @endcan
 
                 @can('transfer-product')
-                <li class="{{ Str::startsWith(Route::currentRouteName(), 'transfer') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('transfer.transfers') }}">
-                        <i class="fas fa-apple-crate"></i> <span>Transfer</span>
+                <li class="dropdown">
+                    <a class="nav-link has-dropdown {{ Str::startsWith(Route::currentRouteName(), 'transfer') ? 'active' : '' }}" href="#">
+                        <i class="fas"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 168v-16c0-13.255 10.745-24 24-24h360V80c0-21.367 25.899-32.042 40.971-16.971l80 80c9.372 9.373 9.372 24.569 0 33.941l-80 80C409.956 271.982 384 261.456 384 240v-48H24c-13.255 0-24-10.745-24-24zm488 152H128v-48c0-21.314-25.862-32.08-40.971-16.971l-80 80c-9.372 9.373-9.372 24.569 0 33.941l80 80C102.057 463.997 128 453.437 128 432v-48h360c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24z"/></svg>
+                        </i>
+                        <span>Transfer</span>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class=""><a class="nav-link" href="{{ route('transfer.view', ['flag' => 'warehouse']) }}">Warehouse Transfers</a></li>
+                        <li class=""><a class="nav-link" href="{{ route('transfer.warehouse') }}">Transer To Warehouse</a></li>
+                        <li class=""><a class="nav-link" href="{{ route('transfer.view', ['flag' => 'store']) }}">Store Transfers</a></li>
+                        <li class=""><a class="nav-link" href="{{ route('transfer.stores') }}">Transfer To Store</a></li>
+                    </ul>
                 </li>
+               
                 @endcan
             @endrole
 
@@ -146,13 +158,19 @@
             @can('create-expense-type')
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'expense.ty') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('expense.types') }}">
-                    <i class="fas fa-apple-crate"></i> <span>Expense Type</span>
+                    <i class="fas">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 32C114.62 32 0 125.12 0 240c0 49.56 21.41 95.01 57.02 130.74C44.46 421.05 2.7 465.97 2.2 466.5A7.995 7.995 0 0 0 8 480c66.26 0 115.99-31.75 140.6-51.38C181.29 440.93 217.59 448 256 448c141.38 0 256-93.12 256-208S397.38 32 256 32zm24 302.44V352c0 8.84-7.16 16-16 16h-16c-8.84 0-16-7.16-16-16v-17.73c-11.42-1.35-22.28-5.19-31.78-11.46-6.22-4.11-6.82-13.11-1.55-18.38l17.52-17.52c3.74-3.74 9.31-4.24 14.11-2.03 3.18 1.46 6.66 2.22 10.26 2.22h32.78c4.66 0 8.44-3.78 8.44-8.42 0-3.75-2.52-7.08-6.12-8.11l-50.07-14.3c-22.25-6.35-40.01-24.71-42.91-47.67-4.05-32.07 19.03-59.43 49.32-63.05V128c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v17.73c11.42 1.35 22.28 5.19 31.78 11.46 6.22 4.11 6.82 13.11 1.55 18.38l-17.52 17.52c-3.74 3.74-9.31 4.24-14.11 2.03a24.516 24.516 0 0 0-10.26-2.22h-32.78c-4.66 0-8.44 3.78-8.44 8.42 0 3.75 2.52 7.08 6.12 8.11l50.07 14.3c22.25 6.36 40.01 24.71 42.91 47.67 4.05 32.06-19.03 59.42-49.32 63.04z"/></svg>
+                    </i> 
+                    <span>Expense Type</span>
                 </a>
             </li>
             @endcan
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'expense.expense') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('expense.expenses') }}">
-                    <i class="fas fa-apple-crate"></i> <span>Expenses</span>
+                    <i class="fas">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M400 0H48C22.4 0 0 22.4 0 48v416c0 25.6 22.4 48 48 48h352c25.6 0 48-22.4 48-48V48c0-25.6-22.4-48-48-48zM128 435.2c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm0-128c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm128 128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm0-128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm128 128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8V268.8c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v166.4zm0-256c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8V76.8C64 70.4 70.4 64 76.8 64h294.4c6.4 0 12.8 6.4 12.8 12.8v102.4z"/></svg>
+                    </i> 
+                    <span>Expenses</span>
                 </a>
             </li>
 

@@ -6,10 +6,10 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-        <h1>{{$title }}</h1>
+        <h1>{{ ucwords($flag) }} {{$title }}</h1>
         @can('transfer-product')
         <div class="section-header-button">
-            <a class="btn btn-primary" href="{{ route('transfer.create') }}">Add New</a>
+            <!-- <a class="btn btn-primary" href="#">Add New</a> -->
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
         @endcan

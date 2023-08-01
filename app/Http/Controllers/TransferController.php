@@ -8,12 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\TransferService;
 use App\Models\Warehouse;
 
-class TransferController extends Controller
-{
-    //
+class TransferController extends Controller {
 
     public function transfers(Request $request) {
         $user = Auth::user();
+        $flag = $request->route('flag');
         if($user->hasRole('admin')) {
             $transfers = TransferService::getAllPaginated();
         } else {
@@ -22,7 +21,8 @@ class TransferController extends Controller
         }
         $data = [
             'title' => 'Transfers',
-            'transfers' => $transfers
+            'transfers' => $transfers,
+            'flag' => $flag
         ];
 
         return parent::render($data, 'transfer.transfers');
