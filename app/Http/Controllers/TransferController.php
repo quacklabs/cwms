@@ -77,8 +77,14 @@ class TransferController extends Controller {
         switch($flag) {
             case 'warehouse':
                 return $this->warehouse_transfer($data);
-            case 'stores':
+                break;
+            case 'store':
                 return $this->store_transfer($data);
+                break;
+            default:
+                return redirect()->route('transfer.view', ['flag' => 'warehouse']);
+                break;
+
         }
     }
 
@@ -124,5 +130,26 @@ class TransferController extends Controller {
         // dd($data);
         $data['stores'] = Store::orderBy('created_at', 'desc')->limit(100)->get();
         return parent::render($data, 'transfer.add_warehouse_transfer');
+    }
+
+    private function store_transfer(array $data) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $data['my_warehouse'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
+            $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
+        } else {
+            $data['my_warehouse'] = collect([$user->warehouse]);
+            
+            $user_id = $user->id;
+            $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {
+                // Exclude the current user from the query
+                $query->where('id', '!=', $user_id);
+            })->get();
+
+            // dd($data['my_warehouse']);
+        }
+        // dd($data);
+        $data['stores'] = Store::orderBy('created_at', 'desc')->limit(100)->get();
+        return parent::render($data, 'transfer.add_store_transfer');
     }
 }
