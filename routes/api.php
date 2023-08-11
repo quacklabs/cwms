@@ -20,9 +20,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::post('findWarehouse', 'APIController@warehouses')->name('findWarehouse');
         Route::post('findProduct', 'APIController@products')->name('findProduct');
         Route::post('findProductByWarehouse/{id}', 'APIController@productsByWarehouse')->name('findProductByWarehouse');
-        // Route::post('productsInWarehouse', 'APIController@productsInWarehouse')->name('findProductInWarehouse');
+        Route::post('findProductInWarehouse', 'APIController@findProductInWarehouse')->name('findProductInWarehouse');
         Route::post('findPartner/{flag}', 'APIController@partners')->name('findPartner');
         Route::post('uploadSerial', 'APIController@parse_serials')->name('uploadSerials');
+        Route::post('findStore', 'APIController@stores')->name('findStore');
     });
 });
 

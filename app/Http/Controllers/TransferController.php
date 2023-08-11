@@ -7,18 +7,29 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Services\TransferService;
 use App\Models\Warehouse;
+use App\Models\Store;
 
 class TransferController extends Controller {
 
     public function transfers(Request $request) {
-        $user = Auth::user();
+        
         $flag = $request->route('flag');
-        if($user->hasRole('admin')) {
-            $transfers = TransferService::getAllPaginated();
-        } else {
-            $id = $user->warehouse->id;
-            $transfers = TransferService::getByWarehouse($id);
+        if(!isset($flag)) {
+            return redirect()->route('transfer.view', ['flag' => 'warehouse']);
         }
+
+        switch($flag) {
+            case 'warehouse':
+                $transfers = $this->getWarehouseTransfers();
+                break;
+            case 'stores':
+                $transfers = $this->getStoreTransfers();
+                break;
+            default:
+                $transfers = $this->getWarehouseTransfers();
+                break;
+        }
+
         $data = [
             'title' => 'Transfers',
             'transfers' => $transfers,
@@ -28,36 +39,90 @@ class TransferController extends Controller {
         return parent::render($data, 'transfer.transfers');
     }
 
+    private function getWarehouseTransfers() {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $transfers = TransferService::getAllPaginated();
+        } else {
+            $id = $user->warehouse->id;
+            $transfers = TransferService::getByWarehouse($id);
+        }
+        return $transfers;
+    }
+
+    private function getStoreTransfers(int $id) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $transfers = TransferService::getAllPaginated();
+        } else {
+            $id = $user->warehouse->id;
+            $transfers = TransferService::getByStore($id);
+        }
+        return $transfers;
+    }
+
     public function create_transfer(Request $request) {
         $user = Auth::user();
+        $flag = $request->route('flag');
 
-        if($request->method() == 'POST') {
-            $valid = $request->validate([
-                'from_warehouse' => ['required', 'numeric'],
-                'to_warehouse' => ['required', 'numeric'],
-                'notes' => ['nullable', 'string'],
-                'items' => ['required'],
-                'transfer_date' => ['required', 'date']
-            ]);
-            TransferService::createTransfer($valid);
-            return redirect()->route('transfer.transfers')->with('success', 'Transfer processed successfully');
+        if(!isset($flag)) {
+            return redirect()->route('transfer.view', ['flag' => 'warehouse']);
         }
 
-        if($user->hasRole('admin')) {
-            $from_warehouse = Warehouse::orderBy('created_at', 'desc')->paginate(60);
-            $to_warehouse = Warehouse::orderBy('created_at', 'desc')->paginate(60);
-        } else {
-            $from_warehouse = auth()->user()->warehouse;
-            $to_warehouse = Warehouse::whereDoesntHave('staff', function ($query) use ($user) {
-                $query->where('id', $user->id);
-            })->paginate(25);
-        }
         $data = [
             'title' => 'Make Transfer',
-            'from_warehouse' => $from_warehouse,
-            'to_warehouse' => $to_warehouse
+            'flag' => $flag
         ];
 
-        return parent::render($data, 'transfer.add_transfer');
+        switch($flag) {
+            case 'warehouse':
+                return $this->warehouse_transfer($data);
+            case 'stores':
+                return $this->store_transfer($data);
+        }
+    }
+
+    public function makeTransfer(Request $request) {
+        $destination = $request->route('destination');
+        $flag = $request->route('flag');
+
+        $valid = $request->validate([
+            'from' => ['required', 'numeric'],
+            'to' => ['required', 'numeric'],
+            'notes' => ['nullable', 'string'],
+            'items' => ['required'],
+            'transfer_date' => ['required', 'date']
+        ]);
+        TransferService::createTransfer($valid, $flag, $destination);
+        return redirect()->route('transfer.view', ['flag' => $flag])->with('success', 'Transfer processed successfully');
+    }
+
+    private function store_warehouse(array $data) {
+        $from = Store::orderBy('created_at', 'desc')->paginate(60);
+        $to = Store::orderBy('created_at', 'desc')->paginate(60);
+        $data['from'] = $from;
+        $data['to'] = $to;
+        return parent::render($data, 'transfer.add_store_transfer');
+    }
+
+    private function warehouse_transfer(array $data) {
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $data['my_warehouse'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
+            $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
+        } else {
+            $data['my_warehouse'] = collect([$user->warehouse]);
+            
+            $user_id = $user->id;
+            $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {
+                // Exclude the current user from the query
+                $query->where('id', '!=', $user_id);
+            })->get();
+
+            // dd($data['my_warehouse']);
+        }
+        // dd($data);
+        $data['stores'] = Store::orderBy('created_at', 'desc')->limit(100)->get();
+        return parent::render($data, 'transfer.add_warehouse_transfer');
     }
 }

@@ -6,14 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\TransferDetail;
+use App\Models\Warehouse;
+use App\Models\Store;
 use App\Traits\ActionTakenBy;
+use App\Enums\TransferType;
 
 class Transfer extends Model
 {
     use HasFactory, SoftDeletes, ActionTakenBy;
     protected $table = 'transfer';
     protected $fillable = [
-        'tracking_no', 'from_warehouse', 'to_warehouse','transfer_date','note','balanced'
+        'tracking_no', 'from', 'to','type','transfer_date','note','balanced'
     ];
 
     protected $casts = [
@@ -28,11 +31,23 @@ class Transfer extends Model
         return count($this->details);
     }
 
-    public function source_warehouse() {
-        return $this->belongsTo(Warehouse::class, 'from_warehouse');
+    public function source() {
+        // dd($this->type);
+        switch($this->type) {
+            case TransferType::WAREHOUSE_STORE: case TransferType::WAREHOUSE_WAREHOUSE:
+                return Warehouse::find($this->from)->first();
+            case TransferType::STORE_STORE: case TransferType::STORE_WAREHOUSE:
+                return Store::find($this->from)->first();
+        }
     }
 
-    public function destination_warehouse() {
-        return $this->belongsTo(Warehouse::class, 'to_warehouse');
+    public function destination() {
+        // dd($this->type);
+        switch($this->type) {
+            case TransferType::WAREHOUSE_STORE: case TransferType::STORE_STORE:
+                return Store::find($this->to)->first();
+            case TransferType::WAREHOUSE_WAREHOUSE: case TransferType::STORE_WAREHOUSE:
+                return Warehouse::find($this->to)->first();
+        }
     }
 }

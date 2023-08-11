@@ -23,15 +23,17 @@ class TransferService {
         return Transfer::orderBy('created_at', 'desc')->where('from_warehouse', $id)->orWhere('to_warehouse', $id)->paginate(25);
     }
 
-    public static function createTransfer($valid) {
+    public static function createTransfer($valid, $flag, $destination) {
         $faker = Faker::create();
         $transfer = Transfer::create([
-            'tracking_no' => strtoupper($faker->bothify('???########')),
-            'from_warehouse' => $valid['from_warehouse'],
-            'to_warehouse' => $valid['to_warehouse'],
-            'transfer_date' => Carbon::parse($valid['transfer_date']),
-            'note' =>$valid['notes']
+            "tracking_no" => strtoupper($faker->bothify('???########')),
+            "from" => $valid['from'],
+            "to" => $valid['to'],
+            "transfer_date" => Carbon::parse($valid['transfer_date']),
+            "note" => $valid['notes'],
+            "type" => strtoupper($flag)."_".strtoupper($destination)
         ]);
+        
         $job = new TransferProducts($transfer, json_decode($valid['items']));
         dispatch($job);
         return;

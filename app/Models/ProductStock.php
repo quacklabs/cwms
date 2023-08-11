@@ -11,15 +11,13 @@ class ProductStock extends Model
 {
     use HasFactory;
     protected $table = 'product_stock';
-    protected $fillable = ['warehouse_id', 'product_id', 'serial', 'sold', 'sold_by', 'sold_from'];
+    protected $fillable = ['warehouse_id', 'product_id', 'ownership', 'owner', 'serial', 'sold', 'sold_by', 'sold_from'];
 
-    public function product()
-    {
+    public function product() {
         return $this->belongsTo(Product::class, 'product_id');
     }
 
-    public function warehouse()
-    {
+    public function warehouse() {
         return $this->belongsTo(Warehouse::class);
     }
 }

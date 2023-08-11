@@ -13,15 +13,15 @@
 <div class="main-content">
     <section class="section">
         <div class="section-header">
-        <h1>{{$title }}</h1>
+            <h1>{{$title }}</h1>
 
-        {{ Breadcrumbs::render() }}
-        </div>
+            {{ Breadcrumbs::render() }}
+            </div>
         <div class="section-body">
-        <h2 class="section-title">New Transfer</h2>
-        <!-- <p class="section-lead">
-            Each staff must be assigned to a transaction
-        </p> -->
+            <h2 class="section-title">New Transfer</h2>
+            <!-- <p class="section-lead">
+                Each staff must be assigned to a transaction
+            </p> -->
 
         @if($errors->any())
             <div class="alert alert-danger">
@@ -33,99 +33,195 @@
             </div>
         @endif
 
-        
+
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4> </h4>
-                        <div class="card-header-form ">
-                            <div class="input-group float-right">
-                                <button type="button" id="submit_transaction" class="btn rounded btn-primary"><i class="fas fa-plus"></i> Save</button>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="card-body">
-                        <form id="orderForm" action="{{ route('transfer.add', ['flag' => $flag]) }}" method="POST">
-                            @csrf
-                            <input id="note" type="hidden" name="notes">
-                            <input type="hidden" name="items" id="order">
-                            <div class="form-row">
-                                <div class="form-group col-md-4">
-                                    <label for="inputEmail4">Date</label>
-                                    <input id="date" name="transfer_date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="inputPassword4">From Warehouse</label>
-                                    <div class="form-control p-0">
-                                        <select id="from_warehouse" data-name="Warehouse" name="from_warehouse" class="warehouse_select p-0 mb-0 selector" required>
-                                            <option value=""></option>
-                                            @empty($from_warehouse)
-                                            <option value="">No Warehouse to select</option>
-                                            @else
-                                                @foreach ($from_warehouse as $warehouse)
-                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                                @endforeach
-                                            @endempty
-                                        </select>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" id="home-tab4" data-toggle="tab" href="#home4" role="tab" aria-controls="home" aria-selected="true">Transfer To Store</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab4" data-toggle="tab" href="#profile4" role="tab" aria-controls="profile" aria-selected="false">Transfer To Warehouse</a>
+                            </li>
+                        </ul>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="tab-content no-padding" id="myTab2Content">
+                                    <div class="tab-pane fade active show" id="home4" role="tabpanel" aria-labelledby="home-tab4">
+                                        <form id="orderForm" action="{{ route('transfer.makeTransfer', ['flag' => $flag, 'destination' => 'store']) }}" method="POST">
+                                            @csrf
+                                            <input id="note" type="hidden" name="notes">
+                                            <input type="hidden" name="items" id="order">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputEmail4">Date</label>
+                                                    <input id="date" name="transfer_date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputPassword4">From {{ ucwords($flag) }}</label>
+                                                    <div class="form-control p-0">
+                                                        <select id="from_warehouse" data-name="Warehouse" name="from_warehouse" class="warehouse_select p-0 mb-0 selector" required>
+                                                            <option value=""></option>
+                                                            @empty($from_warehouse)
+                                                            <option value="">No Warehouse to select</option>
+                                                            @else
+                                                                @foreach ($from_warehouse as $warehouse)
+                                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                                @endforeach
+                                                            @endempty
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputPassword4">To Store</label>
+                                                    <div class="form-control p-0">
+                                                        <select id="to_warehouse" data-name="Warehouse" name="to_warehouse" class="warehouse_select p-0 mb-0 selector" required>
+                                                            <option value=""></option>
+                                                            @empty($to_warehouse)
+                                                            <option value="">No Warehouse to select</option>
+                                                            @else
+                                                                @foreach ($to_warehouse as $warehouse)
+                                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                                @endforeach
+                                                            @endempty
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                
+                                            </div>
+                                        
+                                            
+                                        </form>
+                                        <div class="form-row mb-4">
+                                            <select class="col-12" id="product_select" placeholder="Product Name or SKU">
+
+                                            </select>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <th class="text-right">Name</th>
+                                                    <th class="text-right">In Stock</th>
+                                                    <th class="text-right">Quantity</th>
+                                                    <th class="text-right">Action</th>
+                                                </thead>
+                                                
+                                                <tbody id="items">
+                                                    <!-- this is where we display rows for each product added -->
+                                                </tbody>
+
+                                                
+                                            </table>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <label class="input-label">Notes</label>
+                                            <textarea id="collect_note" class="col-12 form-control">
+
+                                            </textarea>
+                                        </div>
+
+                                        <div class="float-right">
+                                            <button class="btn btn-primary btn-round">Submit</button>
+                                        </div>
                                     </div>
+                                        
+                                    <div class="tab-pane fade" id="profile4" role="tabpanel" aria-labelledby="home-tab4">
+                                        <form id="orderForm" action="{{ route('transfer.makeTransfer', ['flag' => $flag, 'destination' => 'warehouse']) }}" method="POST">
+                                            @csrf
+                                            <input id="note" type="hidden" name="notes">
+                                            <input type="hidden" name="items" id="order">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputEmail4">Date</label>
+                                                    <input id="date" name="transfer_date" type="text" class="form-control" value="{{ old('date') ?? date('d-m-Y') }}" required>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputPassword4">From {{ ucwords($flag) }}</label>
+                                                    <div class="form-control p-0">
+                                                        <select id="from_warehouse" data-name="Warehouse" name="from_warehouse" class="warehouse_select p-0 mb-0 selector" required>
+                                                            <option value=""></option>
+                                                            @empty($from_warehouse)
+                                                            <option value="">No Warehouse to select</option>
+                                                            @else
+                                                                @foreach ($from_warehouse as $warehouse)
+                                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                                @endforeach
+                                                            @endempty
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label for="inputPassword4">To Warehouse</label>
+                                                    <div class="form-control p-0">
+                                                        <select id="to_warehouse" data-name="Warehouse" name="to_warehouse" class="warehouse_select p-0 mb-0 selector" required>
+                                                            <option value=""></option>
+                                                            @empty($to_warehouse)
+                                                            <option value="">No Warehouse to select</option>
+                                                            @else
+                                                                @foreach ($to_warehouse as $warehouse)
+                                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                                                @endforeach
+                                                            @endempty
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                
+                                            </div>
+                                        
+                                            
+                                        </form>
+                                        <div class="form-row mb-4">
+                                            <select class="col-12" id="warehouse_product_select" placeholder="Product Name or SKU">
+
+                                            </select>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <th class="text-right">Name</th>
+                                                    <th class="text-right">In Stock</th>
+                                                    <th class="text-right">Quantity</th>
+                                                    <th class="text-right">Action</th>
+                                                </thead>
+                                                
+                                                <tbody id="items">
+                                                    <!-- this is where we display rows for each product added -->
+                                                </tbody>
+
+                                                
+                                            </table>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <label class="input-label">Notes</label>
+                                            <textarea id="collect_note" class="col-12 form-control">
+
+                                            </textarea>
+                                        </div>
+
+                                        <div class="float-right">
+                                            <button class="btn btn-primary btn-round">Submit</button>
+                                        </div>
+                                    </div>
+
                                 </div>
 
-                                <div class="form-group col-md-4">
-                                    <label for="inputPassword4">To Warehouse</label>
-                                    <div class="form-control p-0">
-                                        <select id="to_warehouse" data-name="Warehouse" name="to_warehouse" class="warehouse_select p-0 mb-0 selector" required>
-                                            <option value=""></option>
-                                            @empty($to_warehouse)
-                                            <option value="">No Warehouse to select</option>
-                                            @else
-                                                @foreach ($to_warehouse as $warehouse)
-                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                                @endforeach
-                                            @endempty
-                                        </select>
-                                    </div>
-                                </div>
-
-                                
                             </div>
-                        
-                            
-                        </form>
-
-                        <div class="form-row mb-4">
-                            <select class="col-12" id="product_select" placeholder="Product Name or SKU">
-
-                            </select>
                         </div>
 
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <th class="text-right">Name</th>
-                                    <th class="text-right">In Stock</th>
-                                    <th class="text-right">Quantity</th>
-                                    <th class="text-right">Action</th>
-                                </thead>
-                                
-                                <tbody id="items">
-                                    <!-- this is where we display rows for each product added -->
-                                </tbody>
-
-                                
-                            </table>
-                        </div>
                     </div>
 
-                    <div class="card-footer">
-                        <div class="form-row mb-4">
-                            <label class="input-label">Notes</label>
-                            <textarea id="collect_note" class="col-12 form-control">
-
-                            </textarea>
-                        </div>
-                        
-                    </div>
                 </div>
             </div>
         </div>
@@ -141,7 +237,72 @@
 
 <script>
 
-    function createOrder(grand_total) {
+    function createStoreOrder(grand_total) {
+        const item_rows = $("#items")
+        const rows = item_rows.find('tr')
+        var order = []
+        var validity = true;
+        rows.each(function(index, element) {
+            const current_stock = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'current_stock';
+            }).first().val();
+
+            const quantity = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'quantity';
+            }).first().val();
+
+            const serials = $(element).find('input').filter(function() {
+                return $(this).data('name') === 'serials';
+            }).first()
+
+            if(isNaN(quantity) || quantity <= 0) {
+                validity = false;
+                swal({
+                    title: "Quantity Required",
+                    text: "Please specify a quantity to continue",
+                    icon: 'error'
+                })
+                return
+            }
+
+            if(parseInt(quantity) > parseInt(current_stock)) {
+                validity = false;
+                swal({
+                    title: 'Invalid Quantity',
+                    text: 'Please ensure all quantities do not exceed the product stock',
+                    icon: 'error'
+                })
+                return
+            }
+
+            // const total_amount = price.val() * quantity.val()
+            const current = {
+                product_id: $(element).data('id'),
+                quantity: parseInt(quantity),
+            }
+            if(serials != undefined) {
+                if(serials.val() != '' && serials.val() != undefined && serials.val() != null) {
+                    current.serials = serials.val()
+                }
+            }
+            order.push(current)
+        })
+        if(validity == true && order.length > 0) {
+            const arg = JSON.stringify(order)
+            $("#order").val(arg)
+            const note = $("#collect_note").val()
+            $("#note").val(note)
+            $("#orderForm").submit()
+        } else {
+            swal({
+                title: 'Empty Transfer Order',
+                text: 'Please select some items to transfer',
+                icon: 'error'
+            })
+        }
+    }
+
+    function createWarehouseOrder(grand_total) {
         const item_rows = $("#items")
         const rows = item_rows.find('tr')
         var order = []
@@ -236,7 +397,7 @@
             autoclose: true
         });
 
-        const product_options = {
+        const warehouse_product_options = {
             valueField: 'id', // Specify the key for option value
             labelField: 'name', // Specify the key for option innerHTML
             searchField: 'name', // Specify the key for search field

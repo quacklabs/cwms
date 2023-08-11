@@ -107,10 +107,10 @@
                                             </td>
 
                                             <td>
-                                                {{ $transfer->source_warehouse->name }}
+                                                {{ $transfer->source()->name }}
                                             </td>
                                             <td>
-                                                {{ $transfer->destination_warehouse->name }}
+                                                {{ $transfer->destination()->name }}
                                             </td>
                                             <td>
                                                 {{ $transfer->totalProducts }}
@@ -124,11 +124,6 @@
                                         @endforeach
 
                                     @endempty
-
-                                   
-
-                                    
-                            
                                 </tbody>
                             </table>
                         </div>

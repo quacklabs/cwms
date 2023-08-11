@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateTransferTable extends Migration
 {
@@ -16,16 +17,16 @@ class CreateTransferTable extends Migration
         Schema::create('transfer', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_no');
-            $table->unsignedBigInteger('from_warehouse');
-            $table->unsignedBigInteger('to_warehouse');
+            $table->unsignedBigInteger('from');
+            $table->unsignedBigInteger('to');
             $table->date('transfer_date');
             $table->text('note')->nullable();
             $table->boolean('balanced')->default(false);
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('from_warehouse')->references('id')->on('warehouse')->onDelete('cascade');
-            $table->foreign('to_warehouse')->references('id')->on('warehouse')->onDelete('cascade');
+            // $table->foreign('from_warehouse')->references('id')->on('warehouse')->onDelete('cascade');
+            // $table->foreign('to_warehouse')->references('id')->on('warehouse')->onDelete('cascade');
         });
     }
 
@@ -36,6 +37,7 @@ class CreateTransferTable extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::dropIfExists('transfer');
     }
 }

@@ -17,6 +17,8 @@ class ProductStock extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('warehouse_id');
+            $table->string('ownership');
+            $table->unsignedBigInteger('owner');
             $table->string('serial')->unique();
             $table->boolean('sold')->default(false);
             $table->unsignedBigInteger('sold_by')->nullable();
@@ -28,7 +30,7 @@ class ProductStock extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');
 
-            $table->foreign('sold_from')->references('id')->on('warehouse')->onDelete('cascade');
+            // $table->foreign('sold_from')->references('id')->on('warehouse')->onDelete('cascade');
             $table->foreign('sold_by')->references('id')->on('users')->onDelete('cascade');
         });
     }

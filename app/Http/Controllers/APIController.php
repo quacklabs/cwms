@@ -15,6 +15,7 @@ use League\Csv\Reader;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MyDataImport;
 use App\Services\StockService;
+use App\Models\Store;
 
 class APIController extends Controller
 {
@@ -85,6 +86,7 @@ class APIController extends Controller
         if(!$keyword || !$id){
             $response['status'] = false;
             $response['data'] = null;
+            return response()->json($response);
         }
         $stock = StockService::searchByWarehouse($id, $keyword);
 
@@ -100,7 +102,30 @@ class APIController extends Controller
             $response['data'] = [];
         }
         return response()->json($response);
+    }
 
+    public function findProductInWarehouse(Request $request) {
+        $warehouse_id = $request->input('warehouse_id');
+        $query = $request->input('query');
+        $response = [];
+        if(!$warehouse_id || !$query){
+            $response['status'] = false;
+            $response['data'] = null;
+            return response()->json($response);
+        }
+
+        $stock = StockService::searchByWarehouse($warehouse_id, $query);
+        if($stock != null) {
+            $response['status'] = true;
+            $response['data'] = array_map(function($detail) {
+                return new ProductResponse($detail['product']->id, $detail['product']->name, $detail['stock']);
+            }, $stock->all());
+    
+        } else {
+            $response['status'] = false;
+            $response['data'] = [];
+        }
+        return response()->json($response);
     }
 
     public function warehouses(Request $request) {
@@ -202,6 +227,23 @@ class APIController extends Controller
             ];
         }
 
+        return response()->json($response)->header('Content-Type', 'application/json');
+    }
+
+
+    public function stores(Request $request) {
+        $search = $request->input('query');
+        $response = [];
+        if(!$search){
+            $response['status'] = false;
+            $response['data'] = null;
+            return response()->json($response)->header('Content-Type', 'application/json');
+        }
+        $warehouses = Store::where('name', 'LIKE', '%' . $search . '%')
+        ->orWhere('address', 'LIKE', '%' . $search . '%')
+        ->get();
+        $response['status'] = true;
+        $response['data'] = $warehouses;
         return response()->json($response)->header('Content-Type', 'application/json');
     }
 }

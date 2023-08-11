@@ -44,6 +44,7 @@ class TransactionService {
                     'invoice_no' => $data['invoice_no'],
                     'warehouse_id' => $data['warehouse_id'],
                     'total_price' => $data['total_price'],
+                    
                     'discount_amount' => $data['discount_amount'],
                     'date' => Carbon::parse($data['date']),
                     'notes' => $data['notes']
@@ -54,6 +55,7 @@ class TransactionService {
                     'supplier_id' => $data['partner_id'],
                     'invoice_no' => $data['invoice_no'],
                     'warehouse_id' => $data['warehouse_id'],
+
                     'total_price' => $data['total_price'],
                     'discount_amount' => $data['discount_amount'],
                     'date' => Carbon::parse($data['date']),
@@ -74,6 +76,8 @@ class TransactionService {
                     foreach($serials as $serial) {
                         ProductStock::updateOrCreate([
                             'warehouse_id' => $data['warehouse_id'],
+                            'owner' => $data['warehouse_id'],
+                            'ownership' => 'WAREHOUSE',
                             'product_id' => $order['product_id'],
                             'serial' => $serial,
                         ]);
@@ -83,6 +87,8 @@ class TransactionService {
                         ProductStock::updateOrCreate([
                             'warehouse_id' => $data['warehouse_id'],
                             'product_id' => $order['product_id'],
+                            'owner' => $data['warehouse_id'],
+                            'ownership' => 'WAREHOUSE',
                             'serial' => self::newInvoice(),
                         ]);
                     }
