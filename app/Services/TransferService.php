@@ -20,7 +20,16 @@ class TransferService {
 
     public static function getByWarehouse(int $id) {
 
-        return Transfer::orderBy('created_at', 'desc')->where('from_warehouse', $id)->orWhere('to_warehouse', $id)->paginate(25);
+        return Transfer::orderBy('created_at', 'desc')
+        // ->where('ownership', 'WAREHOUSE')
+        // ->where('owner', $id)
+        ->where('from', $id)->orWhere('to', $id)->paginate(25);
+    }
+
+    public static function getByStore(int $id) {
+        return Transfer::orderBy('created_at', 'desc')
+        // ->where('ownership', 'STORE')
+        ->where('from', $id)->orWhere('to', $id)->paginate(25);
     }
 
     public static function createTransfer($valid, $flag, $destination) {
