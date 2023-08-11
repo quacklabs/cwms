@@ -356,8 +356,8 @@
                 })
             }
         })
-    // Warehouse to warehouse
-    const warehouse_from_options = {
+    // store to store
+    const store_from_options = {
         valueField: 'id', // Specify the key for option value
         labelField: 'name', // Specify the key for option innerHTML
         searchField: 'name', // Specify the key for search field
@@ -371,10 +371,10 @@
         },
         load: function(query, callback) {
             if (!query.length) return callback();
-            search("{{ route('api.findWarehouse') }}", query, callback)
+            search("{{ route('api.findStore') }}", query, callback)
         }
     }
-    $('#w2s_from').selectize(warehouse_from_options)
+    $('#w2s_from').selectize(store_from_options)
 
     const store_to_options = {
         valueField: 'id', // Specify the key for option value
@@ -465,7 +465,7 @@
     }
     $("#w2s_product_select").selectize(w2s_product_options)
 
-    $("#w2w_from").selectize(warehouse_from_options)
+    $("#w2w_from").selectize(store_from_options)
 
     const warehouse_to_options = {
         valueField: 'id', // Specify the key for option value
