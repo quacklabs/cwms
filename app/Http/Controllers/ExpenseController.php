@@ -29,7 +29,7 @@ class ExpenseController extends Controller
         if($user->hasRole('admin')) {
             $expenses = Expense::orderBy('created_at','desc')->paginate(25);
         } else if($user->hasRole('manager')) {
-            $warehouseId = $user->warehouse->first()->id;
+            $warehouseId = $user->warehouse->id;
             // dd($warehouseId);
             $expenses = Expense::whereHas('staff', function ($query) use ($warehouseId) {
                 $query->whereHas('warehouse', function ($subQuery) use ($warehouseId) {
