@@ -38,9 +38,10 @@ class AnalyticsService implements BusinessIntelligence {
         } else {
             $id = $this->user->warehouse->id;
             $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate])
-            ->whereHas('warehouse', function ($query) use ($id) {
-                $query->where('warehouse_id', $id);
-            })->with('warehouse');
+            ->where('warehouse_id', $id);
+            // ->whereHas('warehouse', function ($query) use ($id) {
+            //     $query->where('warehouse_id', $id);
+            // })->with('warehouse');
             
         }
 
