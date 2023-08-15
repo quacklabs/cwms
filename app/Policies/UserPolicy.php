@@ -30,7 +30,7 @@ class UserPolicy
     public function viewAny(User $user)
     {
         //
-        return false;
+        return true;
     }
 
     /**
@@ -78,23 +78,24 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
+        return true;
         //
-        if($user->hasRole('admin')){
-            return true;
-        }
+        // if($user->hasRole('admin')){
+        //     return true;
+        // }
         
-        if($user->hasRole('manager')) {
-            if($user->hasRole() && $model->hasRole('admin')) {
-                return false;
-            }
+        // if($user->hasRole('manager')) {
+        //     // if($user->hasRole() && $model->hasRole('admin')) {
+        //     //     return false;
+        //     // }
 
-            if($user->hasRole() && $model->hasRole('manager')) {
-                return false;
-            }
-            return true;
-        }
+        //     // if($user->hasRole() && $model->hasRole('manager')) {
+        //     //     return false;
+        //     // }
+        //     return true;
+        // }
 
-        return $user->id == $model->id;
+        // return $user->id == $model->id;
     }
 
     /**

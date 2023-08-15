@@ -27,7 +27,7 @@ class StaffController extends Controller
         $managerRole = Role::where('name', 'manager')->first();
         
         if($request->method() == "POST") {
-            $this->create_user($request, $managerRole);
+            return $this->create_user($request, $managerRole);
         }
         $data = [
             "title" => "Managers",
@@ -78,6 +78,8 @@ class StaffController extends Controller
         $user->assignRole($role);
         $user->save();
 
+        dd($user);
+
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
             $warehouse = Warehouse::find($data['assigned_to']);
@@ -92,7 +94,7 @@ class StaffController extends Controller
                 }
             }
         }
-        return redirect()->route('staff.managers')->with('success', 'Manager Added Successfully');
+        return redirect()->route('staff.managers')->with('success', 'Staff Added Successfully');
     }
 
     protected function edit_profile(Request $request, User $user) {
