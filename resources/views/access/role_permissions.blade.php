@@ -12,10 +12,10 @@
     <section class="section">
         <div class="section-header">
             <h1>{{$title }}</h1>
-            <div class="section-header-button">
+            <!-- <div class="section-header-button">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add New</button>
-                <!-- <a href="#" class="btn btn-primary">Add New</a> -->
-            </div>
+                
+            </div> -->
             {{ Breadcrumbs::render('access.byRole') }}
             </div>
             <div class="section-body">
