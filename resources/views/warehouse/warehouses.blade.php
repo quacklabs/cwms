@@ -15,7 +15,7 @@
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
         @endcan
-        {{ Breadcrumbs::render('warehouse.warehouse') }}
+        {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
         <h2 class="section-title">Manage warehouses</h2>

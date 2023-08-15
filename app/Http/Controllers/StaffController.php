@@ -78,8 +78,6 @@ class StaffController extends Controller
         $user->assignRole($role);
         $user->save();
 
-        dd($user);
-
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
             $warehouse = Warehouse::find($data['assigned_to']);

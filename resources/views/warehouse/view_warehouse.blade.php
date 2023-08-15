@@ -18,7 +18,7 @@
         <div class="section-header">
             <h1>{{$title }}</h1>
             
-            {{ Breadcrumbs::render('warehouse.warehouse') }}
+            {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
             <h2 class="section-title">{{ $warehouse->name }}</h2>
@@ -189,8 +189,9 @@
                                     </div>
                                 </div>
                                 <div class="profile-widget-description pb-0 mb-5">
-                                    <div class="profile-widget-name">{{ ucwords($warehouse->manager->name) }}</div>
-                                    <p><strong>Date Created: </strong>{{ $warehouse->manager->created_at }}</p>
+                                    
+                                    <div class="profile-widget-name">{{ isset($warehouse->manager) ? ucwords($warehouse->manager->name) : 'Unassigned' }}</div>
+                                    <p><strong>Date Created: </strong>{{ isset($warehouse->manager) ? $warehouse->manager->created_at : '' }}</p>
                                 </div>
                                 
                             </div>

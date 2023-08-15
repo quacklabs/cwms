@@ -37,9 +37,15 @@ Breadcrumbs::for('access.byUser', function (BreadcrumbTrail $trail) {
 
 
 //Dashboard Warehouses
-Breadcrumbs::for('warehouse.warehouse', function (BreadcrumbTrail $trail) {
+Breadcrumbs::for('warehouse.all_warehouses', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Warehouses');
+});
+
+Breadcrumbs::for('warehouse.view', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Warehouses', route('warehouse.all_warehouses'));
+    $trail->push('View Warehouse');
 });
 
 
