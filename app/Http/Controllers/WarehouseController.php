@@ -89,7 +89,7 @@ class WarehouseController extends Controller {
         if(!$id) {
             return redirect()->route('warehouse.all_warehouses')->with('error', 'warehouse ID not found, please try again');
         }
-        $warehouse = Warehouse::find($id);
+        $warehouse = Warehouse::where('id', $id)->get()->first();
         if(!$warehouse) {
             return redirect()->route('warehouse.all_warehouses')->with('error', 'Warehouse not found, please try again');
         }

@@ -63,7 +63,7 @@
                                     <div class="profile-widget-items">
                                         <div class="profile-widget-item">
                                             <div class="profile-widget-item-label">Products</div>
-                                            <div class="profile-widget-item-value">0</div>
+                                            <div class="profile-widget-item-value">{{ $warehouse->products() }}</div>
                                         </div>
                                         <div class="profile-widget-item">
                                             <div class="profile-widget-item-label">Staff</div>
@@ -190,8 +190,8 @@
                                 </div>
                                 <div class="profile-widget-description pb-0 mb-5">
                                     
-                                    <div class="profile-widget-name">{{ isset($warehouse->manager) ? ucwords($warehouse->manager->name) : 'Unassigned' }}</div>
-                                    <p><strong>Date Created: </strong>{{ isset($warehouse->manager) ? $warehouse->manager->created_at : '' }}</p>
+                                    <div class="profile-widget-name">{{ ($warehouse->manager() !== null) ? ucwords($warehouse->manager()->name) : 'Unassigned' }}</div>
+                                    <p><strong>Date Created: </strong>{{ ($warehouse->manager() !== null) ? $warehouse->manager()->created_at : '' }}</p>
                                 </div>
                                 
                             </div>

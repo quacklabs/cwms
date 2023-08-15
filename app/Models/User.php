@@ -23,6 +23,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, ActionTakenBy;
 
     protected $policy = UserPolicy::class;
+    protected $table = "users";
 
     /**
      * The attributes that are mass assignable.
@@ -85,6 +86,13 @@ class User extends Authenticatable
     }
 
     public function warehouse() {
+        // dd($this->warehouse_id);
+        if(isset($this->warehouse_id)) {
+            $id = $this->warehouse_id;
+            return Warehouse::where('id', $id)->get()->first();
+        }
+
+
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 

@@ -44,7 +44,10 @@ class TransferController extends Controller {
         if($user->hasRole('admin')) {
             $transfers = TransferService::getAllPaginated();
         } else {
-            $id = $user->warehouse->id;
+            if($user->warehouse() == null) {
+                return collect([]);
+            }
+            $id = $user->warehouse()->id;
             $transfers = TransferService::getByWarehouse($id);
         }
         return $transfers;
@@ -55,7 +58,10 @@ class TransferController extends Controller {
         if($user->hasRole('admin')) {
             $transfers = TransferService::getAllPaginated();
         } else {
-            $id = $user->warehouse->id;
+            if($user->warehouse() == null) {
+                return collect([]);
+            }
+            $id = $user->warehouse()->id;
             $transfers = TransferService::getByStore($id);
         }
         return $transfers;
@@ -117,7 +123,7 @@ class TransferController extends Controller {
             $data['my_warehouse'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
             $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
         } else {
-            $data['my_warehouse'] = collect([$user->warehouse]);
+            $data['my_warehouse'] = collect([$user->warehouse()]);
             
             $user_id = $user->id;
             $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {
@@ -138,7 +144,7 @@ class TransferController extends Controller {
             $data['my_warehouse'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
             $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
         } else {
-            $data['my_warehouse'] = collect([$user->warehouse]);
+            $data['my_warehouse'] = collect([$user->warehouse()]);
             
             $user_id = $user->id;
             $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {

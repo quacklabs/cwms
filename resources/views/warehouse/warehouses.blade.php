@@ -69,7 +69,7 @@
                                     </td>
                                     <td>{{ $warehouse->name }}</td>
                                     <td>{{ $warehouse->address }}</td>
-                                    <td>{{ $warehouse->manager->name ?? 'Unassigned' }}</td>
+                                    <td>{{ $warehouse->manager()->name ?? 'Unassigned' }}</td>
                                     <td>
                                         <div class="buttons">
                                             <a href="{{ route('warehouse.view', ['id' => $warehouse->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Warehouse">

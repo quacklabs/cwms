@@ -60,7 +60,7 @@ class Product extends Model
         if($user->hasRole('admin')) {
             $warehouse = null;
         } else {
-            $warehouse = $user->warehouse->id;
+            $warehouse = ($user->warehouse() !== null) ? $user->warehouse()->id : null;
         }
         if($warehouse != null) {
             return ProductStock::where('warehouse_id', $warehouse)

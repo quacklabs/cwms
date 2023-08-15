@@ -12,6 +12,8 @@ use App\Models\Purchase;
 use App\Models\Transfer;
 use App\Traits\ActionTakenBy;
 use App\Models\UserWarehouse;
+use App\Models\ProductStock;
+use Illuminate\Support\Facades\DB;
 
 class Warehouse extends Model
 {
@@ -26,7 +28,14 @@ class Warehouse extends Model
     }
 
     public function manager() {
-        return $this->belongsTo(User::class, 'manager_id');
+        
+        if(isset($this->manager_id)) {
+            $id = $this->manager_id;
+            $user = User::where('id', $id)->get()->first();
+            return $user;
+        } else {
+            return null;
+        }
     }
 
     public function categories() {
@@ -51,5 +60,14 @@ class Warehouse extends Model
 
     public function outward_transfer() {
         return $this->hasMany(Transfer::class, 'from_warehouse');
+    }
+
+    public function products() {
+        $id = $this->id;
+        $stock = ProductStock::where('warehouse_id', $id)
+        ->select('product_id', DB::raw('COUNT(*) as group_count'))
+        ->groupBy('product_id')
+        ->get()->count();
+        return $stock;
     }
 }

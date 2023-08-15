@@ -36,12 +36,21 @@ class AnalyticsService implements BusinessIntelligence {
             $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate]);
             // ->whereDate('created_at', '<=', $endDate);
         } else {
-            $id = $this->user->warehouse->id;
-            $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate])
-            ->where('warehouse_id', $id);
-            // ->whereHas('warehouse', function ($query) use ($id) {
-            //     $query->where('warehouse_id', $id);
-            // })->with('warehouse');
+            if($this->user->warehouse() !== null) {
+                $id = $this->user->warehouse()->id;
+                $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate])
+                ->where('warehouse_id', $id);
+            } else {
+                $stat = new MonthStat();
+                $stat->name = "Sales";
+                $stat->total = 0;
+
+                $stat->pending = 0;
+                $stat->completed = 0;
+                $stat->products = 0;
+                $stat->amount = 0;
+                return $stat;
+            }
             
         }
 
@@ -62,8 +71,22 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Sale::whereBetween('created_at', [$startDate, $endDate]);
         } else {
-            $id = $this->user->warehouse->id;
-            $purchases = Sale::whereBetween('created_at', [$startDate, $endDate])->where('warehouse_id', $id);
+            if($this->user->warehouse() !== null) {
+                $id = $this->user->warehouse()->id;
+                $purchases = Sale::whereBetween('created_at', [$startDate, $endDate])->where('warehouse_id', $id);
+            } else {
+                $stat = new MonthStat();
+                $stat->name = "Sales";
+                $stat->total = 0;
+
+                $stat->pending = 0;
+                $stat->completed = 0;
+                $stat->products = 0;
+                $stat->amount = 0;
+                return $stat;
+
+            }
+            
             
         }
         $stat = new MonthStat();
@@ -81,7 +104,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Sale::all()->count();
         } else {
-            $purchases = Sale::where('warehouse_id', $this->user->warehouse->id)->count();
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
+            $purchases = Sale::where('warehouse_id', $this->user->warehouse()->id)->count();
         }
         return $purchases;
     }
@@ -90,7 +116,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Purchase::all()->count();
         } else {
-            $purchases = Purchase::where('warehouse_id', $this->user->warehouse->id)->count();
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
+            $purchases = Purchase::where('warehouse_id', $this->user->warehouse()->id)->count();
         }
         return $purchases;
     }
@@ -100,7 +129,7 @@ class AnalyticsService implements BusinessIntelligence {
     //     if($this->user->hasRole('admin')) {
     //         $purchases = Sale::all()->count();
     //     } else {
-    //         $purchases = Sale::where('warehouse_id', $this->user->warehouse->id)->count();
+    //         $purchases = Sale::where('warehouse_id', $this->user->warehouse()->id)->count();
     //     }
     //     return $purchases;
     // }
@@ -109,7 +138,7 @@ class AnalyticsService implements BusinessIntelligence {
     //     if($this->user->hasRole('admin')) {
     //         $purchases = Purchase::all()->count();
     //     } else {
-    //         $purchases = Purchase::where('warehouse_id', $this->user->warehouse->id)->count();
+    //         $purchases = Purchase::where('warehouse_id', $this->user->warehouse()->id)->count();
     //     }
     //     return $purchases;
     // }
@@ -118,8 +147,11 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = PurchaseReturn::all()->count();
         } else {
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
             $purchases = PurchaseReturn::whereHas('owner', function($query) {
-                $query->where('warehouse_id', $this->user->warehouse->id);
+                $query->where('warehouse_id', $this->user->warehouse()->id);
             })->with('owner')->get()->count();
         }
         return $purchases;
@@ -129,7 +161,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = SaleReturn::all()->count();
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
+            $id = $this->user->warehouse()->id;
             $purchases = SaleReturn::whereHas('owner', function($query) use ($id) { 
                 $query->where('warehouse_id', $id);
             })->with('owner')->get()->count();
@@ -143,9 +178,13 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Purchase::whereBetween('created_at', [$start, $end])->get();
         } else {
+
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
             $purchases = Purchase::whereBetween('created_at', [$start, $end])
             ->whereHas('owner', function($query) {
-                $query->where('warehouse_id', $this->user->warehouse->id);
+                $query->where('warehouse_id', $this->user->warehouse()->id);
             })->with('owner')->get();
         }
         $total = $purchases->sum('total_price');
@@ -159,7 +198,11 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Sale::whereBetween('created_at', [$start, $end])->get();
         } else {
-            $id = $this->user->warehouse->id;
+
+            if($this->user->warehouse() == null) {
+                return 0;
+            }
+            $id = $this->user->warehouse()->id;
             $purchases = Sale::whereBetween('created_at', [$start, $end])
             ->whereHas('owner', function($query) use ($id) { 
                 $query->where('warehouse_id', $id);
@@ -174,7 +217,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = SaleReturn::whereHas('owner')->take(10)->get();
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return collect([]);
+            }
+            $id = $this->user->warehouse()->id;
             $purchases = SaleReturn::whereHas('owner', function($query) use ($id) {
                 $query->where('warehouse_id', $id);
             })->with('owner')->take(10)->get();
@@ -217,7 +263,10 @@ class AnalyticsService implements BusinessIntelligence {
             $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate])->get();
             $purchaseReturns = PurchaseReturn::whereBetween('created_at', [$startDate, $endDate])->get();
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return collect([]);
+            }
+            $id = $this->user->warehouse()->id;
             $sales = Sale::where('warehouse_id', $id)->whereBetween('created_at', [$startDate, $endDate])->get();
             $salesReturn = SaleReturn::whereHas('owner', function($query) use ($id, $startDate, $endDate) {
                 $query->where('warehouse_id', )->whereBetween('created_at', [$startDate, $endDate]);
@@ -281,18 +330,21 @@ class AnalyticsService implements BusinessIntelligence {
             $purchases = Purchase::whereBetween('created_at', [$startDate, $endDate])->get();
             $purchaseReturns = PurchaseReturn::whereBetween('created_at', [$startDate, $endDate])->get();            
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return collect([]);
+            }
+            $id = $this->user->warehouse()->id;
             $sales = Sale::where('warehouse_id', $id)->whereBetween('created_at', [$startDate, $endDate])->get();
             $salesReturn = SaleReturn::whereHas('owner', function($query) use ($id, $startDate, $endDate) {
                 $query->where('warehouse_id', )->whereBetween('created_at', [$startDate, $endDate]);
             })->with('owner')->get();
-            //where('warehouse_id', $this->user->warehouse->id)->whereBetween('created_at', [$startDate, $endDate])->get();
+            //where('warehouse_id', $this->user->warehouse()->id)->whereBetween('created_at', [$startDate, $endDate])->get();
             
             $purchases = Purchase::where('warehouse_id', $id)->whereBetween('created_at', [$startDate, $endDate])->get();
             $purchaseReturns = PurchaseReturn::whereHas('owner', function($query) use ($id, $startDate, $endDate) {
                 $query->where('warehouse_id', )->whereBetween('created_at', [$startDate, $endDate]);
             })->with('owner')->get();
-            //where('warehouse_id', $this->user->warehouse->id)->whereBetween('created_at', [$startDate, $endDate])->get();
+            //where('warehouse_id', $this->user->warehouse()->id)->whereBetween('created_at', [$startDate, $endDate])->get();
         }
 
         $salesTrend = new Trend();
@@ -344,7 +396,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Sale::whereBetween('created_at', [$start, $end]);
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return json_encode(collect([]));
+            }
+            $id = $this->user->warehouse()->id;
             $purchases = Sale::whereBetween('created_at', [$start, $end])
             ->where('warehouse_id', $id);
         }
@@ -360,7 +415,10 @@ class AnalyticsService implements BusinessIntelligence {
         if($this->user->hasRole('admin')) {
             $purchases = Purchase::whereBetween('created_at', [$start, $end]);
         } else {
-            $id = $this->user->warehouse->id;
+            if($this->user->warehouse() == null) {
+                return json_encode(collect([]));
+            }
+            $id = $this->user->warehouse()->id;
             $purchases = Purchase::whereBetween('created_at', [$start, $end])
             ->where('warehouse_id', $id);
         }
