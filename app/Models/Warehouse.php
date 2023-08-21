@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Category;
-use App\Policies\WarehousePolicy;
+// use App\Policies\WarehousePolicy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Purchase;
 use App\Models\Transfer;
@@ -21,7 +21,7 @@ class Warehouse extends Model
 
     protected $table = 'warehouse';
     protected $fillable = ["name","address","status", 'manager_id'];
-    protected $policy = WarehousePolicy::class;
+    // protected $policy = WarehousePolicy::class;
 
     public function staff() {
         return $this->hasMany(User::class, 'warehouse_id');

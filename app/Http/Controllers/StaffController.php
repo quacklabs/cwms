@@ -78,7 +78,7 @@ class StaffController extends Controller
 
         $user = User::create($user_info);
         $user->assignRole($role);
-        $user->save();
+        
 
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
@@ -86,13 +86,14 @@ class StaffController extends Controller
                         
             if($warehouse){
                 $user->warehouse_id = $warehouse->id;
-                $user->save();
+                // $user->save();
                 if($user->hasRole('manager')) {
                     $warehouse->manager_id = $user->id;
                     $warehouse->save();
                 }
             }
         }
+        $user->save();
         return redirect()->route('staff.managers')->with('success', 'Staff Added Successfully');
     }
 
