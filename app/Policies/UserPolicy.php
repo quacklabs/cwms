@@ -66,7 +66,8 @@ class UserPolicy
     public function create(User $user)
     {
         //
-        return $user->hasRole('admin') || $user->hasRole('manager');
+        // return $user->hasRole('admin') || $user->hasRole('manager');
+        return true;
     }
 
     /**
@@ -108,6 +109,7 @@ class UserPolicy
     public function delete(User $user, User $model)
     {
         //
+        $user->hasRole('admin');
     }
 
     /**

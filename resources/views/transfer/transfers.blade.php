@@ -131,7 +131,7 @@
 
                     <div class="card-footer">
                         <div class="float-right">
-                            @empty($transfers)
+                            @if(count($transfers) < 1)
 
                             @else
                                 {{ $transfers->links() }}

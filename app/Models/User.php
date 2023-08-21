@@ -91,9 +91,10 @@ class User extends Authenticatable
             $id = $this->warehouse_id;
             return Warehouse::where('id', $id)->get()->first();
         }
+        return null;
 
 
-        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+        // return $this->belongsTo(Ware/house::class, 'warehouse_id');
     }
 
     public function managedWarehouse() {

@@ -124,6 +124,7 @@ class TransferController extends Controller {
             $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
         } else {
             $data['my_warehouse'] = collect([$user->warehouse()]);
+            // dd($data['my_warehouse']);
             
             $user_id = $user->id;
             $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {

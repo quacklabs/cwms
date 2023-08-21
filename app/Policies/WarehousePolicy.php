@@ -54,6 +54,7 @@ class WarehousePolicy
     public function update(User $user, Warehouse $warehouse)
     {
         //
+        return true;
     }
 
     /**

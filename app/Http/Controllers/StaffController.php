@@ -11,7 +11,7 @@ class StaffController extends Controller
 {
 
     public function staff(Request $request) {
-        $staffRole = Role::where('name', 'staff')->first();
+        $staffRole = Role::findByName('staff');
         $data = [
             "title" => "Manage Staff",
             "staffs" => User::role($staffRole)->paginate(30),
@@ -24,7 +24,7 @@ class StaffController extends Controller
     }
 
     public function manager(Request $request) {
-        $managerRole = Role::where('name', 'manager')->first();
+        $managerRole = Role::findByName('manager');
         
         if($request->method() == "POST") {
             return $this->create_user($request, $managerRole);
@@ -72,6 +72,8 @@ class StaffController extends Controller
             'assigned_to' => ['numeric', 'nullable']
         ]);
 
+        // dd($data);
+
         $user_info = $request->only(['name', 'email', 'password','username','mobile']);
 
         $user = User::create($user_info);
@@ -80,8 +82,7 @@ class StaffController extends Controller
 
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
-            $warehouse = Warehouse::find($data['assigned_to']);
-            // $managerRole = Role::findByName('manager');
+            $warehouse = Warehouse::where('id', $data['assigned_to'])->get()->first();
                         
             if($warehouse){
                 $user->warehouse_id = $warehouse->id;
