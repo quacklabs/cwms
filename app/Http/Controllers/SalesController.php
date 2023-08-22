@@ -103,7 +103,18 @@ class SalesController extends Controller
         if($user->hasRole('admin')) {
             $returns = TransactionService::returnedSales();
         } else {
-            $returns = TransactionService::returnedSalesByWarehouse($user->warehouse->id);
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                $returns = TransactionService::returnedSalesByWarehouse($warehouse->id);
+            } else {
+                $collection = new Collection();
+                // $currentPageItems = $collection->slice($offset, $perPage)->all();
+                $returns = new LengthAwarePaginator($collection, count($collection), 0, 1);
+                // Set the path for the paginator
+                $returns->setPath(Request::url());
+            
+                // return $paginator;
+            }
         }
         
         $data = [

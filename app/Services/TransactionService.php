@@ -180,9 +180,13 @@ class TransactionService {
             $result = Purchase::where("invoice_no", "LIKE", "%{$invoice}%")->get();
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse;
-            $result = Purchase::where('warehouse_id', $warehouse->id)
-            ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                $result = Purchase::where('warehouse_id', $warehouse->id)
+                ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+            } else {
+                $result = new Collection();
+            }
         }
         return $result;
     }
@@ -192,8 +196,18 @@ class TransactionService {
             return Sale::orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse->first();
-            return Sale::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                return Sale::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            } else {
+                $collection = new Collection();
+                // $currentPageItems = $collection->slice($offset, $perPage)->all();
+                $paginator = new LengthAwarePaginator($collection, count($collection), 0, 1);
+                // Set the path for the paginator
+                $paginator->setPath(Request::url());
+            
+                return $paginator;
+            }
         }
     }
 
@@ -205,8 +219,18 @@ class TransactionService {
             return Sale::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse;
-            return Sale::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            $warehouse = $user->warehouse();
+
+            if($warehouse) {
+                return Sale::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            } else {
+                $collection = new Collection();
+                // $currentPageItems = $collection->slice($offset, $perPage)->all();
+                $paginator = new LengthAwarePaginator($collection, count($collection), 0, 1);
+                // Set the path for the paginator
+                $paginator->setPath(Request::url());
+                return $paginator;
+            }
         }
     }
 
@@ -216,9 +240,13 @@ class TransactionService {
             $result = Sale::where("invoice_no", "LIKE", "%{$invoice}%")->get();
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse;
-            $result = Sale::where('warehouse_id', $warehouse->id)
-            ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                $result = Sale::where('warehouse_id', $warehouse->id)
+                ->where('invoice_no', 'LIKE', "%{$invoice}%")->get();
+            } else {
+                $result = new Collection();
+            }
         }
         return $result;
     }
@@ -228,7 +256,7 @@ class TransactionService {
             return Warehouse::orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            return $user->warehouse->all();
+            return $user->warehouse();
             // return Sale::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
         }
     }
