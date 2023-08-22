@@ -57,7 +57,7 @@ class StockController extends Controller {
         if(auth()->user()->hasRole('admin')) {
             $warehouses = Warehouse::orderBy('created_at', 'desc')->paginate(65);
         } else {
-            $warehouses = auth()->user()->warehouse;
+            $warehouses = collect([auth()->user()->warehouse()]);
         }
 
         $data = [
@@ -73,10 +73,5 @@ class StockController extends Controller {
 
         return redirect()->route('stock.adjustments');
 
-        // if(!$id) {
-        //     return redirect()->route('stock.adjustments');
-        // }
-
-        // $adjustment = 
     }
 }
