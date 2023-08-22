@@ -109,7 +109,13 @@ class PurchaseController extends Controller
         if($user->hasRole('admin')) {
             $returns = TransactionService::returnedPurchases();
         } else {
-            $returns = TransactionService::returnedPurchases($user->warehouse->id);
+            $warehouse = $user->warehouse();
+
+            if($warehouse) {
+                $returns = TransactionService::returnedPurchases($warehouse->id);
+            } else {
+                $returns = collect([]);
+            }
         }
         
         // dd($returns);

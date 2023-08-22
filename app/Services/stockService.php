@@ -62,7 +62,7 @@ class StockService {
         //     return new ProductStockResponse($items, $items->count());
         // });
         // dd($map);
-        return $all_stock;
+        // return $all_stock;
     }
 
     public static function getStockByWarehouse($id) {

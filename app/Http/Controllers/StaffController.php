@@ -82,7 +82,7 @@ class StaffController extends Controller
 
 
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
-            $warehouse = Warehouse::where('id', $data['assigned_to'])->get()->first();
+            $warehouse = Warehouse::find('id', $data['assigned_to'])->get()->first();
                         
             if($warehouse){
                 $user->warehouse_id = $warehouse->id;

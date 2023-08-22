@@ -6,6 +6,7 @@ use App\Contracts\TransactionInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -137,8 +138,22 @@ class TransactionService {
             return Purchase::orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse;
-            return Purchase::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                return Purchase::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            }
+
+
+            $collection = new Collection();
+            // $currentPageItems = $collection->slice($offset, $perPage)->all();
+            $paginator = new LengthAwarePaginator($collection, count($collection), 0, 1);
+            // Set the path for the paginator
+            $paginator->setPath(Request::url());
+        
+            return $paginator;
+
+            // return collect([]);
+            
         }
     }
 
@@ -150,8 +165,12 @@ class TransactionService {
             return Purchase::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->paginate(25);
         } else {
             // Limit managers and staff to only their primary warehouse
-            $warehouse = $user->warehouse;
-            return Purchase::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            $warehouse = $user->warehouse();
+            if($warehouse) {
+                return Purchase::whereBetween('created_at', [$start, $end])->orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(25);
+            }
+
+            return collect([]);
         }
     }
 
