@@ -21,8 +21,12 @@ class StockController extends Controller {
             $adjustments = Adjustment::orderBy('created_at', 'desc')->paginate(50);
             // $warehouses = 
         } else {
-            $warehouse = $user->warehouse->first();
-            $adjustments = Adjustment::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(50);
+            $warehouse = $user->warehouse();
+            if($warehouse != null) {
+                $adjustments = Adjustment::orderBy('created_at', 'desc')->where('warehouse_id', $warehouse->id)->paginate(50);
+            } else {
+                $adjustments = collect([]);
+            }
         }
 
         $data = [
