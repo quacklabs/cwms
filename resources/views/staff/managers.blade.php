@@ -192,12 +192,11 @@
                             <div class="form-group col-md-6">
                                 <label for="inputState">Assigned To Warehouse</label>
                                 <select id="inputState" class="form-control" name="assigned_to">
-                                    <option>Choose...</option>
                                     @empty($warehouses)
 
                                     @else
                                         @foreach($warehouses as $warehouse)
-                                        <option value="{{$warehouse->id}}">{{ $warehouse->name }}</option>
+                                        <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                         @endforeach
                                     @endempty
                                 </select>

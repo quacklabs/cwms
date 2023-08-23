@@ -71,7 +71,7 @@ class StaffController extends Controller
                 'password' => ['required', 'string', 'min:8'],
                 'username' => ['required', 'string', 'unique:users'],
                 'mobile' => ['required', 'numeric', 'unique:users'],
-                'assigned_to' => ['nullable']
+                'assigned_to' => ['required']
             ];
             $validator = Validator::make($request->all(), $rules);
 
@@ -88,13 +88,12 @@ class StaffController extends Controller
                 
             $user->assignRole($managerRole);
             $warehouse_id = $form_data['assigned_to'] ?? null;
-            
             if(isset($warehouse_id) && $warehouse_id != '' && $warehouse_id != NULL) {
 
-                $warehouse = Warehouse::find('id', $warehouse_id)->get()->first();
+                $warehouse = Warehouse::find($warehouse_id);
                     
                 if($warehouse){
-                    $user->warehouse_id = $warehouse->id;
+                    $user->warehouse_id = $warehouse_id;
                     $warehouse->manager_id = $user->id;
                     $warehouse->staff()->save($user);
                     $warehouse->save();
