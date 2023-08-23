@@ -13,14 +13,38 @@ class StaffController extends Controller
 
     public function staff(Request $request) {
         $staffRole = Role::findByName('staff');
+        
+        if($request->method() == "POST") {
+            $rules = [
+                'name' => ['required', 'string'],
+                'email' => ['required', 'email', 'unique:users'],
+                'password' => ['required', 'string', 'min:8'],
+                'username' => ['required', 'string', 'unique:users'],
+                'mobile' => ['required', 'numeric', 'unique:users'],
+                'assigned_to' => ['nullable']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+            $form_data =  $validator->validated();
+            $user = User::create([
+                'name' => $form_data['name'],
+                'email' => $form_data['email'],
+                'password' => $form_data['password'],
+                'username' => $form_data['username'],
+                'mobile' => $form_data['mobile']]);
+                
+            $user->assignRole($staffRole);
+            $user->save();
+            return redirect()->route('staff.managers')->with('success', 'Staff Added Successfully');
+        }  
         $data = [
             "title" => "Manage Staff",
             "staffs" => User::role($staffRole)->paginate(30),
             "warehouses" => Warehouse::all()
-        ];
-        if($request->method() == "POST") {
-            $this->create_user($request, $staffRole);
-        }       
+        ];     
         return parent::render($data, 'staff/staff');
     }
 
@@ -53,7 +77,7 @@ class StaffController extends Controller
             $warehouse_id = $form_data['assigned_to'] ?? null;
             
             if(isset($warehouse_id) && $warehouse_id != '' && $warehouse_id != NULL) {
-                
+
                 $warehouse = Warehouse::find('id', $warehouse_id)->get()->first();
                     
                 if($warehouse){
