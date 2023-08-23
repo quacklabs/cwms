@@ -33,7 +33,7 @@ class ExpenseController extends Controller
             $warehouseId = $user->warehouse()->id;
             if($warehouseId) {
                 $expenses = Expense::whereHas('staff', function ($query) use ($warehouseId) {
-                    $query->whereHas('warehouse', function ($subQuery) use ($warehouseId) {
+                    $query->where('warehouse', function ($subQuery) use ($warehouseId) {
                         $subQuery->where('warehouse_id', $warehouseId);
                     });
                 })->paginate(25);

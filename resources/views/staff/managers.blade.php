@@ -32,96 +32,106 @@
                 <h4>All Managers</h4>
                 </div>
                 <div class="card-body">
-                <div class="clearfix mb-3"></div>
 
-                <div class="table-responsive">
-                      <table class="table table-striped" id="table-1">
-                        <thead>                                 
-                          <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>E-mail</th>
-                            <th>Assigned to</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>   
-                            @empty($managers)
+                    <div class="clearfix mb-3"></div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                            @else
-                                @foreach($managers as $manager)
-                                
-                                <tr>
-                                    <td class="pricing-item">
-                                        @if($manager->status == true)
-                                        <div class="pricing-details">
-                                            <div class="pricing-item">
-                                                <div class="pricing-item-icon bg-success text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
-                                                    <i class="fas fa-check"></i>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-1">
+                            <thead>                                 
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>E-mail</th>
+                                <th>Assigned to</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>   
+                                @empty($managers)
+
+                                @else
+                                    @foreach($managers as $manager)
+                                    
+                                    <tr>
+                                        <td class="pricing-item">
+                                            @if($manager->status == true)
+                                            <div class="pricing-details">
+                                                <div class="pricing-item">
+                                                    <div class="pricing-item-icon bg-success text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
+                                                        <i class="fas fa-check"></i>
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            @else
+                                            <div class="pricing-item-icon bg-danger text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
+                                                <i class="fas fa-times"></i>
+                                            </div>
+                                            @endif
+                                        </td>
+                                        <td>{{ $manager->name }}</td>
+                                        <td>{{ $manager->username }}</td>
+                                        <td>{{ $manager->email }}</td>
+                                        <td>
+                                            {{ $manager->managedWarehouse()->name ?? 'None' }}
+                                        </td>
+                                        <td>
+                                        <div class="buttons">
+                                            @if($manager->status == true)
+                                            <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                            @else
+                                            <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                            @endif
+
+                                            <a href="{{ route('staff.edit_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
+                                                <i class="far fa-edit"></i>
+                                            </a>
+
+                                            <a href="{{ route('access.byUser', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
+                                                <i class="fas fa-lock"></i>
+                                            </a>
+                                            @can('delete-manager')
+                                            <a href="{{ route('staff.delete_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Account">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                            @endrole
+                                            
+
+
+                                            <!-- <a href="#" class="btn btn-icon btn-secondary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-user"></i></a>
+                                            <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-info-circle"></i></a>
+                                            <a href="#" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-exclamation-triangle"></i></a>
+                                            <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-times"></i></a>
+                                            <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-check"></i></a>
+                                            <a href="#" class="btn btn-icon btn-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-star"></i></a>
+                                            <a href="#" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-file"></i></a> -->
                                         </div>
 
-                                        @else
-                                        <div class="pricing-item-icon bg-danger text-white px-1" style="border-radius: 50%; height: 20px; width: 20px;">
-                                            <i class="fas fa-times"></i>
-                                        </div>
-                                        @endif
-                                    </td>
-                                    <td>{{ $manager->name }}</td>
-                                    <td>{{ $manager->username }}</td>
-                                    <td>{{ $manager->email }}</td>
-                                    <td>
-                                        {{ $manager->managedWarehouse()->name ?? 'None' }}
-                                    </td>
-                                    <td>
-                                    <div class="buttons">
-                                        @if($manager->status == true)
-                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'suspend']) }}" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Deactivate Account">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                        @else
-                                        <a href="{{ route('staff.toggle', ['id' => $manager->id, 'action' => 'activate']) }}" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Activate Account">
-                                            <i class="fas fa-check"></i>
-                                        </a>
-                                        @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
 
-                                        <a href="{{ route('staff.edit_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Edit Account">
-                                            <i class="far fa-edit"></i>
-                                        </a>
-
-                                        <a href="{{ route('access.byUser', ['id' => $manager->id]) }}" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Modify Permissions">
-                                            <i class="fas fa-lock"></i>
-                                        </a>
-                                        @can('delete-manager')
-                                        <a href="{{ route('staff.delete_user', ['id' => $manager->id]) }}" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Account">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                        @endrole
-                                        
-
-
-                                        <!-- <a href="#" class="btn btn-icon btn-secondary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-user"></i></a>
-                                        <a href="#" class="btn btn-icon btn-info" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-info-circle"></i></a>
-                                        <a href="#" class="btn btn-icon btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-exclamation-triangle"></i></a>
-                                        <a href="#" class="btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-times"></i></a>
-                                        <a href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-check"></i></a>
-                                        <a href="#" class="btn btn-icon btn-light" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="fas fa-star"></i></a>
-                                        <a href="#" class="btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."><i class="far fa-file"></i></a> -->
-                                    </div>
-
-                                    </td>
-                                </tr>
-                                @endforeach
-
-                            @endempty
-                        </tbody>
-                      </table>
+                                @endempty
+                            </tbody>
+                        </table>
+                        </div>
+                    <div class="float-right">
+                        {{ $managers->links() }}
                     </div>
-                <div class="float-right">
-                    {{ $managers->links() }}
-                </div>
                 </div>
             </div>
             </div>

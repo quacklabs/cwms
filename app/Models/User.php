@@ -22,7 +22,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, ActionTakenBy;
 
-    protected $policy = UserPolicy::class;
+    // protected $policy = UserPolicy::class;
     protected $table = "users";
 
     /**

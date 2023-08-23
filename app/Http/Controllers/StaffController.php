@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Warehouse;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class StaffController extends Controller
 {
@@ -27,7 +28,42 @@ class StaffController extends Controller
         $managerRole = Role::findByName('manager');
         
         if($request->method() == "POST") {
-            return $this->create_user($request, $managerRole);
+            $rules = [
+                'name' => ['required', 'string'],
+                'email' => ['required', 'email', 'unique:users'],
+                'password' => ['required', 'string', 'min:8'],
+                'username' => ['required', 'string', 'unique:users'],
+                'mobile' => ['required', 'numeric', 'unique:users'],
+                'assigned_to' => ['nullable']
+            ];
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+            $form_data =  $validator->validated();
+            $user = User::create([
+                'name' => $form_data['name'],
+                'email' => $form_data['email'],
+                'password' => $form_data['password'],
+                'username' => $form_data['username'],
+                'mobile' => $form_data['mobile']]);
+                
+            $user->assignRole($managerRole);
+            $warehouse_id = $form_data['assigned_to'] ?? null;
+            
+            if(isset($warehouse_id) && $warehouse_id != '' && $warehouse_id != NULL) {
+                
+                $warehouse = Warehouse::find('id', $warehouse_id)->get()->first();
+                    
+                if($warehouse){
+                    $user->warehouse_id = $warehouse->id;
+                    $warehouse->manager_id = $user->id;
+                    $warehouse->save();
+                }
+            }
+            $user->save();
+            return redirect()->route('staff.managers')->with('success', 'Staff Added Successfully');
         }
         $data = [
             "title" => "Managers",
@@ -74,13 +110,17 @@ class StaffController extends Controller
 
         // dd($data);
 
-        $user_info = $request->only(['name', 'email', 'password','username','mobile']);
+        $user_info = $request->only();
 
-        $user = User::create($user_info);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'username' => $data['username'],
+            'mobile' => $data['mobile']]);
+
         $user->assignRole($role);
         
-
-
         if(isset($data['assigned_to']) && $data['assigned_to'] != '') {
             $warehouse = Warehouse::find('id', $data['assigned_to'])->get()->first();
                         
