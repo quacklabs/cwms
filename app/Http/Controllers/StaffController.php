@@ -37,6 +37,19 @@ class StaffController extends Controller
                 'mobile' => $form_data['mobile']]);
                 
             $user->assignRole($staffRole);
+            $warehouse_id = $form_data['assigned_to'] ?? null;
+            
+            if(isset($warehouse_id) && $warehouse_id != '' && $warehouse_id != NULL) {
+
+                $warehouse = Warehouse::find('id', $warehouse_id)->get()->first();
+                    
+                if($warehouse){
+                    $warehouse->staff()->save($user);
+                    // $user->warehouse_id = $warehouse->id;
+                    // $warehouse->manager_id = $user->id;
+                    // $warehouse->save();
+                }
+            }
             $user->save();
             return redirect()->route('staff.managers')->with('success', 'Staff Added Successfully');
         }  
@@ -83,6 +96,7 @@ class StaffController extends Controller
                 if($warehouse){
                     $user->warehouse_id = $warehouse->id;
                     $warehouse->manager_id = $user->id;
+                    $warehouse->staff()->save($user);
                     $warehouse->save();
                 }
             }
