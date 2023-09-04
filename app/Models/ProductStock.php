@@ -11,7 +11,7 @@ class ProductStock extends Model
 {
     use HasFactory;
     protected $table = 'product_stock';
-    protected $fillable = ['warehouse_id', 'product_id', 'ownership', 'owner', 'serial', 'sold', 'sold_by', 'sold_from'];
+    protected $fillable = ['warehouse_id', 'product_id', 'ownership', 'owner', 'in_transit', 'serial', 'sold', 'sold_by', 'sold_from', 'sale_id'];
 
     public function product() {
         return $this->belongsTo(Product::class, 'product_id');

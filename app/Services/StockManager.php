@@ -13,7 +13,7 @@ use App\Models\Adjustment;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 
-class StockService {
+class StockManager {
 
     
     public static function searchByWarehouse(int $warehouse_id, string $keyword) {

@@ -186,8 +186,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputState">Assigned To Warehouse</label>
-                                <select id="inputState" class="form-control">
-                                    <option>Choose...</option>
+                                <select id="inputState" class="form-control" name="">
                                     @empty($warehouses)
 
                                     @else

@@ -23,10 +23,12 @@ use App\Models\SaleReturnDetail;
 
 use Faker\Factory;
 use Faker\Provider\Barcode;
+use App\Events\CreateStockEvent;
+use App\Events\SellStockEvent;
 
 class TransactionService {
     
-    public static function create(array $data, $flag): TransactionInterface {
+    public static function create(array $data, string $flag): TransactionInterface {
 
         $orders = array_map(function($order) {
             return [
@@ -44,8 +46,7 @@ class TransactionService {
                     'customer_id' => $data['partner_id'],
                     'invoice_no' => $data['invoice_no'],
                     'warehouse_id' => $data['warehouse_id'],
-                    'total_price' => $data['total_price'],
-                    
+                    'total_price' => $data['total_price'],           
                     'discount_amount' => $data['discount_amount'],
                     'date' => Carbon::parse($data['date']),
                     'notes' => $data['notes']
@@ -66,62 +67,13 @@ class TransactionService {
             default:
                 return null;
         }
-        // dd($orders);
         $transaction->details()->createMany($orders);
-        
         if($flag == 'purchase') {
-            foreach($orders as $order) {
-                $serials = json_decode($order['serials']);
-
-                if(count($serials) > 0) {
-                    foreach($serials as $serial) {
-                        ProductStock::updateOrCreate([
-                            'warehouse_id' => $data['warehouse_id'],
-                            'owner' => $data['warehouse_id'],
-                            'ownership' => 'WAREHOUSE',
-                            'product_id' => $order['product_id'],
-                            'serial' => $serial,
-                        ]);
-                    }
-                } else {
-                    foreach (range(1, $order['quantity']) as $index) {
-                        ProductStock::updateOrCreate([
-                            'warehouse_id' => $data['warehouse_id'],
-                            'product_id' => $order['product_id'],
-                            'owner' => $data['warehouse_id'],
-                            'ownership' => 'WAREHOUSE',
-                            'serial' => self::newInvoice(),
-                        ]);
-                    }
-                }
-            }
+            event(new CreateStockEvent($orders));
         } else {
-
-            foreach($orders as $order) {
-                $serials = json_decode($order['serials']);
-
-                if(count($serials) > 0) {
-                    foreach($serials as $serial) {
-                        $stock = ProductStock::updateOrCreate(['product_id' => $order['product_id'], 'warehouse_id' => $data['warehouse_id'], 'serial', $serial], [
-                            'sold' => true,
-                            'sold_by' => auth()->user()->id,
-                            'sold_from' => $data['warehouse_id']
-                        ]);
-                    }
-                } else {
-                    $stock = ProductStock::where('warehouse_id', $data['warehouse_id'])
-                    ->where('product_id', $order['product_id'])
-                    ->where('sold', false)->take($order['quantity'])->get();
-
-                    foreach($stock as $item) {
-                        $item->sold = true;
-                        $item->sold_by = auth()->user()->id;
-                        $item->sold_from = $data['warehouse_id'];
-                        $item->save();
-                    }
-                }
-            }
+            event(new SellStockEvent($orders, $transaction->id, $data['warehouse_id']));
         }
+        
         return $transaction;
     }
 
@@ -279,12 +231,6 @@ class TransactionService {
     // public function due(): float {
 
     // }
-
-    public static function newInvoice() {
-        $faker = Factory::create();
-        $faker->addProvider(new Barcode($faker));
-        return $faker->ean13(false);
-    }
 
     public static function returnPurchase(array $data, Purchase $purchase) {
         $receivable = floatval($data['total_price']) - floatval($data['discount_amount']);

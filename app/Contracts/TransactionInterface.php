@@ -11,8 +11,6 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Model;
 
 // use App\Models\AnalyticsModels\TransactionDetail;
-
-
 interface TransactionInterface {
     public function details(): HasMany;
     public function payable(): float;

@@ -10,21 +10,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CreateStockEvent
+class SellStock
 {
-    public array $orders;
-    public string $flag;
-    // public $amount;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(array $orders, $flag)
+    public function __construct()
     {
         //
-        $this->orders = $orders;
-        $this->flag = $flag;
     }
 
     /**
