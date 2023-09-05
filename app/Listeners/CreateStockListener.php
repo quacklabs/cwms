@@ -5,6 +5,7 @@ namespace App\Listeners;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Events\CreateStockEvent;
+use App\Services\TransactionService;
 use Faker\Factory as Faker;
 
 class CreateStockListener
@@ -49,16 +50,10 @@ class CreateStockListener
                         'product_id' => $order['product_id'],
                         'owner' => $data['warehouse_id'],
                         'ownership' => 'WAREHOUSE',
-                        'serial' => self::newInvoice(),
+                        'serial' => TransactionService::newInvoice(),
                     ]);
                 }
             }
         }
-    }
-
-    public static function newInvoice() {
-        $faker = Faker::create();
-        $faker->addProvider(new Barcode($faker));
-        return $faker->ean13(false);
     }
 }

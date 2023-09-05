@@ -87,6 +87,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('purchase')->name('purchase.')->group(function() {
                 Route::match(['get','post'], 'create', 'PurchaseController@create')->name('create');
+                Route::match(['get', 'post'], 'in-transit', 'PurchaseController@in_transit')->name('in_transit');
                 Route::get('view', 'PurchaseController@view')->name('view');
                 Route::get('purchase/{id}', 'PurchaseController@view_single')->name('view_single');
                 Route::get('returned', 'PurchaseController@returned')->name('returned');

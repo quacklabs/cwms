@@ -96,6 +96,14 @@
 
             @role(['admin','manager','staff'])
             <li class="menu-header text-danger">Transactions Management</li>
+                @hasrole('admin')
+                <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.create') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('purchase.in_transit') }}">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Goods In Transit</span>
+                    </a>
+                </li>
+                @endhasrole
                 @canany(['view-purchase','view-purchase-return'])
                 <li class="dropdown">
                     <a class="nav-link has-dropdown" href="#">
@@ -103,7 +111,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class="{{ Str::contains(Route::currentRouteName(), 'purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.view') }}">All Purchases</a></li>
-                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.returned') }}">Returned Purchases</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'create') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.create') }}">Add Purchase</a></li>
+                        <li class="{{ Str::contains(Route::currentRouteName(), 'return_purchase') ? 'active' : '' }}"><a class="nav-link" href="{{ route('purchase.returned') }}">View Returned Purchases</a></li>
+
                     </ul>
                 </li>
                 @endcanany
@@ -253,3 +263,10 @@
         </ul>
     </aside>
 </div>
+
+<style>
+    .dropdown-menu > li.active {
+        color: white !important;
+        background-color: transparent !important!
+    }
+</style>

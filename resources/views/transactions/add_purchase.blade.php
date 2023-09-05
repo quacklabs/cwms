@@ -7,9 +7,8 @@
     
 @endsection
 
-@section('content')
 
-<!-- Main Content -->
+@section('content')
 <div class="main-content">
     <section class="section">
         <div class="section-header">
@@ -18,7 +17,7 @@
         {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
-        <h2 class="section-title">Create {{ ucwords($flag) }}</h2>
+        <h2 class="section-title">Create Purchase</h2>
         <!-- <p class="section-lead">
             Each staff must be assigned to a transaction
         </p> -->
@@ -80,17 +79,12 @@
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <label for="inputPassword4">Warehouse</label>
+                                    <label for="inputPassword4">Order Status</label>
                                     <div class="form-control p-0">
-                                        <select data-name="Warehouse" id="warehouse_select" name="warehouse_id" class="p-0 mb-0 selector" required>
-                                            <option value=""></option>
-                                            @empty($warehouses)
-                                            
-                                            @else
-                                                @foreach ($warehouses as $warehouse)
-                                                    <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
-                                                @endforeach
-                                            @endempty
+                                        <select name="order_status" class="p-0 mb-0 form-control" required>
+                                            <option value="ordered">Ordered</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="pending">Received</option>
                                         </select>
 
                                     </div>
@@ -100,6 +94,7 @@
                         </form>
 
                         <div class="form-row mb-4">
+                            <label for="inputPassword4">Search Product</label>
                             <select class="col-12" id="product_select" placeholder="Product Name or SKU">
 
                             </select>
@@ -107,7 +102,6 @@
 
                         <div class="table-responsive">
                             <table class="table table-striped">
-                                @if ($flag == 'purchase')
                                 <thead>
                                     <th></th>
                                     <th>Name</th>
@@ -115,34 +109,11 @@
                                     <th class="text-right">Quantity</th>
                                     <th class="text-right">Amount</th>
                                 </thead>
-                                    
-                                @else
-                                <thead>
-                                    <th></th>
-                                    <th>Name</th>
-                                    <th>In Stock</th>
-                                    <th class="text-right">Price</th>
-                                    <th class="text-right">Quantity</th>
-                                    <th class="text-right">Amount</th>
-                                </thead>
-                                @endif
                                 
                                 <tbody id="items">
                                     <!-- this is where we display rows for each product added -->
                                 </tbody>
 
-                                <!-- <tfoot >
-                                    <tr>
-                                        <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Discount Amount</td>
-                                        <th  class="text-right font-weight-bold">
-                                            <input id="discount_amount" class="value-input form-control text-right" type="text" value="0">
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th colspan="{{ ($flag == 'purchase') ? 4 : 5 }}" class="text-right font-weight-bold">Total</td>
-                                        <th id="total_amount" class="text-right font-weight-bold">&#8358;0.00</th>
-                                    </tr>
-                                </tfoot> -->
                             </table>
                         </div>
                     </div>
@@ -175,27 +146,14 @@
         </div>
     </section>
 </div>
-
-<style>
-.custom-file-label::after {
-  content: "Browse";
-}
-
-.custom-file-input {
-  display: none;
-}
-</style>
-
+    
 @endsection
-
 
 @section('js')
 <script src="{{ asset('js/selector.js') }}"></script>
 <script src="{{ asset('js/datepicker.js') }}"></script>
 
 <script>
-   
-
     function updateGrandTotal() {
         if(isNaN($("#discount_amount").val())) {
             $("#discount_amount").val('0')
@@ -236,8 +194,6 @@
             const serials = $(element).find('input').filter(function() {
                 return $(this).data('name') === 'serials';
             }).first()
-
-            
 
             if(quantity.val() === 0 || isNaN(quantity.val())) {
                 validity = false
@@ -291,52 +247,21 @@
         }
     }
 
-    function validateOrder() {
-        const grand_total = updateGrandTotal()
-        if(grand_total === 0 || isNaN(grand_total)) {
-            swal({
-                title: 'Empty Order',
-                text: 'Please select some items to purchase',
-                icon: 'error'
-            })
-            return false
-        }
-
-        createOrder(grand_total)
-    }
-
     $(function() {
 
         $("#submit_transaction").click(function(e) {
             const partner_id = $("#partner_select").val()
-            const warehouse_id = $("#warehouse_select").val()
 
             if (partner_id == null || partner_id == '' || partner_id == undefined) {
                 swal({
-                    title: "{{ ($flag == 'sale') ? 'Customer' : 'Supplier' }} Required",
-                    text: "Please select a {{ ($flag == 'sale') ? 'customer' : 'supplier' }} to continue",
+                    title: "Supplier Required",
+                    text: "Please select a supplier to continue",
                     icon: 'error'
                 }) 
-                return
-            } else if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
-                swal({
-                    title: "Warehouse Required",
-                    text: "Please select a warehouse to continue",
-                    icon: 'error'
-                })
                 return
             } else {
                 validateOrder()
             }
-        });
-
-        $("#discount_amount").on('input', function(e) {
-            updateGrandTotal()
-        })
-
-        $('#date').datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
         });
 
         const partner_options = {
@@ -372,26 +297,12 @@
             },
             render: {
                 option: function(item, escape) {
-                    // return null
                     return '<div class="option" data-stock="'+escape(item.stock)+'" data-selectable="" data-name="'+item.name+'" data-value="' + escape(item.id) + '">'+ escape(item.name) +'</div>'
                 }
             },
             load: function(query, callback) {
                 if (!query.length) return callback();
-                const partner_id = $("#partner_select").val()
-                const warehouse_id = $("#warehouse_select").val()
-                search("{{ ($flag == 'purchase') ? route('api.findProduct') : route('api.findProductByWarehouse', ['id' => $user->hasRole('admin') ? '0' : $user->warehouse->id]) }}", query, callback)
-                // if(warehouse_id == null || warehouse_id == '' || warehouse_id == undefined)  {
-                //     swal({
-                //         title: "Warehouse Required",
-                //         text: "Please select a warehouse to continue",
-                //         icon: 'error'
-                //     })
-                //     return
-                // } else {
-                    
-                // }
-                
+                search("{{ route('api.findProduct') }}", query, callback)
             },
             onChange: function(value) {
                 if(value == '') { return }
@@ -399,17 +310,14 @@
                 var name = selectedOption.data('name');
                 var id = selectedOption.data('value');
                 var stock = selectedOption.data('stock');
-                console.log(selectedOption)
                 insertItem(name, id, stock)
                 this.clearOptions()
             }
         }
 
+
         $("#partner_select").selectize(partner_options)
-        $("#warehouse_select").selectize(warehouse_options)
         $("#product_select").selectize(product_options)
-        
-        
     })
 
     function insertItem(name, id, stock = undefined) {
@@ -429,41 +337,20 @@
             
         })
         if(exists == false) {
-            @if($flag == 'sale')
-                if(stock != undefined) {
-                    if(stock === 0) {
-                        swal({
-                            title: 'Out Of stock',
-                            text: 'Item is out of stock',
-                            icon: 'error'
-                        })
-                        return;
-                    }
-                }
-                var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
-                '<td><button data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i></button></td>' +
-                '<td>'+name+'</td>' +
-                '<td id="stock">'+stock+'</td>'+
-                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
-                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
-                '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
-                '</tr>';
-            @else
-                var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
-                '<td>'+
-                    '<div class="buttons">'+
-                    '<input data-row="'+id+'" data-name="file" class="file-input" type="file" style="display: none;" accept=".csv, .xls, .xlsx">'+
-                    '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
-                    '<button type="button" data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i> Remove</button>'+
-                    '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark"><i class="fas fa-upload"> Upload Serial Numbers</i></button>'+
-                    '</div>'+
-                '</td>' +
-                '<td>'+name+'</td>' +
-                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
-                '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
-                '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
-                '</tr>';
-            @endif
+            var newRow = '<tr id="row'+id+'" data-id="'+id+'">' +
+            '<td>'+
+                '<div class="buttons">'+
+                '<input data-row="'+id+'" data-name="file" class="file-input" type="file" style="display: none;" accept=".csv, .xls, .xlsx">'+
+                '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
+                '<button type="button" data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i> Remove</button>'+
+                '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark"><i class="fas fa-upload"> Upload Serial Numbers</i></button>'+
+                '</div>'+
+            '</td>' +
+            '<td>'+name+'</td>' +
+            '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="price" type="text" value="0"></td>' +
+            '<td><input class="value-input form-control text-right" data-row="'+id+'" data-name="quantity" type="number" value="1"></td>' +
+            '<td><input class="form-control text-right" data-name="total" type="text" value="0" readonly></td>' +
+            '</tr>';
             item_rows.append(newRow);
             $("#grand_total").show();
         } else {
@@ -593,7 +480,20 @@
         }
         });
     });
+
+    function validateOrder() {
+        const grand_total = updateGrandTotal()
+        if(grand_total === 0 || isNaN(grand_total)) {
+            swal({
+                title: 'Empty Order',
+                text: 'Please select some items to purchase',
+                icon: 'error'
+            })
+            return false
+        }
+
+        createOrder(grand_total)
+    }
 </script>
-
-
+    
 @endsection

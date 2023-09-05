@@ -174,7 +174,7 @@ class RolesSeeder extends Seeder
                 'approve-purchase-return',
                 'delete-purchase',
                 'create-sale',
-                'approve-purchase',
+                'update-purchase-status',
                 'view-sale',
                 'view-sale-return',
                 'delete-sale',
@@ -185,8 +185,10 @@ class RolesSeeder extends Seeder
                 'delete-expsense-type',
                 'modify-expense-type',
                 'create-expense',
-                'delete-expense'
-
+                'delete-expense',
+                'give-payment',
+                'receive-payment',
+                'confirm-payment'
             ],
             'reports' => [
                 'view-reports',

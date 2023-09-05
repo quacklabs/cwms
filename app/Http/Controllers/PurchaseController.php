@@ -42,19 +42,29 @@ class PurchaseController extends Controller
         return parent::render($data, 'transactions.view_transactions');
     }
 
+    public function in_transit(Request $request) {
+        $user = Auth::user();
+        if($request->method() == 'POST') {
+
+        }
+    }
+
     public function create(Request $request) {
         $user = Auth::user();
         if($request->method() == 'POST') {
             $valid = $request->validate([
                 'partner_id' => ['required', 'numeric'],
-                'warehouse_id' => ['required', 'numeric'],
                 'date' => ['required', 'date'],
                 'order' => ['required'],
                 'discount_amount' => ['numeric', 'nullable'],
                 'total_price' => ['required', 'decimal'],
-                'invoice_no' => ['required']
+                'invoice_no' => ['required'],
+                'order_status' => ['required']
             ]);
-           TransactionService::create($valid, 'purchase');
+            $transaction = TransactionService::createPurchase($valid);
+            if($transaction == NULL) {
+                return redirect()->route('purchase.create')->with("error", "Order could not be created: an unknown error occured");
+            }
            return redirect()->route('purchase.view')->with('success', 'order added successfully');
         }
         $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
@@ -72,7 +82,7 @@ class PurchaseController extends Controller
             'warehouses' => $warehouses
         ];
 
-        return parent::render($data, 'transactions.add_transaction');
+        return parent::render($data, 'transactions.add_purchase');
     }
 
     public function receive(Request $request) {

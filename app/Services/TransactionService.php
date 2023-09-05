@@ -21,14 +21,14 @@ use App\Models\PurchaseReturnDetail;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnDetail;
 
-use Faker\Factory;
+use Faker\Factory as Faker;
 use Faker\Provider\Barcode;
 use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
 
 class TransactionService {
     
-    public static function create(array $data, string $flag): TransactionInterface {
+    public static function createPurchase(array $data): TransactionInterface {
 
         $orders = array_map(function($order) {
             return [
@@ -40,40 +40,21 @@ class TransactionService {
             ];
         }, json_decode($data['order']));
 
-        switch($flag) {
-            case 'sale':
-                $transaction = Sale::create([
-                    'customer_id' => $data['partner_id'],
-                    'invoice_no' => $data['invoice_no'],
-                    'warehouse_id' => $data['warehouse_id'],
-                    'total_price' => $data['total_price'],           
-                    'discount_amount' => $data['discount_amount'],
-                    'date' => Carbon::parse($data['date']),
-                    'notes' => $data['notes']
-                ]);
-                break;
-            case 'purchase':
-                $transaction = Purchase::create([
-                    'supplier_id' => $data['partner_id'],
-                    'invoice_no' => $data['invoice_no'],
-                    'warehouse_id' => $data['warehouse_id'],
-
-                    'total_price' => $data['total_price'],
-                    'discount_amount' => $data['discount_amount'],
-                    'date' => Carbon::parse($data['date']),
-                    'note' => $data['notes'] ?? NULL
-                ]);
-                break;
-            default:
-                return null;
-        }
+        $transaction = Purchase::create([
+            'supplier_id' => $data['partner_id'],
+            'invoice_no' => $data['invoice_no'],
+            'total_price' => $data['total_price'],
+            'status' => $data['order_status'],
+            'discount_amount' => $data['discount_amount'],
+            'date' => Carbon::parse($data['date']),
+            'note' => $data['notes'] ?? NULL
+        ]);
         $transaction->details()->createMany($orders);
-        if($flag == 'purchase') {
-            event(new CreateStockEvent($orders));
-        } else {
-            event(new SellStockEvent($orders, $transaction->id, $data['warehouse_id']));
-        }
-        
+        // if($flag == 'purchase') {
+        //     event(new CreateStockEvent($orders));
+        // } else {
+        //     event(new SellStockEvent($orders, $transaction->id, $data['warehouse_id']));
+        // }
         return $transaction;
     }
 
@@ -338,6 +319,12 @@ class TransactionService {
             ]);
         }
         return;
+    }
+
+    public static function newInvoice() {
+        $faker = Faker::create();
+        $faker->addProvider(new Barcode($faker));
+        return $faker->ean13(false);
     }
 
 }

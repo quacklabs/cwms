@@ -12,9 +12,9 @@
     <section class="section">
         <div class="section-header">
         <h1>{{$title }}</h1>
-        @can('create-'.$flag)
+        @can('create-purchase')
         <div class="section-header-button">
-            <a class="btn btn-primary" href="{{ route($flag.'.create') }}">Add New</a>
+            <a class="btn btn-primary" href="{{ route('purchase.create') }}">Add New</a>
             <!-- <a href="#" class="btn btn-primary">Add New</a> -->
         </div>
         @endcan
@@ -153,7 +153,7 @@
                                                 <td class="p-3">
                                                     <strong>&#8358;{{ number_format($transaction->total_price, 2) }}</strong>
                                                     <span class="text-muted">
-                                                        <p>{{ $transaction->warehouse->name ?? 'GIT Warehouse' }}</p>
+                                                        <p>{{ $transaction->warehouse->name }}</p>
                                                     </span>
                                                 </td>
 
@@ -172,54 +172,38 @@
                                                 </td>
                                                 <td>
                                                     <div class="buttons">
-                                                        @if($transaction->returns != null)
-                                                            @if (floatval($transaction->due) > floatval(0.00) )
-                                                                @can('give-payment')
-                                                                <a href="#" id="btn-modal" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                        @can('approve-'.$flag)
+                                                            @if($transaction->returns != null)
+                                                                @if (floatval($transaction->due) > floatval(0.00) )
+                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                     <i class="fas fa-money-check-alt" ></i>
                                                                 </a>
-                                                                @endcan
+                                                                @endif
 
-                                                                @can('receive-payment')
-                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Receive Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                            @else
+                                                                @if (floatval($transaction->due) > floatval(0.00) )
+                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
                                                                     <i class="fas fa-money-check-alt" ></i>
                                                                 </a>
-                                                                @endcan
+                                                                @endif
+                                                                <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->
+                                                                    
+                                                                <!-- </a> -->
                                                             @endif
-
-                                                        @else
-                                                            @if (floatval($transaction->due) > floatval(0.00) )
-                                                                @can('give-payment')
-                                                                    <a href="#" id="give-payment" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
-                                                                        <i class="fas fa-money-check-alt" ></i>
-                                                                    </a>
-                                                                @endcan
-                                                            <!-- <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
-                                                                <i class="fas fa-money-check-alt" ></i>
-                                                            </a> -->
-                                                            @endif
-                                                            <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->
-                                                                
-                                                            <!-- </a> -->
-                                                        @endif
-
-                                                        @if(count($transaction->returns->get()) == 0 && floatval($transaction->due) != 0.00)
-                                                            @can('create-purchase-return')
-                                                                <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Return Purchase">
-                                                                    <i class="fas fa-reply"></i>
-                                                                </a>
-                                                            @endcan
-                                                        @endif
-
-
-                                                        @can('update-purchase-status')
-                                                            <a href="#" id="update-status" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Return Purchase">
-                                                                <i class="fas fa-check"></i>
-                                                            </a>
                                                         @endcan
 
-                                                        @hasrole('admin')
-                                                            <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Purchase">
+                                                        @if(count($transaction->returns->get()) == 0)
+                                                            @if(floatval($transaction->due) != 0.00)
+                                                                @can('create-'.$flag.'-return')
+                                                                    <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
+                                                                        <i class="fas fa-reply"></i>
+                                                                    </a>
+                                                                @endcan
+                                                            @endif
+                                                        @endif
+
+                                                        @can('delete-purchase')
+                                                            <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale' }}">
                                                                 <i class="fas fa-trash"></i>
                                                             </a>
                                                         @endcan

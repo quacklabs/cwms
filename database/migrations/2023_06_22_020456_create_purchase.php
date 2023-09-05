@@ -18,7 +18,7 @@ class CreatePurchase extends Migration
             $table->id();
             $table->string('invoice_no')->unique();
             $table->unsignedBigInteger('supplier_id');
-            $table->unsignedBigInteger('warehouse_id');
+            $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->date('date');
             $table->decimal('total_price', 28,8);
             $table->decimal('discount_amount', 28,8)->default(0.00);
@@ -26,6 +26,7 @@ class CreatePurchase extends Migration
             $table->text('note')->nullable();
             $table->boolean('return_status')->default(false);
             $table->string('origin')->nullable();
+            $table->string('status')->default('ordered');
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');

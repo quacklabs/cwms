@@ -21,6 +21,7 @@ class ProductStock extends Migration
             $table->unsignedBigInteger('owner');
             $table->string('serial')->unique();
             $table->boolean('sold')->default(false);
+            $table->boolean('received')->default(false);
             $table->boolean('in_transit')->default(true);
             $table->unsignedBigInteger('sale_id')->nullable();
             $table->unsignedBigInteger('sold_by')->nullable();
