@@ -16,8 +16,8 @@ class ProductStock extends Migration
         Schema::create('product_stock', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('warehouse_id');
-            $table->string('ownership');
+            $table->unsignedBigInteger('warehouse_id')->nullable();
+            $table->string('ownership')->default('GIT');
             $table->unsignedBigInteger('owner');
             $table->string('serial')->unique();
             $table->boolean('sold')->default(false);

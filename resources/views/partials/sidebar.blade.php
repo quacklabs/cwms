@@ -54,6 +54,14 @@
 
             @hasanyrole('admin|manager')
             <li class="menu-header text-danger">WareHouse/Store Management</li>
+            @hasrole('admin')
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.create') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('purchase.in_transit') }}">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Goods In Transit</span>
+                </a>
+            </li>
+            @endhasrole
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'warehouse') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('warehouse.all_warehouses') }}">
                     <i class="fas fa-warehouse"></i> <span>Warehouse</span>
@@ -96,14 +104,7 @@
 
             @role(['admin','manager','staff'])
             <li class="menu-header text-danger">Transactions Management</li>
-                @hasrole('admin')
-                <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.create') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ route('purchase.in_transit') }}">
-                        <i class="fa-solid fa-eye"></i>
-                        <span>Goods In Transit</span>
-                    </a>
-                </li>
-                @endhasrole
+                
                 @canany(['view-purchase','view-purchase-return'])
                 <li class="dropdown">
                     <a class="nav-link has-dropdown" href="#">

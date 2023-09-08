@@ -331,6 +331,7 @@
             <div class="modal-body">
                 <form id="statusForm" method="POST" action="#">
                     @csrf
+                    <input type="hidden" name="order_details" id="received_q" value="">
                     <div class="form-group row align-items-center">
                         <!-- <label for="site-title" class="form-control-label text-md-right">Quantity Received</label> -->
                         <div class="section-title col-12">
@@ -348,6 +349,7 @@
                                         <option value="pending">Pending</option>
                                         <option value="received">Received</option>
                                     </select>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -366,7 +368,7 @@
                     
                     <div class="form-group row align-items-center">
                         <div class="col-sm-6 col-md-9">
-                            <button type="submit" class="btn btn-large btn-primary">Update</button>
+                            <button id="update_button" type="button" class="btn btn-large btn-primary">Update</button>
                         </div>
                     </div>
                 </form>
@@ -396,12 +398,16 @@
             const transaction = $(this).data('transaction')
             const details = $(this).data('details')
             const info = $("#order_details")
+            const status = $("#purchase_status").val()
+            if(status == 'received') {
+                info.show()
+            } else {
+                info.hide()
+            }
             info.find('div').each(function(idx, element) {
                 $(element).remove()
             })
-
             $("#statusForm").prop('action', transaction.updateUrl)
-
             for (let index = 0; index < details.length; index++) {
                 
                 const detail = details[index];
@@ -411,7 +417,7 @@
                                 '&nbsp;&nbsp;<button type="button" class="btn btn-icon btn-danger remove_item" data-index="'+index+'"><i class="fas fa-trash"></i></button>'+
                             '</div>'+
                             '<div class="col-4">'+
-                                '<input id="product_quantity" type="text" class="received_q form-control" value="0" data-detail="'+JSON+'" data-due="">'+
+                                '<input id="product_quantity" type="text" class="received_q form-control" value="'+detail.quantity+'" data-detail="'+detail.id+'">'+
                             '</div>'+
                             '</div>'
                 info.append(element)
@@ -427,27 +433,65 @@
             row.remove();
         });
 
+        $(document).on('change', '#purchase_status', function(e) {
+            const value = $(this).val();
+            if(value == 'received') {
+                $("#order_details").show()
+            } else{
+                $("#order_details").hide()
+            }
+        })
+
     });
 
-    $(document).on('input', '.received_q', function() {
-        // Event handler code
-        // var value = $(this).val();
-        const details = $(this).data('detail')
-        const total_amount = $(this).data('due')
-        const quantity = $(this).val()
-        if(quantity == '' || quantity == null || quantity == undefined || parseFloat(quantity) <= parseFloat("0.00")) {
-            console.log('check failed')
-            return
+    $(document).on('click', '#update_button', function(e) {
+        e.preventDefault()
+        const status = $("#purchase_status").val()
+        if(status == 'received') {
+            var order = []
+            const info = $("#order_details")
+            const inputs = info.find('input')
+            inputs.each(function(index, element) {
+                // console.log(element)
+                const detail = $(element).data('detail')
+                const value = $(element).val()
+                // console.log(detail)
+                // console.log("value: "+ $(element).val())
+                const current = {
+                    id: detail,
+                    received: value,
+                }
+                order.push(current)
+            })
+            if(order.length > 0) {
+                const arg = JSON.stringify(order)
+                $("#received_q").val(arg)
+                $("#statusForm").submit()
+            }
+            
+            // console.log(inputs)
+        } else {
+            $("#statusForm").submit()
         }
+    })
 
-        const due = $("#due")
-        const due_amount = due.val()
-        const received = parseFloat(details.price) * quantity
-        console.log(received)
-        const value = due_amount - received
-        console.log(value)
-        return
-    });
+    // $(document).on('input', '.received_q', function() {
+    //     // Event handler code
+    //     // var value = $(this).val();
+    //     const details = $(this).data('detail')
+    //     const total_amount = $(this).data('due')
+    //     const quantity = $(this).val()
+    //     if(quantity == '' || quantity == null || quantity == undefined || parseFloat(quantity) <= parseFloat("0.00")) {
+    //         console.log('check failed')
+    //         return
+    //     }
+
+    //     const due = $("#due")
+    //     const due_amount = due.val()
+    //     const received = parseFloat(details.price) * quantity
+    //     const value = due_amount - received
+    //     return
+    // });
 
     flatpickr("#start_date", {
         mode: "range",

@@ -25,6 +25,7 @@ use Faker\Factory as Faker;
 use Faker\Provider\Barcode;
 use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
+use App\Events\UpdatePurchaseEvent;
 
 class TransactionService {
     
@@ -194,25 +195,6 @@ class TransactionService {
         }
     }
 
-    // public static function purchase(int $id): Purchase {
-    //     return Purchase::findOrFail($id);
-    // }
-    // public static function sale(int $id): Sale {
-    //     return Sale::findOrFail($id);
-    // }
-
-    // public static function sale_return($id): SaleReturn {
-    //     return SaleReturn::findOrFail($id);
-    // }
-
-    // public function payable(): float {
-
-    // }
-    
-    // public function due(): float {
-
-    // }
-
     public static function returnPurchase(array $data, Purchase $purchase) {
         $receivable = floatval($data['total_price']) - floatval($data['discount_amount']);
         $return = PurchaseReturn::firstOrCreate([
@@ -319,6 +301,15 @@ class TransactionService {
             ]);
         }
         return;
+    }
+
+
+    public static function updatePurchase(int $id, array $data) {
+        $details = json_decode($data['order_details']);
+        
+        if(strtolower($data['status']) == 'received') {
+            event(new UpdatePurchaseEvent($id, $status, $details));
+        }
     }
 
     public static function newInvoice() {

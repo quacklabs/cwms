@@ -10,19 +10,28 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CreateStockEvent
+use App\Models\Purchase;
+// use App\Models\PurchaseDetails;
+
+class UpdatePurchaseEvent
 {
-    public array $orders;
-    // public $amount;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public int $purchase_id;
+    public string $status;
+    public array $order_details;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(array $orders)
+    public function __construct(int $purchase_id, string $status, array $order = [])
     {
         //
-        $this->orders = $orders;
+        $this->purchase_id = $purchase_id;
+        $this->status = $status;
+        $this->order_details = $order;
     }
 
     /**

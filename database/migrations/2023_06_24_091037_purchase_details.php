@@ -21,6 +21,7 @@ class PurchaseDetails extends Migration
             $table->integer('received')->default(0);
             $table->decimal('price', 28,8);
             $table->decimal('total',28,8); // paid amount
+            $table->text('serials')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

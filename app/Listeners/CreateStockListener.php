@@ -31,14 +31,14 @@ class CreateStockListener
     {
         //
         foreach($event->orders as $order) {
-            $serials = json_decode($order['serials']);
+            $serials = $order['serials'];
 
             if(count($serials) > 0) {
                 foreach($serials as $serial) {
                     ProductStock::updateOrCreate([
                         'warehouse_id' => $data['warehouse_id'],
-                        'owner' => $data['warehouse_id'],
-                        'ownership' => 'WAREHOUSE',
+                        // 'owner' => $['warehouse_id'],
+                        // 'ownership' => 'WAREHOUSE',
                         'product_id' => $order['product_id'],
                         'serial' => $serial,
                     ]);
@@ -46,10 +46,10 @@ class CreateStockListener
             } else {
                 foreach (range(1, $order['quantity']) as $index) {
                     ProductStock::create([
-                        'warehouse_id' => $data['warehouse_id'],
+                        // 'warehouse_id' => $data['warehouse_id'],
                         'product_id' => $order['product_id'],
-                        'owner' => $data['warehouse_id'],
-                        'ownership' => 'WAREHOUSE',
+                        // 'owner' => $data['warehouse_id'],
+                        // 'ownership' => 'WAREHOUSE',
                         'serial' => TransactionService::newInvoice(),
                     ]);
                 }

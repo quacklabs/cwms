@@ -17,6 +17,7 @@ use App\Events\SupplierPaymentReceived;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Rules\DecimalComparison;
+use Illuminate\Support\Facades\Validator;
 
 class PurchaseController extends Controller
 {
@@ -40,6 +41,23 @@ class PurchaseController extends Controller
             'flag' => 'purchase'
         ];
         return parent::render($data, 'transactions.view_purchase');
+    }
+
+    public function update(Request $request) {
+       
+        $id = $request->route('id');
+        if(!$id) { return redirect()->route('purchase.view')->with('error', 'Unable to update purchase'); }
+
+        $validate = Validator::make($request->all(), [
+            'status' => ['required'],
+            'order_details' => ['nullable'],
+        ]);
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate);
+        } else {
+            TransactionService::updatePurchase($id, $validate->validated());
+            return redirect()->route('purchase.view')->with('success', 'Purchase Status Updated');
+        }
     }
 
     public function view_single(Request $request) {
