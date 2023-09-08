@@ -62,7 +62,7 @@ class TransactionService {
         return Purchase::find($id)->first();
     }
 
-    public static function getSale($id): Purchase {
+    public static function getSale(int $id): Purchase {
         return Sale::find($id)->get();
     }
 

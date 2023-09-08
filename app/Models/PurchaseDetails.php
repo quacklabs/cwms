@@ -27,6 +27,10 @@ class PurchaseDetails extends TransactionDetail
         'purchase_date' => 'date',
     ];
 
+    protected $appends = [
+        'product'
+    ];
+
     // public function purchase() {
     //     return $this->belongsTo(Purchase::class, 'purchase_id');
     // }
@@ -37,6 +41,10 @@ class PurchaseDetails extends TransactionDetail
 
     public function product(): BelongsTo {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function getProductAttribute() {
+        return Product::where('id', $this->product_id)->first();
     }
 
     public function getStockAttribute() {

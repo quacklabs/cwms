@@ -22,7 +22,7 @@
         {{ Breadcrumbs::render() }}
         </div>
         <div class="section-body">
-            <h2 class="section-title">Manage {{ ucwords($flag) }}</h2>
+            <h2 class="section-title">Manage Purchases</h2>
             <p class="section-lead">
                 Unsettled payments are displayed in red.
             </p>
@@ -36,7 +36,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Filter By Date Range</label>
-                                        <form action="{{ ($flag == 'sale') ? route('sale.view') : route('purchase.view') }}" method="get">
+                                        <form action="{{ route('purchase.view') }}\" method="get">
                                             <div class="input-group">
                                             
                                                 @csrf
@@ -54,7 +54,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Invoice Search</label>
-                                        <form action="{{ ($flag == 'sale') ? route('sale.view') : route('purchase.view') }}" method="get">
+                                        <form action=" {{route('purchase.view') }}" method="get">
                                             @csrf
                                             <div class="input-group">
                                                 <input type="text" name="invoice" class="form-control" placeholder="Invoice No">
@@ -87,7 +87,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>All {{ $flag }}s</h4>
+                            <h4>All Purchases</h4>
                             <div class="card-header-form buttons">
                                 @empty($items)
 
@@ -111,7 +111,7 @@
                                         <tr class="text-left">
                                             <th></th>
                                             <th class="text-white">Invoice | Date</th>
-                                            <th class="text-white">{{ ($flag == 'purchase') ? 'Supplier' : 'Customer' }} | Mobile</th>
+                                            <th class="text-white">Supplier | Mobile</th>
                                             <th class="text-white">Amount | Warehouse</th>
                                             <th class="text-white">Payable | Discount </th>
                                             <th class="text-white">Due | Paid</th>
@@ -127,7 +127,7 @@
                                             <tr class="text-left">
                                                 <td>
                                                     @if(count($transaction->returns->get()) > 0)
-                                                        <span class="badge badge-warning badge-pill beep" data-toggle="tooltip" data-placement="top" title="" data-original-title="Returned">
+                                                        <span class="badge badge-warning badge-pill beep" data-toggle="tooltip" data-placement="top" title="Returned" data-original-title="Returned">
                                                             {{ $loop->iteration}}
                                                         </span>
                                                     @else
@@ -153,7 +153,7 @@
                                                 <td class="p-3">
                                                     <strong>&#8358;{{ number_format($transaction->total_price, 2) }}</strong>
                                                     <span class="text-muted">
-                                                        <p>{{ $transaction->warehouse->name }}</p>
+                                                        <p>{{ $transaction->warehouse->name ?? 'GIT Warehouse' }}</p>
                                                     </span>
                                                 </td>
 
@@ -172,38 +172,58 @@
                                                 </td>
                                                 <td>
                                                     <div class="buttons">
-                                                        @can('approve-'.$flag)
-                                                            @if($transaction->returns != null)
-                                                                @if (floatval($transaction->due) > floatval(0.00) )
-                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
+                                                        <a href="{{ route('purchase.view_single', ['id' => $transaction->id]) }}" id="btn-modal" class="btn btn-info btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Transaction">
+                                                            <i class="fas fa-eye" ></i>
+                                                        </a>
+                                                        @if($transaction->returns != null)
+                                                            @if(floatval($transaction->due) > floatval(0.00) )
+                                                                @can('give-payment')
+                                                                <a href="#" id="btn-modal" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
                                                                     <i class="fas fa-money-check-alt" ></i>
                                                                 </a>
-                                                                @endif
+                                                                @endcan
 
-                                                            @else
-                                                                @if (floatval($transaction->due) > floatval(0.00) )
-                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Give Payment' : 'Receive Payment' }}"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                @can('receive-payment')
+                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Receive Payment"  data-transaction="{{ json_encode($transaction) }}" >
                                                                     <i class="fas fa-money-check-alt" ></i>
                                                                 </a>
-                                                                @endif
-                                                                <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->
-                                                                    
-                                                                <!-- </a> -->
+                                                                @endcan
+                                                            @endif
+
+                                                        @else
+                                                            @if (floatval($transaction->due) > floatval(0.00) )
+                                                                @can('give-payment')
+                                                                    <a href="#" id="give-payment" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                        <i class="fas fa-money-check-alt" ></i>
+                                                                    </a>
+                                                                @endcan
+                                                            <!-- <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                <i class="fas fa-money-check-alt" ></i>
+                                                            </a> -->
+                                                            @endif
+                                                            <!-- <a href="#" class="btn btn-dark" data-toggle="" > -->
+                                                                
+                                                            <!-- </a> -->
+                                                        @endif
+
+                                                        @if(count($transaction->returns->get()) == 0 && floatval($transaction->due) != 0.00)
+                                                            @can('create-purchase-return')
+                                                                <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="Return Purchase">
+                                                                    <i class="fas fa-reply"></i>
+                                                                </a>
+                                                            @endcan
+                                                        @endif
+
+                                                        @can('update-purchase-status')
+                                                            @if ($transaction->status != 'received')
+                                                            <a id="update_status" href="#" class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update Satus" data-transaction="{{ json_encode($transaction) }}" data-details="{{ json_encode($transaction->details) }}">
+                                                                <i class="fas fa-check"></i>
+                                                            </a>
                                                             @endif
                                                         @endcan
 
-                                                        @if(count($transaction->returns->get()) == 0)
-                                                            @if(floatval($transaction->due) != 0.00)
-                                                                @can('create-'.$flag.'-return')
-                                                                    <a href="{{ route($flag.'.return', ['id' => $transaction->id]) }}" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Return Purchase' : 'Return Sale' }}">
-                                                                        <i class="fas fa-reply"></i>
-                                                                    </a>
-                                                                @endcan
-                                                            @endif
-                                                        @endif
-
-                                                        @can('delete-purchase')
-                                                            <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ ($flag == 'purchase') ? 'Delete Purchase' : 'Delete Sale' }}">
+                                                        @hasrole('admin')
+                                                            <a href="#" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Purchase">
                                                                 <i class="fas fa-trash"></i>
                                                             </a>
                                                         @endcan
@@ -296,6 +316,65 @@
     </div>
 </div>
 
+<div class="modal fade" id="updateStatus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Update Purchase Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <hr>
+            
+
+            <div class="modal-body">
+                <form id="statusForm" method="POST" action="#">
+                    @csrf
+                    <div class="form-group row align-items-center">
+                        <!-- <label for="site-title" class="form-control-label text-md-right">Quantity Received</label> -->
+                        <div class="section-title col-12">
+                            <p class="lead">Product Name / Quantity</p>
+                            <hr>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-8">
+                                    Purchase Status
+                                </div>
+                                <div class="col-4">
+                                    <select name="status" id="purchase_status" class="form-control">
+                                        <option value="ordered">Ordered</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="received">Received</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="col-12 mt-3" id="order_details">
+                            
+                        </div>
+                        <hr>
+                        <!-- <div class="col-12">
+                            
+                            
+                        </div> -->
+                    </div>
+                    <hr>
+                    
+                    <div class="form-group row align-items-center">
+                        <div class="col-sm-6 col-md-9">
+                            <button type="submit" class="btn btn-large btn-primary">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 
@@ -312,6 +391,62 @@
             $("#moneyForm").prop('action', details.url)
             $("#myModal").modal('show');
         })
+
+        $("#update_status").on('click', function() {
+            const transaction = $(this).data('transaction')
+            const details = $(this).data('details')
+            const info = $("#order_details")
+            info.find('div').each(function(idx, element) {
+                $(element).remove()
+            })
+
+            $("#statusForm").prop('action', transaction.updateUrl)
+
+            for (let index = 0; index < details.length; index++) {
+                
+                const detail = details[index];
+                const element = '<div class="row mt-2" id="row_'+index+'">'+
+                            '<div class="col-8">'+
+                                '<span class="text-lg">'+detail.product.name+'</span>'+
+                                '&nbsp;&nbsp;<button type="button" class="btn btn-icon btn-danger remove_item" data-index="'+index+'"><i class="fas fa-trash"></i></button>'+
+                            '</div>'+
+                            '<div class="col-4">'+
+                                '<input id="product_quantity" type="text" class="received_q form-control" value="0" data-detail="'+JSON+'" data-due="">'+
+                            '</div>'+
+                            '</div>'
+                info.append(element)
+            }
+            $("#total-amount").val(details.due)
+            $("#updateStatus").modal('show');
+        })
+
+        $(document).on('click', '.remove_item', function(e) {
+            const row_id = $(this).data('index')
+            e.preventDefault()
+            const row = $("#row_"+row_id)
+            row.remove();
+        });
+
+    });
+
+    $(document).on('input', '.received_q', function() {
+        // Event handler code
+        // var value = $(this).val();
+        const details = $(this).data('detail')
+        const total_amount = $(this).data('due')
+        const quantity = $(this).val()
+        if(quantity == '' || quantity == null || quantity == undefined || parseFloat(quantity) <= parseFloat("0.00")) {
+            console.log('check failed')
+            return
+        }
+
+        const due = $("#due")
+        const due_amount = due.val()
+        const received = parseFloat(details.price) * quantity
+        console.log(received)
+        const value = due_amount - received
+        console.log(value)
+        return
     });
 
     flatpickr("#start_date", {
@@ -319,11 +454,4 @@
         dateFormat: "d-m-Y",
     })
 </script>
-
-@empty($edit_product)
-
-@else
-
-@endempty
-
 @endsection

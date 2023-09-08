@@ -39,7 +39,20 @@ class PurchaseController extends Controller
             'items' => $transactions,
             'flag' => 'purchase'
         ];
-        return parent::render($data, 'transactions.view_transactions');
+        return parent::render($data, 'transactions.view_purchase');
+    }
+
+    public function view_single(Request $request) {
+        $id = $request->route('id');
+        if($id == NULL) {
+            return redirect()->route('purchase.view');
+        }
+        $transaction = TransactionService::getPurchase($id);
+        $data = [
+            'title' => 'View Purchase',
+            'transaction' => $transaction,
+        ];
+        return parent::render($data, 'transactions.view_single_purchase');
     }
 
     public function in_transit(Request $request) {

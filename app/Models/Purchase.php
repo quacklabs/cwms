@@ -31,7 +31,8 @@ class Purchase extends Transaction {
         'received',
         'note',
         'return_status',
-        'date'
+        'date',
+        'status'
     ];
 
     protected $casts = [
@@ -41,7 +42,7 @@ class Purchase extends Transaction {
     ];
 
     protected $appends = [
-        'due', 'payable', 'url', 'returns'
+        'due', 'payable', 'url', 'returns', 'updateUrl'
     ];
 
     public function getReturnsAttribute() {
@@ -77,6 +78,10 @@ class Purchase extends Transaction {
         $full = $this->total_price - $this->discount_amount;
         return $full - $this->received;
     }
+
+    public function getUpdateUrlAttribute() {
+        return route('purchase.update', ['id' => $this->id]);
+    }
     
     public function getUrlAttribute() {
         return route('purchase.receive', ['id' => $this->id]);
@@ -96,5 +101,10 @@ class Purchase extends Transaction {
 
     public function origin(): Model {
         return null;
+    }
+
+    public function getFormattedDateAttribute() {
+        $date = Carbon::parse($this->date);
+        return $date->format("F j, Y");
     }
 }

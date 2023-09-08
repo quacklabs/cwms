@@ -126,6 +126,11 @@ Breadcrumbs::for('purchase.returned', function (BreadcrumbTrail $trail) {
     $trail->push('Returned Purchases');
 });
 
+Breadcrumbs::for('purchase.view_single', function (BreadcrumbTrail $trail) {
+    $trail->push('Purchases', route('purchase.view'));
+    $trail->push('View Details');
+});
+
 // Dashboard > Sale > Return Sale
 Breadcrumbs::for('sale.returned', function (BreadcrumbTrail $trail) {
     $trail->push('Sales', route('sale.view'));

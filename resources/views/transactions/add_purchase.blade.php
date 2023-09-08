@@ -342,8 +342,8 @@
                 '<div class="buttons">'+
                 '<input data-row="'+id+'" data-name="file" class="file-input" type="file" style="display: none;" accept=".csv, .xls, .xlsx">'+
                 '<input data-row="'+id+'" data-name="serials" type="text" style="display: none;" value="">'+
-                '<button type="button" data-row="'+id+'" class="delete-btn btn btn-icon btn-danger"><i class="fas fa-trash"></i> Remove</button>'+
-                '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark"><i class="fas fa-upload"> Upload Serial Numbers</i></button>'+
+                '<button type="button" data-row="'+id+'" class="delete-btn btn btn-icon btn-danger" data-toggle="tooltip" data-placement="top" title="Remove" data-original-title="Remove"><i class="fas fa-trash"></i></button>'+
+                '<button type="button" data-row="'+id+'" class="upload-btn btn btn-icon btn-dark" data-toggle="tooltip" data-placement="top" title="Upload Serial Numbers" data-original-title="Upload Serial Numbers"><i class="fas fa-upload"></i></button>'+
                 '</div>'+
             '</td>' +
             '<td>'+name+'</td>' +

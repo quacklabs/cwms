@@ -211,15 +211,16 @@
                                                             @endcan
                                                         @endif
 
-
-                                                        @can('update-purchase-status')
-                                                            <a href="#" id="update-status" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Return Purchase">
-                                                                <i class="fas fa-check"></i>
-                                                            </a>
-                                                        @endcan
+                                                        @if($flag == 'purchase')
+                                                            @can('update-purchase-status')
+                                                                <a href="#" id="update_status" class="btn btn-success" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update Status" data-transaction="{{ json_encode($transaction) }}" data-details="{{ json_encode($transaction->details) }}">
+                                                                    <i class="fas fa-check"></i>
+                                                                </a>
+                                                            @endcan
+                                                        @endif
 
                                                         @hasrole('admin')
-                                                            <a href="" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Purchase">
+                                                            <a href="#" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Purchase">
                                                                 <i class="fas fa-trash"></i>
                                                             </a>
                                                         @endcan
@@ -312,6 +313,84 @@
     </div>
 </div>
 
+<div class="modal fade" id="updateStatus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Update Purchase Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <hr>
+            
+
+            <div class="modal-body">
+                <form id="statusForm" method="POST" action="#">
+                    @csrf
+                    <div class="form-group row align-items-center">
+                        <!-- <label for="site-title" class="form-control-label text-md-right">Quantity Received</label> -->
+                        <div class="section-title col-12">
+                            <p class="lead">Product Name / Quantity</p>
+                            <hr>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-8">
+                                    Purchase Status
+                                </div>
+                                <div class="col-4">
+                                    <select name="status" id="purchase_status" class="form-control">
+                                        <option value="ordered">Ordered</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="received">Received</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="col-12 mt-3">
+                            <div class="row order_details">
+
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- <div class="col-12">
+                            
+                            
+                        </div> -->
+                    </div>
+                    <hr>
+                    <!-- <div class="form-group row align-items-center">
+                        <label for="site-description" class="form-control-label col-sm-3 text-md-right">Due Now</label>
+                        <div class="col-sm-6 col-md-9">
+                            <input id="total-amount" name="due" type="text" class="form-control"  value="" disabled>
+                        </div>
+                    </div>
+
+                    <hr> -->
+
+                    <!-- <div class="form-group row align-items-center">
+                        <label for="site-description" class="form-control-label col-sm-3 text-md-right">Signature</label>
+                        <div class="col-sm-6 col-md-9">
+                            <input id="myCheckbox" name="status" type="checkbox" class="form-control" checked required>
+                            <span class="text-muted">I affirm that I have {{ ($flag == 'sale') ? 'received' : 'given' }} the sum stated above</span>
+                        </div>
+                    </div> -->
+
+                    <div class="form-group row align-items-center">
+                        <!-- <label for="site-description" class="form-control-label col-sm-3 text-md-right">Active</label> -->
+                        <div class="col-sm-6 col-md-9">
+                            <button type="submit" class="btn btn-large btn-primary">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 
@@ -328,6 +407,50 @@
             $("#moneyForm").prop('action', details.url)
             $("#myModal").modal('show');
         })
+
+        $("#update_status").on('click', function() {
+            const transaction = $(this).data('transaction')
+            const details = $(this).data('details')
+            const info = $(".order_details")
+            
+            $("#statusForm").prop('action', transaction.updateUrl)
+
+            for (let index = 0; index < details.length; index++) {
+                
+                const detail = details[index];
+                const element = '<div class="col-8">'+
+                                '<span class="text-lg">'+detail.product.name+'</span>'+
+                                '&nbsp;&nbsp;<button type="button" id="remove_item" class="btn btn-icon btn-danger"><i class="fas fa-trash"></i></button>'+
+                            '</div>'+
+                            '<div class="col-4">'+
+                                '<input id="product_quantity" type="text" class="received_q form-control" value="0" data-detail="" data-due="">'+
+                            '</div>'
+                info.append(element)
+            }
+            $("#total-amount").val(details.due)
+            $("#updateStatus").modal('show');
+        })
+
+    });
+
+    $(document).on('input', '.received_q', function() {
+        // Event handler code
+        // var value = $(this).val();
+        const details = $(this).data('detail')
+        const total_amount = $(this).data('due')
+        const quantity = $(this).val()
+        if(quantity == '' || quantity == null || quantity == undefined || parseFloat(quantity) <= parseFloat("0.00")) {
+            console.log('check failed')
+            return
+        }
+
+        const due = $("#due")
+        const due_amount = due.val()
+        const received = parseFloat(details.price) * quantity
+        console.log(received)
+        const value = due_amount - received
+        console.log(value)
+        return
     });
 
     flatpickr("#start_date", {
@@ -335,11 +458,4 @@
         dateFormat: "d-m-Y",
     })
 </script>
-
-@empty($edit_product)
-
-@else
-
-@endempty
-
 @endsection
