@@ -18,7 +18,7 @@ class ProductStock extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->string('ownership')->default('GIT');
-            $table->unsignedBigInteger('owner');
+            $table->unsignedBigInteger('owner')->nullable();
             $table->string('serial')->unique();
             $table->boolean('sold')->default(false);
             $table->boolean('received')->default(false);

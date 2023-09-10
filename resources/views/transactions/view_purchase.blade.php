@@ -115,6 +115,7 @@
                                             <th class="text-white">Amount | Warehouse</th>
                                             <th class="text-white">Payable | Discount </th>
                                             <th class="text-white">Due | Paid</th>
+                                            <th class="text-white">Status</th>
                                             <th class="text-white">Actions</th>
                                         </tr>
                                     </thead>
@@ -169,6 +170,15 @@
                                                     <span class="text-muted">
                                                         <p>&#8358;{{ number_format($transaction->received, 2) }}</p>
                                                     </span>
+                                                </td>
+                                                <td>
+                                                    @if($transaction->status == 'ordered')
+                                                    <span class="badge badge-primary">Ordered</span>
+                                                    @elseif($transaction->status == 'pending')
+                                                    <span class="badge badge-warning">Pending</span>
+                                                    @else
+                                                    <span class="badge badge-warning">Received</span>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <div class="buttons">

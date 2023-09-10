@@ -36,9 +36,9 @@ class CreateStockListener
             if(count($serials) > 0) {
                 foreach($serials as $serial) {
                     ProductStock::updateOrCreate([
-                        'warehouse_id' => $data['warehouse_id'],
+                        // 'warehouse_id' => $data['warehouse_id'],
                         // 'owner' => $['warehouse_id'],
-                        // 'ownership' => 'WAREHOUSE',
+                        'ownership' => 'GIT',
                         'product_id' => $order['product_id'],
                         'serial' => $serial,
                     ]);
@@ -49,7 +49,7 @@ class CreateStockListener
                         // 'warehouse_id' => $data['warehouse_id'],
                         'product_id' => $order['product_id'],
                         // 'owner' => $data['warehouse_id'],
-                        // 'ownership' => 'WAREHOUSE',
+                        'ownership' => 'GIT',
                         'serial' => TransactionService::newInvoice(),
                     ]);
                 }
