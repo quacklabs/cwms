@@ -7,10 +7,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Events\CreateStockEvent;
 use App\Services\TransactionService;
 use Faker\Factory as Faker;
+use App\Models\ProductStock;
 
 class CreateStockListener
 {
-    use ShouldQueue, InteractsWithQueue;
+    // use InteractsWithQueue;
     /**
      * Create the event listener.
      *
@@ -29,30 +30,30 @@ class CreateStockListener
      */
     public function handle(CreateStockEvent $event)
     {
-        //
-        foreach($event->orders as $order) {
-            $serials = $order['serials'];
-
-            if(count($serials) > 0) {
-                foreach($serials as $serial) {
-                    ProductStock::updateOrCreate([
-                        // 'warehouse_id' => $data['warehouse_id'],
-                        // 'owner' => $['warehouse_id'],
-                        'ownership' => 'GIT',
-                        'product_id' => $order['product_id'],
-                        'serial' => $serial,
-                    ]);
-                }
-            } else {
-                foreach (range(1, $order['quantity']) as $index) {
-                    ProductStock::create([
-                        // 'warehouse_id' => $data['warehouse_id'],
-                        'product_id' => $order['product_id'],
-                        // 'owner' => $data['warehouse_id'],
-                        'ownership' => 'GIT',
-                        'serial' => TransactionService::newInvoice(),
-                    ]);
-                }
+        $serials = $event->serials;
+        if(count($serials) > 0) {
+            foreach($serials as $serial) {
+                ProductStock::updateOrCreate([
+                    // 'warehouse_id' => $data['warehouse_id'],
+                    // 'owner' => $['warehouse_id'],
+                    'ownership' => 'GIT',
+                    'product_id' => $event->product_id,
+                    'serial' => $serial,
+                ]);
+            }
+        } else {
+            if($event->quantity == 0) {
+                return;
+            }
+            foreach (range(1, $event->quantity) as $index) {
+                ProductStock::create([
+                    'purchase_id' => $event->purchase_id,
+                    // 'warehouse_id' => $data['warehouse_id'],
+                    'product_id' => $event->product_id,
+                    // 'owner' => $data['warehouse_id'],
+                    'ownership' => 'GIT',
+                    'serial' => TransactionService::newInvoice(),
+                ]);
             }
         }
     }

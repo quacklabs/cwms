@@ -19,7 +19,7 @@ class UpdatePurchaseEvent
 
     public int $purchase_id;
     public string $status;
-    public array $order_details;
+    public array $details;
 
     /**
      * Create a new event instance.
@@ -31,7 +31,7 @@ class UpdatePurchaseEvent
         //
         $this->purchase_id = $purchase_id;
         $this->status = $status;
-        $this->order_details = $order;
+        $this->details = $order;
     }
 
     /**

@@ -12,7 +12,11 @@ use Illuminate\Queue\SerializesModels;
 
 class CreateStockEvent
 {
-    public array $orders;
+    use Dispatchable;
+    public int $purchase_id;
+    public int $product_id;
+    public int $quantity;
+    public array $serials;
     // public $amount;
     /**
      * Create a new event instance.
@@ -22,7 +26,10 @@ class CreateStockEvent
     public function __construct(array $orders)
     {
         //
-        $this->orders = $orders;
+        $this->purchase_id = $orders['purchase_id'];
+        $this->product_id = $orders['product_id'];
+        $this->quantity = $orders['quantity'];
+        $this->serials = $orders['serials'];
     }
 
     /**

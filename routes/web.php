@@ -87,7 +87,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('purchase')->name('purchase.')->group(function() {
                 Route::match(['get','post'], 'create', 'PurchaseController@create')->name('create');
-                Route::match(['get', 'post'], 'in-transit', 'PurchaseController@in_transit')->name('in_transit');
+                // Route::match(['get', 'post'], 'in-transit', 'PurchaseController@in_transit')->name('in_transit');
                 Route::post('update/{id}', 'PurchaseController@update')->name('update');
                 Route::get('view', 'PurchaseController@view')->name('view');
                 Route::get('purchase/{id}', 'PurchaseController@view_single')->name('view_single');
@@ -98,6 +98,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::match(['get', 'post'], 'return/{id}', 'PurchaseController@return_purchase')->middleware('permission:create-purchase-return')->name('return');
             });
 
+            Route::prefix('transit')->name('transit.')->group(function() {
+                Route::get('/', 'GoodsInTransitController@view')->name('view');
+            });
 
             Route::prefix('sale')->name('sale.')->group(function() {
                 Route::match(['get','post'], 'create', 'SalesController@create')->name('create');

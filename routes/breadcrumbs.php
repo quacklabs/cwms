@@ -131,6 +131,11 @@ Breadcrumbs::for('purchase.view_single', function (BreadcrumbTrail $trail) {
     $trail->push('View Details');
 });
 
+Breadcrumbs::for('transit.view', function (BreadcrumbTrail $trail) {
+    // $trail->push('Purchases', route('purchase.view'));
+    $trail->push('Goods In Transit');
+});
+
 // Dashboard > Sale > Return Sale
 Breadcrumbs::for('sale.returned', function (BreadcrumbTrail $trail) {
     $trail->push('Sales', route('sale.view'));

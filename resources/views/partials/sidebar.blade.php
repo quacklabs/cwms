@@ -56,7 +56,7 @@
             <li class="menu-header text-danger">WareHouse/Store Management</li>
             @hasrole('admin')
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.create') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('purchase.in_transit') }}">
+                <a class="nav-link" href="{{ route('transit.view') }}">
                     <i class="fa-solid fa-eye"></i>
                     <span>Goods In Transit</span>
                 </a>

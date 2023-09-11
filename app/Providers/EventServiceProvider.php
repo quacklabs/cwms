@@ -8,9 +8,14 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 
 use App\Events\SupplierPaymentReceived;
-use App\Listeners\EnterSupplierPayment;
 use App\Events\CustomerPaymentReceived;
+use App\Events\UpdatePurchaseEvent;
+use App\Events\CreateStockEvent;
+
 use App\Listeners\EnterCustomerPayment;
+use App\Listeners\EnterSupplierPayment;
+use App\Listeners\UpdatePurchaseListener;
+use App\Listeners\CreateStockListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -30,6 +35,12 @@ class EventServiceProvider extends ServiceProvider
         CustomerPaymentReceived::class => [
             EnterCustomerPayment::class
         ],
+        UpdatePurchaseEvent::class => [
+            UpdatePurchaseListener::class
+        ],
+        CreateStockEvent::class => [
+            CreateStockListener::class
+        ]
     ];
 
     /**

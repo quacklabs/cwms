@@ -52,6 +52,8 @@ class PurchaseController extends Controller
             'status' => ['required'],
             'order_details' => ['nullable'],
         ]);
+
+        // dd($validate->validated());
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate);
         } else {
@@ -73,12 +75,20 @@ class PurchaseController extends Controller
         return parent::render($data, 'transactions.view_single_purchase');
     }
 
-    public function in_transit(Request $request) {
-        $user = Auth::user();
-        if($request->method() == 'POST') {
+    // public function in_transit(Request $request) {
+    //     $user = Auth::user();
+    //     if($request->method() == 'POST') {
 
-        }
-    }
+    //     }
+    //     $transactions = TransactionService::getInTransit($user);
+
+    //     $data = [
+    //         "title" => "Goods In Transit",
+    //         "transactions" => $transactions
+    //     ];
+
+    //     return parent::render($data, 'transactions.view_transit');
+    // }
 
     public function create(Request $request) {
         $user = Auth::user();

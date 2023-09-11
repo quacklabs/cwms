@@ -86,6 +86,27 @@ class StockManager {
         return $paginator;
     }
 
+    public static function getInTransit() {
+        $perPage = 25;
+        $page = Request::get('page', 1);
+        $offset = ($page - 1) * $perPage;
+
+        $stock = Product::whereHas('productStock')->orderBy('created_at', 'asc')->get();
+
+        $all_stock = $stock->map(function ($item) {
+            $productStock = ProductStock::where('ownership', 'GIT')
+            ->where('product_id', $item->id)->where('sold', false)->count();
+            return new ProductStockResponse($item, $productStock);
+        })->values();
+        $collection = new Collection($all_stock);
+        $currentPageItems = $collection->slice($offset, $perPage)->all();
+        $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
+        // Set the path for the paginator
+        $paginator->setPath(Request::url());
+        
+        return $paginator;
+    }
+
     public static function getStockByProduct(int $id, int $warehouse = NULL) {
         $perPage = 25;
         $page = Request::get('page', 1);

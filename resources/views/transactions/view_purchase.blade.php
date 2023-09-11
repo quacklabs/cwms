@@ -177,7 +177,7 @@
                                                     @elseif($transaction->status == 'pending')
                                                     <span class="badge badge-warning">Pending</span>
                                                     @else
-                                                    <span class="badge badge-warning">Received</span>
+                                                    <span class="badge badge-success">Received</span>
                                                     @endif
                                                 </td>
                                                 <td>

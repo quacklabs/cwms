@@ -26,6 +26,7 @@ use Faker\Provider\Barcode;
 use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
 use App\Events\UpdatePurchaseEvent;
+use App\Models\PurchaseDetails;
 
 class TransactionService {
     
@@ -306,9 +307,19 @@ class TransactionService {
 
     public static function updatePurchase(int $id, array $data) {
         $details = json_decode($data['order_details']);
+
+        $status = strtolower($data['status']);
         
-        if(strtolower($data['status']) == 'received') {
-            event(new UpdatePurchaseEvent($id, $status, $details));
+        if($status == 'received') {
+            $purchase = Purchase::find($id);
+            if($purchase != null) {
+                $purchase->status = $status;
+                $purchase->save();
+
+                if($status == 'received' && count($details) > 0) {
+                    event(new UpdatePurchaseEvent($id, $status, $details));
+                }
+            }
         }
     }
 
