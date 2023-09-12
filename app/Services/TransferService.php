@@ -36,14 +36,13 @@ class TransferService {
         $faker = Faker::create();
         $transfer = Transfer::create([
             "tracking_no" => strtoupper($faker->bothify('???########')),
-            "from" => $valid['from'],
             "to" => $valid['to'],
             "transfer_date" => Carbon::parse($valid['transfer_date']),
             "note" => $valid['notes'],
-            "type" => strtoupper($flag)."_".strtoupper($destination)
+            "type" => strtoupper($flag)."_".strtoupper($destination),
         ]);
         
-        $job = new TransferProducts($transfer, json_decode($valid['items']));
+        $job = new TransferProducts($transfer, json_decode($valid['items'], true));
         dispatch($job);
         return;
     }

@@ -63,7 +63,6 @@
                                             <th>Brand</th>
                                             <th>Category</th>
                                             <th>Stock</th>
-                                            
                                             <th>Unit</th>
                                             <th>Actions</th>
                                         </tr>
@@ -90,10 +89,10 @@
                                             <td class="p-3">
                                             {{ $stock->product->categories->name }}
                                             </td>
-                                            <td>{{ $stock->product->totalInStock($user) }}</td>
+                                            <td>{{ $stock->stock }}</td>
                                              
                                             <td>{{ $stock->product->unit->name }}</td>
-                                            <td><a href="#" class="btn btn-secondary">Detail</a></td>
+                                            <td><a href="{{ route('transit.transfer', ['product' => $stock->product->id]) }}" class="btn btn-primary">Transfer</a></td>
                                         </tr>
                                             
                                         @endforeach

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 
 use App\Models\Transfer;
@@ -22,7 +23,7 @@ class TransferProducts implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $transfer;
-    protected $orders;
+    protected array $orders;
     // protected User $scheduled_by;
 
     /**
@@ -44,15 +45,7 @@ class TransferProducts implements ShouldQueue
      */
     public function handle()
     {
-        $orders = array_map(function($order) {
-            return [
-                'product_id' => $order->product_id,
-                'quantity' => $order->quantity,
-                // 'serials' => $order->serials ?? "[]"
-            ];
-        }, $this->orders);
-
-        $this->transfer->details()->createMany($orders);
+        $this->transfer->details()->createMany($this->orders);
 
         foreach($this->orders as $order) {
 
@@ -69,6 +62,12 @@ class TransferProducts implements ShouldQueue
                     break;
                 case TransferType::STORE_STORE:
                     $this->store2store($order, $serials);
+                    break;
+                case TransferType::GIT_WAREHOUSE:
+                    $this->git2warehouse($order, $serials);
+                    break;
+                case TransferType::GIT_STORE:
+                    $this->git2store($order, $serials);
                     break;
             }
             
@@ -88,6 +87,7 @@ class TransferProducts implements ShouldQueue
             ->where('product_id', $order->product_id)
             ->where('sold', false)->take($order->quantity)->get();
         }
+
         $outgoing_stock->each(function($stock) use ($destination) {
             $stock->warehouse_id = $destination->id;
             $stock->ownership = "WAREHOUSE";
@@ -96,7 +96,7 @@ class TransferProducts implements ShouldQueue
         });
     }
 
-    private function warehouse2store($order, $serials) {
+    private function warehouse2store($order, array $serials) {
         $source = Warehouse::find($this->transfer->from)->first();
         $destination = Store::find($this->transfer->to)->first();
 
@@ -118,7 +118,7 @@ class TransferProducts implements ShouldQueue
         });
     }
 
-    private function store2warehouse($order, $serials) {
+    private function store2warehouse($order, array $serials) {
         $source = Store::find($this->transfer->from)->first();
         $destination = Warehouse::find($this->transfer->to)->first();
 
@@ -140,7 +140,7 @@ class TransferProducts implements ShouldQueue
         });
     }
 
-    private function store2store($order, $serials) {
+    private function store2store($order, array $serials) {
         $source = Store::find($this->transfer->from)->first();
         $destination = Store::find($this->transfer->to)->first();
 
@@ -160,5 +160,48 @@ class TransferProducts implements ShouldQueue
             $stock->owner = $destination->id;
             $stock->save();
         });
+    }
+
+    private function git2store($order, array $serials) {
+        $destination = Store::where('id', $this->transfer->to)->first();
+
+        if(count($serials) > 0) {
+            $outgoing_stock = array_map(function($serial) {
+                return ProductStock::where('serial', $serial)->where('sold', false);
+            }, $serials);
+        } else {
+            $outgoing_stock = ProductStock::where('ownership', 'GIT')
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
+        }
+
+        $outgoing_stock->each(function($stock) use ($destination) {
+            $stock->ownership = "STORE";
+            $stock->owner = $destination->id;
+            $stock->save();
+        });
+        // return;
+    }
+
+    private function git2warehouse($order, $serials) {
+        $destination = Warehouse::find($this->transfer->to)->first();
+
+        if(count($serials) > 0) {
+            $outgoing_stock = array_map(function($serial) {
+                return ProductStock::where('serial', $serial)->where('sold', false);
+            }, $serials);
+        } else {
+            $outgoing_stock = ProductStock::where('ownership', 'GIT')
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
+        }
+
+        $outgoing_stock->each(function($stock) use ($destination) {
+            $stock->warehouse_id = $destination->id;
+            $stock->ownership = "WAREHOUSE";
+            $stock->owner = $destination->id;
+            $stock->save();
+        });
+        // return;
     }
 }

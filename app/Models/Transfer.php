@@ -10,6 +10,7 @@ use App\Models\Warehouse;
 use App\Models\Store;
 use App\Traits\ActionTakenBy;
 use App\Enums\TransferType;
+use App\Contracts\GitWarehouse;
 
 class Transfer extends Model
 {
@@ -38,6 +39,8 @@ class Transfer extends Model
                 return Warehouse::find($this->from)->first();
             case TransferType::STORE_STORE: case TransferType::STORE_WAREHOUSE:
                 return Store::find($this->from)->first();
+            case TransferType::GIT_WAREHOUSE: case TransferType::GIT_STORE:
+                return new GitWarehouse();
         }
     }
 
@@ -48,6 +51,8 @@ class Transfer extends Model
                 return Store::find($this->to)->first();
             case TransferType::WAREHOUSE_WAREHOUSE: case TransferType::STORE_WAREHOUSE:
                 return Warehouse::find($this->to)->first();
+            case TransferType::GIT_WAREHOUSE: case TransferType::GIT_STORE:
+                return new GitWarehouse();
         }
     }
 }

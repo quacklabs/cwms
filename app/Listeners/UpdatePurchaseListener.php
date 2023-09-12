@@ -44,7 +44,7 @@ class UpdatePurchaseListener
                         $sliced = array_slice($serials, 0, $quantity);
                         $queue = [
                             'purchase_id' => $event->purchase_id,
-                            'product_id' => $order->id,
+                            'product_id' => $order->product_id,
                             'quantity' => $detail->received,
                             'serials' => $sliced
                         ];
@@ -52,7 +52,7 @@ class UpdatePurchaseListener
                 } else {
                     $queue = [
                         'purchase_id' => $event->purchase_id,
-                        'product_id' => $order->id,
+                        'product_id' => $order->product_id,
                         'quantity' => $detail->received,
                         'serials' => []
                     ];

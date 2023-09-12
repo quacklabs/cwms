@@ -91,19 +91,21 @@ class StockManager {
         $page = Request::get('page', 1);
         $offset = ($page - 1) * $perPage;
 
-        $stock = Product::whereHas('productStock')->orderBy('created_at', 'asc')->get();
-
-        $all_stock = $stock->map(function ($item) {
-            $productStock = ProductStock::where('ownership', 'GIT')
-            ->where('product_id', $item->id)->where('sold', false)->count();
-            return new ProductStockResponse($item, $productStock);
-        })->values();
+        $stock = ProductStock::where('ownership', 'GIT')
+        ->where('sold', false)
+        ->where('in_transit', true)
+        ->where('received', false)
+        ->get()->groupBy('product_id');
+        $all_stock = $stock->map(function($stocks, $id) {
+            $product = Product::find($id);
+            return new ProductStockResponse($product, count($stocks));
+        });
+        
         $collection = new Collection($all_stock);
         $currentPageItems = $collection->slice($offset, $perPage)->all();
         $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
         // Set the path for the paginator
         $paginator->setPath(Request::url());
-        
         return $paginator;
     }
 

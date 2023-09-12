@@ -17,10 +17,11 @@ class CreateTransferTable extends Migration
         Schema::create('transfer', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_no');
-            $table->unsignedBigInteger('from');
+            $table->unsignedBigInteger('from')->nullable();
             $table->unsignedBigInteger('to');
             $table->date('transfer_date');
             $table->text('note')->nullable();
+            $table->string('type');
             $table->boolean('balanced')->default(false);
             $table->softDeletes();
             $table->timestamps();

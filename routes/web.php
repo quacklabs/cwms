@@ -100,6 +100,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
 
             Route::prefix('transit')->name('transit.')->group(function() {
                 Route::get('/', 'GoodsInTransitController@view')->name('view');
+                Route::match(['get', 'post'], 'transfer/{product}', 'GoodsInTransitController@transfer')->name('transfer');
+                Route::post('makeTransfer/{destination}', 'GoodsInTransitController@makeTransfer')->name('makeTransfer');
             });
 
             Route::prefix('sale')->name('sale.')->group(function() {

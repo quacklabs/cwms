@@ -11,4 +11,6 @@ final class TransferType extends BaseEnum {
     const WAREHOUSE_WAREHOUSE = 'WAREHOUSE_WAREHOUSE';
     const STORE_STORE = "STORE_STORE";
     const STORE_WAREHOUSE = "STORE_WAREHOUSE";
+    const GIT_WAREHOUSE = "GIT_WAREHOUSE";
+    const GIT_STORE = "GIT_STORE";
 }
