@@ -135,6 +135,12 @@ Breadcrumbs::for('transit.view', function (BreadcrumbTrail $trail) {
     // $trail->push('Purchases', route('purchase.view'));
     $trail->push('Goods In Transit');
 });
+
+Breadcrumbs::for('transit.viewByWarehouse', function (BreadcrumbTrail $trail) {
+    // $trail->push('Purchases', route('purchase.view'));
+    $trail->push('Goods In Transit');
+});
+
 Breadcrumbs::for('transit.transfer', function (BreadcrumbTrail $trail) {
     // $trail->push('Purchases', route('purchase.view'));
     $trail->push('Transfer Goods');

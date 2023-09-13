@@ -55,12 +55,22 @@
             @hasanyrole('admin|manager')
             <li class="menu-header text-danger">WareHouse/Store Management</li>
             @hasrole('admin')
-            <li class="{{ Str::startsWith(Route::currentRouteName(), 'product.create') ? 'active' : '' }}">
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'transit.view') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('transit.view') }}">
                     <i class="fa-solid fa-eye"></i>
                     <span>Goods In Transit</span>
                 </a>
             </li>
+            @endhasrole
+
+            @hasrole('manager')
+            <li class="{{ Str::startsWith(Route::currentRouteName(), 'transit.viewbyWarehouse') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('transit.viewByWarehouse', ['warehouse' => $user->warehouse()->id ?? 0]) }}">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Goods In Transit</span>
+                </a>
+            </li>
+
             @endhasrole
             <li class="{{ Str::startsWith(Route::currentRouteName(), 'warehouse') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('warehouse.all_warehouses') }}">

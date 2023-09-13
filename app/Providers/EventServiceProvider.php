@@ -11,11 +11,13 @@ use App\Events\SupplierPaymentReceived;
 use App\Events\CustomerPaymentReceived;
 use App\Events\UpdatePurchaseEvent;
 use App\Events\CreateStockEvent;
+use App\Events\ReceiveStockEvent;
 
 use App\Listeners\EnterCustomerPayment;
 use App\Listeners\EnterSupplierPayment;
 use App\Listeners\UpdatePurchaseListener;
 use App\Listeners\CreateStockListener;
+use App\Listeners\ReceiveStockListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -40,6 +42,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         CreateStockEvent::class => [
             CreateStockListener::class
+        ],
+        ReceiveStockEvent::class => [
+            ReceiveStockListener::class
         ]
     ];
 

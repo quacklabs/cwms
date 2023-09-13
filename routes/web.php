@@ -99,9 +99,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             });
 
             Route::prefix('transit')->name('transit.')->group(function() {
-                Route::get('/', 'GoodsInTransitController@view')->name('view');
+                Route::get('/', 'GoodsInTransitController@view')->middleware('role:admin')->name('view');
                 Route::match(['get', 'post'], 'transfer/{product}', 'GoodsInTransitController@transfer')->name('transfer');
                 Route::post('makeTransfer/{destination}', 'GoodsInTransitController@makeTransfer')->name('makeTransfer');
+                Route::get('getByWarehouse/{warehouse}', 'GoodsInTransitController@viewByWarehouse')->middleware('role:manager|admin')->name('viewByWarehouse');
+                Route::post('receive/{flag}/{id}', 'GoodsInTransitController@receive_goods')->middleware('role_or_permission:admin|manager|receive-goods')->name('receive');
             });
 
             Route::prefix('sale')->name('sale.')->group(function() {

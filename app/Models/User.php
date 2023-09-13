@@ -31,6 +31,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'warehouse_id',
+        'store_id',
         'name',
         'email',
         'username',
@@ -92,10 +94,16 @@ class User extends Authenticatable
             return Warehouse::where('id', $id)->get()->first();
         }
         return null;
-
-
-        // return $this->belongsTo(Ware/house::class, 'warehouse_id');
     }
+
+    // public function store() {
+    //     // dd($this->warehouse_id);
+    //     if(isset($this->store_id)) {
+    //         $id = $this->store_id;
+    //         return Store::where('id', $id)->get()->first();
+    //     }
+    //     return null;
+    // }
 
     public function managedWarehouse() {
         return Warehouse::where('manager_id', $this->id)->first();

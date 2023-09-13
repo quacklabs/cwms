@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Auth;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 
@@ -10,6 +11,8 @@ use App\Models\Transfer;
 use App\Models\TransferDetail;
 use App\Models\ProductStock;
 use App\Jobs\TransferProducts;
+
+use App\Events\ReceiveStockEvent;
 
 class TransferService {
 
@@ -45,6 +48,25 @@ class TransferService {
         $job = new TransferProducts($transfer, json_decode($valid['items'], true));
         dispatch($job);
         return;
+    }
+
+    public static function receiveGoods($data, $destination) {
+        $user = Auth::user();
+        if($user->hasRole('manager')) {
+            $ownership = "WAREHOUSE";
+            $data['warehouse_id'] = $destination;
+            $store = false;
+        } else if($user->hasAnyRole(['storeManager', 'manager'])) {
+            $ownership = "STORE";
+            $store = true;
+        }
+        $stock = ProductStock::where('product_id', $data['order_details'])
+        ->where('sold', false)
+        ->where('ownership', $ownership)
+        ->where('in_transit', true)
+        ->take($data['received'])
+        ->get();
+        event(new ReceiveStockEvent($stock, $destination, $store));
     }
     
 }

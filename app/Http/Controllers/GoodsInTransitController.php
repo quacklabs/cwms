@@ -24,6 +24,21 @@ class GoodsInTransitController extends Controller {
         return parent::render($data, 'transit.view');
     }
 
+    public function viewByWarehouse(Request $request) {
+        $user = Auth::user();
+        $id = $request->route('warehouse');
+        if($id == 0) {
+            return redirect()->route('dashboard')->with('error', 'You are not authorized to perform this action');
+        }
+        $stock = Manager::getInTransitByWarehouse($id);
+        $data = [
+            'title' => 'View Goods in Transit',
+            'product_stock' => $stock,
+            'byWarehouse' => true,
+        ];
+        return parent::render($data, 'transit.view');
+    }
+
     public function transfer(Request $request) {
         $product_id = $request->route('product');
         if(!$product_id) {
@@ -43,7 +58,7 @@ class GoodsInTransitController extends Controller {
 
     public function makeTransfer(Request $request) {
         $destination = $request->route('destination');
-
+        
         $validate = Validator::make($request->all(), [
             'to' => ['required', 'numeric'],
             'notes' => ['nullable', 'string'],
@@ -57,5 +72,23 @@ class GoodsInTransitController extends Controller {
             TransferService::createTransfer($validate->validated(), 'git', $destination);
             return redirect()->route('purchase.view')->with('success', 'Stock Transfered Successfuly');
         }
+    }
+
+    public function receive_goods(Request $request) {
+        $destination = $request->route('id');
+        $validate = Validator::make($request->all(), [
+            'order_details' => ['required'],
+            'sent' => ['required'],
+            'received' => ['required']
+        ]);
+
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate);
+        } else {
+            // dd($validate->validated());
+            TransferService::receiveGoods($validate->validated(), $destination);
+            return redirect()->route('purchase.view')->with('success', 'Stock Transfered Successfuly');
+        }
+        
     }
 }

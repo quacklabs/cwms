@@ -12,7 +12,6 @@
     <section class="section">
         <div class="section-header">
             <h1>{{ $title }}</h1>
-            
             {{ Breadcrumbs::render() }}
         </div>
 
@@ -92,7 +91,15 @@
                                             <td>{{ $stock->stock }}</td>
                                              
                                             <td>{{ $stock->product->unit->name }}</td>
-                                            <td><a href="{{ route('transit.transfer', ['product' => $stock->product->id]) }}" class="btn btn-primary">Transfer</a></td>
+                                            <td>
+                                                @hasrole('admin')
+                                                <a href="{{ route('transit.transfer', ['product' => $stock->product->id]) }}" class="btn btn-primary">Transfer</a>
+                                                @endhasrole
+
+                                                @hasrole('manager')
+                                                <a id="receive_stock" data-transaction="{{ json_encode($stock) }}" href="#" class="btn btn-primary">Receive</a>
+                                                @endhasrole
+                                            </td>
                                         </tr>
                                             
                                         @endforeach
@@ -120,5 +127,112 @@
         </div>
     </section>
 </div>
+    
+
+<div class="modal fade" id="updateStatus" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Receive Goods In Transit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <hr>
+            
+
+            <div class="modal-body">
+                <form id="statusForm" method="POST" action="{{ route('transit.receive', ['flag' => 'warehouse', 'id' => $user->warehouse()->id]) }}">
+                    @csrf
+                    <input type="hidden" name="order_details" id="received_q" value="">
+                    <div class="form-group row align-items-center">
+                        <!-- <label for="site-title" class="form-control-label text-md-right">Quantity Received</label> -->
+                        
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label>Product Name</label>
+                                    <p id="product_name"></p>
+                                    
+                                </div>
+                                <div class="col-4">
+                                    <label>Qty Sent</label>
+                                    <input type="text" id="sent" name="sent" class="form-control" readonly>
+                                </div>
+
+                                <div class="col-4">
+                                    <label>Qty Received</label>
+                                    <input type="text" id="received" name="received" class="form-control" value="" required>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <hr>
+                        <!-- <div class="col-12">
+                            
+                            
+                        </div> -->
+                    </div>
+                    <hr>
+                    
+                    <div class="form-group row align-items-center">
+                        <div class="col-sm-6 col-md-9">
+                            <button id="update_button" type="button" class="btn btn-large btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+@section('js')
+
+
+<script>
+    // $(function() {
+
+    //     $("").on('click', function(e) {
+    //         e.preventDefault();
+    //         $(this).prop('disabled', true)
+    //         const data = $(this).data('obj')
+    //         console.log(data)
+
+    //         const transaction = JSON.parse(data)
+    //         console.log(transaction)
+    //         $(this).prop('disabled', false)
+    //     })
+
+    //     // $("#updateStatus").modal('show');
+    // })
+
+    $(document).on('click', '#receive_stock', function(e) {
+        const data = $(this).data('transaction')
+        e.preventDefault()
+        $("#sent").val(data.stock)
+        $("#product_name").html(data.product.name)
+        $("#received_q").val(data.product.id)
+        $("#updateStatus").modal('show');
+        $("#received").focus('fast');
+        
+    });
+
+    $(document).on('click', '#update_button', function(e) {
+        e.preventDefault()
+        const received = $("#received").val()
+        if(isNaN(received)) {
+            swal({
+                title: 'Invalid Quantity',
+                text: 'Please ensure all quantities do not exceed the product stock and are valid numbers',
+                icon: 'error'
+            })
+        } else {
+            $("#statusForm").submit()
+        }
+    })
+</script>
     
 @endsection
