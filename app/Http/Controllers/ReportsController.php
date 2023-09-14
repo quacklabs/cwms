@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\ReportService;
-use App\Services\StockService;
+use App\Services\StockManager as StockService;
 
 use App\Models\Warehouse;
 

@@ -24,7 +24,8 @@ class TransferService {
     public static function getByWarehouse(int $id) {
 
         return Transfer::orderBy('created_at', 'desc')
-        // ->where('ownership', 'WAREHOUSE')
+        ->where('type', 'WAREHOUSE_WAREHOUSE')
+        ->orWhere('type', 'WAREHOUSE_STORE')
         // ->where('owner', $id)
         ->where('from', $id)->orWhere('to', $id)->paginate(25);
     }
@@ -37,13 +38,24 @@ class TransferService {
 
     public static function createTransfer($valid, $flag, $destination) {
         $faker = Faker::create();
-        $transfer = Transfer::create([
-            "tracking_no" => strtoupper($faker->bothify('???########')),
-            "to" => $valid['to'],
-            "transfer_date" => Carbon::parse($valid['transfer_date']),
-            "note" => $valid['notes'],
-            "type" => strtoupper($flag)."_".strtoupper($destination),
-        ]);
+        if($flag == 'git') {
+            $transfer = Transfer::create([
+                "tracking_no" => strtoupper($faker->bothify('???########')),
+                "to" => $valid['to'],
+                "transfer_date" => Carbon::parse($valid['transfer_date']),
+                "note" => $valid['notes'],
+                "type" => strtoupper($flag)."_".strtoupper($destination),
+            ]);
+        } else {
+            $transfer = Transfer::create([
+                "from" => $valid['from'],
+                "tracking_no" => strtoupper($faker->bothify('???########')),
+                "to" => $valid['to'],
+                "transfer_date" => Carbon::parse($valid['transfer_date']),
+                "note" => $valid['notes'],
+                "type" => strtoupper($flag)."_".strtoupper($destination),
+            ]);
+        }
         
         $job = new TransferProducts($transfer, json_decode($valid['items'], true));
         dispatch($job);

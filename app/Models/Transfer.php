@@ -36,9 +36,9 @@ class Transfer extends Model
         // dd($this->type);
         switch($this->type) {
             case TransferType::WAREHOUSE_STORE: case TransferType::WAREHOUSE_WAREHOUSE:
-                return Warehouse::find($this->from)->first();
+                return Warehouse::where('id', $this->from)->first();
             case TransferType::STORE_STORE: case TransferType::STORE_WAREHOUSE:
-                return Store::find($this->from)->first();
+                return Store::where('id', $this->from)->first();
             case TransferType::GIT_WAREHOUSE: case TransferType::GIT_STORE:
                 return new GitWarehouse();
         }
@@ -48,9 +48,9 @@ class Transfer extends Model
         // dd($this->type);
         switch($this->type) {
             case TransferType::WAREHOUSE_STORE: case TransferType::STORE_STORE:
-                return Store::find($this->to)->first();
+                return Store::where('id', $this->to)->first();
             case TransferType::WAREHOUSE_WAREHOUSE: case TransferType::STORE_WAREHOUSE:
-                return Warehouse::find($this->to)->first();
+                return Warehouse::where('id', $this->to)->first();
             case TransferType::GIT_WAREHOUSE: case TransferType::GIT_STORE:
                 return new GitWarehouse();
         }

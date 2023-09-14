@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 use App\Services\TransferService;
 use App\Models\Warehouse;
@@ -35,7 +36,6 @@ class TransferController extends Controller {
             'transfers' => $transfers,
             'flag' => $flag
         ];
-
         return parent::render($data, 'transfer.transfers');
     }
 
@@ -98,15 +98,21 @@ class TransferController extends Controller {
         $destination = $request->route('destination');
         $flag = $request->route('flag');
 
-        $valid = $request->validate([
+        $validate = Validator::make($request->all(), [
             'from' => ['required', 'numeric'],
             'to' => ['required', 'numeric'],
             'notes' => ['nullable', 'string'],
             'items' => ['required'],
             'transfer_date' => ['required', 'date']
         ]);
-        TransferService::createTransfer($valid, $flag, $destination);
-        return redirect()->route('transfer.view', ['flag' => $flag])->with('success', 'Transfer processed successfully');
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate);
+        } else {
+            TransferService::createTransfer($validate->validated(), $flag, $destination);
+            return redirect()->route('transfer.view', ['flag' => $flag])->with('success', 'Transfer processed successfully');
+        }
+        
+        
     }
 
     private function store_warehouse(array $data) {
@@ -124,17 +130,14 @@ class TransferController extends Controller {
             $data['warehouses'] = Warehouse::orderBy('created_at', 'desc')->limit(60)->get();
         } else {
             $data['my_warehouse'] = collect([$user->warehouse()]);
-            // dd($data['my_warehouse']);
             
             $user_id = $user->id;
             $data['warehouses'] = Warehouse::whereHas('staff', function ($query) use ($user_id) {
                 // Exclude the current user from the query
                 $query->where('id', '!=', $user_id);
             })->get();
-
-            // dd($data['my_warehouse']);
         }
-        // dd($data);
+        
         $data['stores'] = Store::orderBy('created_at', 'desc')->limit(100)->get();
         return parent::render($data, 'transfer.add_warehouse_transfer');
     }

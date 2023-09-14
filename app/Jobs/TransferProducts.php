@@ -84,19 +84,28 @@ class TransferProducts implements ShouldQueue
             }, $serials);
         } else {
             $outgoing_stock = ProductStock::where('warehouse_id', $source->id)
-            ->where('product_id', $order->product_id)
-            ->where('sold', false)->take($order->quantity)->get();
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
         }
+        $to = $this->transfer->to;
 
-        $outgoing_stock->each(function($stock) use ($destination) {
-            $stock->warehouse_id = $destination->id;
+        $outgoing_stock->each(function($stock) use ($to) {
+            $stock->warehouse_id = null;
             $stock->ownership = "WAREHOUSE";
-            $stock->owner = $destination->id;
-            $stock->save();
+            $stock->owner = $to;
+            $stock->in_transit = true;
+            $stock->received = false;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
         });
     }
 
     private function warehouse2store($order, array $serials) {
+        // dd($this->transfer);
         $source = Warehouse::find($this->transfer->from)->first();
         $destination = Store::find($this->transfer->to)->first();
 
@@ -106,15 +115,24 @@ class TransferProducts implements ShouldQueue
             }, $serials);
         } else {
             $outgoing_stock = ProductStock::where('warehouse_id', $source->id)
-            ->where('product_id', $order->product_id)
-            ->where('sold', false)->take($order->quantity)->get();
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
         }
+        $to = $this->transfer->to;
         
-        $outgoing_stock->each(function($stock) use ($destination) {
-            // $stock->warehouse_id = $destination->id;
+        $outgoing_stock->each(function($stock) use ($to) {
+            $stock->warehouse_id = null;
             $stock->ownership = "STORE";
-            $stock->owner = $destination->id;
-            $stock->save();
+            $stock->owner = $to;
+            $stock->in_transit = true;
+            $stock->received = false;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
+            
         });
     }
 
@@ -129,14 +147,22 @@ class TransferProducts implements ShouldQueue
         } else {
             $outgoing_stock = ProductStock::where('owner', $source->id)
             ->where('ownership', 'STORE')
-            ->where('product_id', $order->product_id)
-            ->where('sold', false)->take($order->quantity)->get();
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
         }
-        $outgoing_stock->each(function($stock) use ($destination) {
-            $stock->warehouse_id = $destination->id;
+        $to = $this->transfer->to;
+        $outgoing_stock->each(function($stock) use ($to) {
+            $stock->warehouse_id = null;
             $stock->ownership = "WAREHOUSE";
-            $stock->owner = $destination->id;
-            $stock->save();
+            $stock->owner = $to;
+            $stock->in_transit = true;
+            $stock->received = false;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
         });
     }
 
@@ -151,14 +177,22 @@ class TransferProducts implements ShouldQueue
         } else {
             $outgoing_stock = ProductStock::where('owner', $source->id)
             ->where('ownership', 'STORE')
-            ->where('product_id', $order->product_id)
-            ->where('sold', false)->take($order->quantity)->get();
+            ->where('product_id', $order['product_id'])
+            ->where('sold', false)->take($order['quantity'])->get();
         }
-        $outgoing_stock->each(function($stock) use ($destination) {
-            // $stock->warehouse_id = $destination->id;
+        $to = $this->transfer->to;
+        $outgoing_stock->each(function($stock) use ($to) {
+            $stock->warehouse_id = null;
             $stock->ownership = "STORE";
-            $stock->owner = $destination->id;
-            $stock->save();
+            $stock->owner = $to;
+            $stock->in_transit = true;
+            $stock->received = false;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
         });
     }
 

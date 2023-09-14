@@ -193,9 +193,7 @@
                                                     <th></th>
                                                     <th>Name</th>
                                                     <th>In Stock</th>
-                                                    <th class="text-right">Price</th>
                                                     <th class="text-right">Quantity</th>
-                                                    <th class="text-right">Amount</th>
                                                 </thead>
                                                 
                                                 <tbody id="w2w_items">
@@ -528,16 +526,18 @@
                 query: query, 
                 warehouse_id: warehouse.val() 
             }
-            $("input").attr("autocomplete", "off")
+            // $("input").attr("autocomplete", "off")
             search(url, params, function(result) {
-                const transformedData = Object.values(result).map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    stock: item.stock,
-                    unit: item.unit
-                }));
-                console.log(transformedData)
-                callback(transformedData)
+                if(result != undefined) {
+                    const transformedData = Object.values(result).map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        stock: item.stock,
+                        unit: item.unit
+                    }));
+                    console.log(transformedData)
+                    callback(transformedData)
+                }
             })
         },
         onChange: function(value) {

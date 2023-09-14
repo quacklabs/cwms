@@ -14,7 +14,7 @@ use App\Contracts\ProductResponse;
 use League\Csv\Reader;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MyDataImport;
-use App\Services\StockService;
+use App\Services\StockManager as StockService;
 use App\Models\Store;
 
 class APIController extends Controller

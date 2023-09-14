@@ -121,6 +121,7 @@
                                                 </a>
                                             </td>
                                         </tr>
+
                                         @endforeach
 
                                     @endempty

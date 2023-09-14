@@ -9,7 +9,7 @@ use App\Models\AdjustmentDetail;
 use App\Models\ProductStock;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
-use App\Services\StockService;
+use App\Services\StockManager as StockService;
 
 use App\Models\Warehouse;
 

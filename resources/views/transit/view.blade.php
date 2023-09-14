@@ -142,7 +142,7 @@
             
 
             <div class="modal-body">
-                <form id="statusForm" method="POST" action="{{ route('transit.receive', ['flag' => 'warehouse', 'id' => $user->warehouse()->id]) }}">
+                <form id="statusForm" method="POST" action="{{ route('transit.receive', ['flag' => 'warehouse', 'id' => $user->warehouse()->id ?? 0]) }}">
                     @csrf
                     <input type="hidden" name="order_details" id="received_q" value="">
                     <div class="form-group row align-items-center">

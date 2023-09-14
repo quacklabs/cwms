@@ -115,7 +115,31 @@ class StockManager {
         $offset = ($page - 1) * $perPage;
 
         $stock = ProductStock::where('ownership', 'WAREHOUSE')
-        ->where('warehouse_id', $warehouse_id)
+        ->where('owner', $warehouse_id)
+        ->where('sold', false)
+        ->where('in_transit', true)
+        ->where('received', false)
+        ->get()->groupBy('product_id');
+        $all_stock = $stock->map(function($stocks, $id) {
+            $product = Product::find($id);
+            return new ProductStockResponse($product, count($stocks));
+        });
+        
+        $collection = new Collection($all_stock);
+        $currentPageItems = $collection->slice($offset, $perPage)->all();
+        $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
+        // Set the path for the paginator
+        $paginator->setPath(Request::url());
+        return $paginator;
+    }
+
+    public static function getInTransitByStore(int $store_id) {
+        $perPage = 25;
+        $page = Request::get('page', 1);
+        $offset = ($page - 1) * $perPage;
+
+        $stock = ProductStock::where('ownership', 'WAREHOUSE')
+        ->where('owner', $store_id)
         ->where('sold', false)
         ->where('in_transit', true)
         ->where('received', false)
