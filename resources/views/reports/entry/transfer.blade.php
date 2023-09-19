@@ -78,9 +78,9 @@
                                     @else
                                         @foreach ($actions as $action)
                                             <tr>
-                                                <td>{{ strtoupper($action->model->first()->tracking_no) }}</td>
+                                                <td>{{ dd($action->model->first()) }}</td>
                                                 <td>{{ $action->action }}</td>
-                                                <td>{{ $action->user->first()->username }}</td>
+                                                <td>{{ dd($action->user) }}</td>
                                                 <td>{{ $action->updated_at ?? $action->created_at }}</td>
                                                 
                                             </tr>

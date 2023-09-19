@@ -12,12 +12,6 @@
     <section class="section">
         <div class="section-header">
         <h1>{{$title }}</h1>
-        @can('create-'.$flag)
-        <div class="section-header-button">
-            <a class="btn btn-primary" href="{{ route($flag.'.create') }}">Add New</a>
-            <!-- <a href="#" class="btn btn-primary">Add New</a> -->
-        </div>
-        @endcan
         
         {{ Breadcrumbs::render() }}
         </div>

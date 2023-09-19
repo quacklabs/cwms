@@ -139,7 +139,20 @@
                         <span>Sales</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="{{ Str::contains(Route::currentRouteName(), '/sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.view') }}">All Sales</a></li>
+                        <li><a class="nav-link" href="{{ route('sale.view') }}">All Sales</a></li>
+                        @hasrole('admin')
+                        <li><a class="nav-link" href="{{ route('sale.create', ['flag' => 'warehouse']) }}">Add Warehouse Sale</a></li>
+                        <li><a class="nav-link" href="{{ route('sale.create', ['flag' => 'store']) }}">Add Store Sale</a></li>
+                        @endhasrole
+
+                        @hasrole('manager')
+                        <li><a class="nav-link" href="{{ route('sale.create', ['flag' => 'warehouse']) }}">Add Sale</a></li>
+                        @endhasrole
+
+                        @hasrole('storeManager')
+                        <li><a class="nav-link" href="{{ route('sale.create', ['flag' => 'store']) }}">Add Sale</a></li>
+
+                        @endhasrole
                         <li class="{{ Str::contains(Route::currentRouteName(), 'return_sale') ? 'active' : '' }}"><a class="nav-link" href="{{ route('sale.returned') }}">Returned Sales</a></li>
                     </ul>
                 </li>

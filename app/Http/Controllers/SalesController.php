@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Services\TransactionService;
 use App\Models\Supplier;
 use App\Rules\DecimalComparison;
 use App\Rules\Decimal;
 use App\Models\Warehouse;
+use App\Models\Store;
 
 use App\Events\CustomerPaymentReceived;
 
@@ -40,10 +42,11 @@ class SalesController extends Controller
 
     public function create(Request $request) {
         $user = Auth::user();
+        $flag = $request->route('flag');
         if($request->method() == 'POST') {
-            $valid = $request->validate([
+            $valid = Validator::make($request->all(), [
                 'partner_id' => ['required', 'numeric'],
-                'warehouse_id' => ['required', 'numeric'],
+                'location_id' => ['required', 'numeric'],
                 'date' => ['required', 'date'],
                 'order' => ['required'],
                 'discount_amount' => ['numeric', 'nullable'],
@@ -51,21 +54,39 @@ class SalesController extends Controller
                 'invoice_no' => ['required'],
                 'notes' => ['nullable', 'string']
             ]);
-            
-           TransactionService::create($valid, $this->flag);
+
+            if($valid->fails()) {
+                return redirect()->back()->withErrors($valid);
+            }
+
+            $form_data = $valid->validated();
+            if($user->hasRole('admin')) {
+                // TransactionService::create($valid, );
+            } else if($user->hasRole('manager')) {
+                
+            } else if($user->hasRole('storeManager')) {
+                
+            }
+           
            return redirect()->route('sale.view')->with('success', 'order added successfully');
         }
         $partners = Supplier::orderBy('created_at', 'desc')->where('status', true)->paginate(25);
         $data = [
             'title' => 'Sale',
-            'flag' => $this->flag,
-            'action' => route('sale.create'),
             'invoice_no' => TransactionService::newInvoice(),
-            'partners' => $partners,
-            'warehouses' => $user->warehouse ? [$user->warehouse] : Warehouse::take(10)->get()
+            'flag' => $flag,
+            'partners' => $partners
         ];
 
-        return parent::render($data, 'transactions.add_transaction');
+        if($user->hasRole('admin')) {
+            $page = 'transactions.admin_sale';
+            $data['warehouses'] = ($flag == 'warehouse') ? Warehouse::take(50)->get() : Store::take(50)->get();
+        } else if($user->hasRole('manager')) {
+            $page = 'transactions.warehouse_sale';
+        } else if($user->hasRole('storeManager')) {
+            $page = 'transactions.store_sale';
+        }
+        return parent::render($data, $page);
     }
 
     public function receive(Request $request) {

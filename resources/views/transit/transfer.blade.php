@@ -391,7 +391,7 @@
             },
             load: function(query, callback) {
                 if (!query.length) return callback();
-                const url = "{{ route('api.findProduct') }}"
+                const url = "{{ route('api.findProductInTransit') }}"
                 search(url, query, callback)
             },
             onChange: function(value) {
@@ -419,7 +419,7 @@
             },
             load: function(query, callback) {
                 if (!query.length) return callback();
-                const url = "{{ route('api.findProduct') }}"
+                const url = "{{ route('api.findProductInTransit') }}"
                 search(url, query, callback)
             },
             onChange: function(value) {

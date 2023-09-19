@@ -72,6 +72,27 @@ class Product extends Model
         }
     }
 
+    public function gitStock(User $user=NULL) {
+        if($user == null) {
+            $user = Auth::user();
+        }
+        if($user->hasRole('admin')) {
+            $warehouse = null;
+        } else {
+            $warehouse = ($user->warehouse() !== null) ? $user->warehouse()->id : null;
+        }
+        if($warehouse != null) {
+            return ProductStock::where('warehouse_id', $warehouse)
+            ->where('product_id', $this->id)
+            ->where('ownership', 'GIT')
+            ->where('sold', false)->count();
+        } else {
+            return ProductStock::where('product_id', $this->id)
+            ->where('ownership', 'GIT')
+            ->where('sold', false)->count();
+        }
+    }
+
     public function productStock(){
         return $this->hasMany(ProductStock::class, 'product_id');
     }

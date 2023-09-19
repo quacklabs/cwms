@@ -138,7 +138,7 @@ class StockManager {
         $page = Request::get('page', 1);
         $offset = ($page - 1) * $perPage;
 
-        $stock = ProductStock::where('ownership', 'WAREHOUSE')
+        $stock = ProductStock::where('ownership', 'STORE')
         ->where('owner', $store_id)
         ->where('sold', false)
         ->where('in_transit', true)

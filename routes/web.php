@@ -107,7 +107,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
             });
 
             Route::prefix('sale')->name('sale.')->group(function() {
-                Route::match(['get','post'], 'create', 'SalesController@create')->name('create');
+                Route::match(['get','post'], 'create/{flag}', 'SalesController@create')->name('create');
                 Route::get('view', 'SalesController@view')->name('view');
                 Route::get('purchase/{id}', 'SalesController@view_single')->name('view_single');
                 Route::get('returned', 'SalesController@returned')->name('returned');
@@ -117,15 +117,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
                 Route::get('delete/{id}', 'SalesController@delete')->middleware('permission:delete-sale')->name('delete');
                 Route::match(['get', 'post'], 'return/{id}', 'SalesController@return_sale')->middleware('permission:create-sale-return')->name('return');
             });
-
-            // Route::prefix('transactions')->name('transaction.')->group(function() {
-            //     Route::match(['get','post'], 'add-transaction/{flag}', 'TransactionsController@create')->middleware('permission:create-purchase|create-sale')->name('create');
-            //     Route::match(['get','post'], 'enter-ledger/{flag}/{id}', 'TransactionsController@enter_ledger')->middleware('permission:enter-ledger|approve-purchase|approve-sale')->name('enter_ledger');
-
-            //     Route::get('transactions/{flag}', 'TransactionsController@view')->name('view');
-            //     Route::get('toggle-transaction/{flag}/{switch}', 'TransactionController@toggle')->name('toggle');
-            //     // Route::get('return-purchases', 'TransactionsController@return_purchases')->name('return_purchases');
-            // });
 
             Route::prefix('stock')->name('stock.')->group(function() {
                 Route::get('adjustments', 'StockController@adjustments')->middleware('permission:adjust-stock')->name('adjustments');

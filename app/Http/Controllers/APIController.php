@@ -79,6 +79,41 @@ class APIController extends Controller
 
     }
 
+
+    public function productsInGIT(Request $request) {
+        $search = $request->input('query');
+        $user_id = $request->input('user');
+
+        $response = [];
+        if(!$search || !$user_id){
+            $response['status'] = false;
+            $response['data'] = null;
+            return response()->json($response);
+        }
+        $products = Product::where('name', 'LIKE', '%' . $search . '%')
+        ->orWhere('sku', 'LIKE', '%' . $search . '%')
+        ->get();
+        $user = User::find($user_id);
+        if(!$user) {
+            $response['status'] = false;
+            $response['data'] = null;
+            return response()->json($response);
+        }
+        
+        if($products != null) {
+            $response['status'] = true;
+            $response['data'] = array_map(function($product) use($user) {
+                return new ProductResponse($product->id, $product->name, $product->gitStock($user));
+            }, $products->all());
+
+        } else {
+            $response['status'] = false;
+            $response['data'] = [];
+        }
+        return response()->json($response);
+
+    }
+
     public function productsbyWarehouse(Request $request) {
         $keyword = $request->input('query');
         $id = $request->route('id');

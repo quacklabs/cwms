@@ -97,6 +97,7 @@
                                     </tr>
 
                                     @else
+                                        
                                         @foreach($transfers as $transfer)
                                         <tr class="text-left">
                                             <td>
@@ -107,10 +108,10 @@
                                             </td>
 
                                             <td>
-                                                {{ $transfer->source()->name }}
+                                                {{ $transfer->source->name }}
                                             </td>
                                             <td>
-                                                {{ $transfer->destination()->name }}
+                                                {{ $transfer->destination->name }}
                                             </td>
                                             <td>
                                                 {{ $transfer->totalProducts }}

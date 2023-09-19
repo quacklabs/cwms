@@ -212,7 +212,15 @@ class TransferProducts implements ShouldQueue
         $outgoing_stock->each(function($stock) use ($destination) {
             $stock->ownership = "STORE";
             $stock->owner = $destination->id;
-            $stock->save();
+            $stock->received = false;
+            $stock->in_transit = true;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
+            
         });
         // return;
     }
@@ -234,7 +242,14 @@ class TransferProducts implements ShouldQueue
             $stock->warehouse_id = $destination->id;
             $stock->ownership = "WAREHOUSE";
             $stock->owner = $destination->id;
-            $stock->save();
+            $stock->received = false;
+            $stock->in_transit = true;
+            try {
+                $stock->save();
+            } catch (\Exception $e) {
+                // Handle the exception
+                dd($e->getMessage());
+            }
         });
         // return;
     }

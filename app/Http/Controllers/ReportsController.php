@@ -145,7 +145,7 @@ class ReportsController extends Controller
         if($user->hasRole('admin')) {
             $actions = ReportService::getAllProductActions();
         } else {
-            $actions = ReportService::getProductActionsByWarehouse($user->warehouse->first()->id);
+            $actions = ReportService::getProductActionsByWarehouse($user->warehouse()->first()->id);
         }
 
         $data = [
@@ -161,7 +161,7 @@ class ReportsController extends Controller
         if($user->hasRole('admin')) {
             $actions = ReportService::getAllCustomerActions();
         } else {
-            $actions = ReportService::getCustomerActionsByWarehouse($user->warehouse->first()->id);
+            $actions = ReportService::getCustomerActionsByWarehouse($user->warehouse()->first()->id);
         }
 
         $data = [
