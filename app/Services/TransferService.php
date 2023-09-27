@@ -59,7 +59,7 @@ class TransferService {
         
         $job = new TransferProducts($transfer, json_decode($valid['items'], true));
         dispatch($job);
-        return;
+        return true;
     }
 
     public static function receiveGoods($data, $destination) {
@@ -78,7 +78,8 @@ class TransferService {
         ->where('in_transit', true)
         ->take($data['received'])
         ->get();
-        event(new ReceiveStockEvent($stock, $destination, $store));
+        ReceiveStockEvent::dispatch($stock, $destination, $store);
+        return;
     }
     
 }

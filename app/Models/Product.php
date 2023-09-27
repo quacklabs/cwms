@@ -65,6 +65,7 @@ class Product extends Model
         if($warehouse != null) {
             return ProductStock::where('warehouse_id', $warehouse)
             ->where('product_id', $this->id)
+            ->where('in_transit', false)
             ->where('sold', false)->count();
         } else {
             return ProductStock::where('product_id', $this->id)

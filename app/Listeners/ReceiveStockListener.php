@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\ReceiveStockEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Jobs\ReceiveStock;
 
 class ReceiveStockListener
 {
@@ -29,13 +30,9 @@ class ReceiveStockListener
         //
         $store = $event->store;
         $destination = $event->destination;
-        $event->stock->each(function($stock) use ($store, $destination) {
-            if(!$store) {
-                $stock->warehouse_id = $destination;
-            }
-            $stock->in_transit = false;
-            $stock->save();
-            return;
+        $event->stock->chunk(200)->each(function($batch) use ($store, $destination) {
+            $job = new ReceiveStock($batch, $store, $destination);
+            dispatch($job);
         });
     }
 }

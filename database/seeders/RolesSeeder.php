@@ -40,6 +40,7 @@ class RolesSeeder extends Seeder
         }
 
         $managerNotPermitted = Permission::whereNotIn('name', [
+            'create-purchase',
             'create-manager', 
             'delete-brand',
             'delete-warehouse',

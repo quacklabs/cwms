@@ -17,7 +17,7 @@ class StoreSeeder extends Seeder
         //
         Store::create([
             'name' => 'Test Store',
-            // 'warehouse_id' => 1,
+            'warehouse_id' => 1,
             'address' => 'Test store address',
         ]);
     }

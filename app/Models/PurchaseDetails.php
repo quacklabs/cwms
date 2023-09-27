@@ -28,12 +28,16 @@ class PurchaseDetails extends TransactionDetail
     ];
 
     protected $appends = [
-        'product'
+        'product', 'purchase'
     ];
 
-    // public function purchase() {
-    //     return $this->belongsTo(Purchase::class, 'purchase_id');
-    // }
+    public function getPurchaseAttribute() {
+        return $this->purchase()->get();
+    }
+
+    public function purchase() {
+        return $this->belongsTo(Purchase::class, 'purchase_id');
+    }
     
     public function transaction(): BelongsTo {
         return $this->belongsTo(Purchase::class, 'purchase_id');

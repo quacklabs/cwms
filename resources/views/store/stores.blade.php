@@ -214,6 +214,15 @@
                         </div>
 
                         <div class="form-row">
+                            <select name="warehouse_id" class="form-control">
+                            @foreach ($wareshouses as $warehouse)
+                            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                                
+                            @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group col-md-12 col-sm-12">
                                 <label for="inputEmail4">Notes</label>
                                 <textarea class="form-control" name="notes">

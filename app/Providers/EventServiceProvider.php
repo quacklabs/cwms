@@ -37,9 +37,7 @@ class EventServiceProvider extends ServiceProvider
         CustomerPaymentReceived::class => [
             EnterCustomerPayment::class
         ],
-        UpdatePurchaseEvent::class => [
-            UpdatePurchaseListener::class
-        ],
+       
         CreateStockEvent::class => [
             CreateStockListener::class
         ],

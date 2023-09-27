@@ -39,7 +39,7 @@ class StockManager {
         // $all_stock = Product::with('productStock')->whereHas('productStock', function ($query) {
         //     $query->where('sold', false)->groupBy('warehouse_id');
         // })->paginate(1);
-        $perPage = 1;
+        $perPage = 25;
         $page = Request::get('page', 1);
         $offset = ($page - 1) * $perPage;
 

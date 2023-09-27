@@ -37,13 +37,16 @@
                         <div class="col-12 card-body">
                             <ul class="nav nav-pills flex-column" id="myTab4" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab4" data-toggle="tab" href="#home4" role="tab" aria-controls="home" aria-selected="true">Details</a>
+                                <a class="nav-link active" id="home-tab4" data-toggle="tab" href="#menu1" role="tab" aria-controls="details" aria-selected="true">Details</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab4" data-toggle="tab" href="#profile4" role="tab" aria-controls="profile" aria-selected="false">Staff</a>
+                                <a class="nav-link" id="profile-tab4" data-toggle="tab" href="#menu2" role="tab" aria-controls="staff" aria-selected="false">Staff</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="contact-tab4" data-toggle="tab" href="#contact4" role="tab" aria-controls="contact" aria-selected="false">Manager</a>
+                                <a class="nav-link" id="contact-tab4" data-toggle="tab" href="#menu3" role="tab" aria-controls="manager" aria-selected="false">Manager</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab4" data-toggle="tab" href="#menu4" role="tab" aria-controls="products" aria-selected="false">Products</a>
                             </li>
                             </ul>
                         </div>
@@ -54,7 +57,7 @@
 
                 <div class="col-md-8">
                     <div class="tab-content no-padding" id="myTab2Content">
-                        <div class="tab-pane fade show active" id="home4" role="tabpanel" aria-labelledby="home-tab4">
+                        <div class="tab-pane fade show {{ !empty($page) ? '' : 'active' }}" id="menu1" role="tabpanel" aria-labelledby="details-tab4">
                             <div class="card profile-widget">
                                 <div class="profile-widget-header">                     
                                     <div class="rounded-circle profile-widget-picture">
@@ -84,92 +87,92 @@
                         </div>
 
 
-                        <div class="tab-pane fade" id="profile4" role="tabpanel" aria-labelledby="profile-tab4">
-                        @empty($warehouse->staff)
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4>Warehouse Staff</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="empty-state" data-height="400" style="height: 400px;">
-                                        <div class="empty-state-icon">
-                                            <i class="fas fa-question"></i>
+                        <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="staff-tab4">
+                            @empty($warehouse->staff)
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Warehouse Staff</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="empty-state" data-height="400" style="height: 400px;">
+                                            <div class="empty-state-icon">
+                                                <i class="fas fa-question"></i>
+                                            </div>
+                                            <h2>We couldn't find any staff assigned</h2>
+                                            <p class="lead">
+                                                Sorry we can't find any data, to get rid of this message, assign at least one staff to this warehouse.
+                                            </p>
+                                            <a href="{{ route('staff.staff') }}" class="btn btn-primary mt-4">Create new One</a>
                                         </div>
-                                        <h2>We couldn't find any staff assigned</h2>
-                                        <p class="lead">
-                                            Sorry we can't find any data, to get rid of this message, assign at least one staff to this warehouse.
-                                        </p>
-                                        <a href="{{ route('staff.staff') }}" class="btn btn-primary mt-4">Create new One</a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        @else
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4>Warehouse Staff</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="dataTables_length col-6" id="myTable_length">
-                                            <div class="row" style="display:inline-block;">
-                                                <label>Show
-                                                    <select name="myTable_length" aria-controls="myTable" class="custom-select custom-select-sm">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
+                            @else
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Warehouse Staff</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="dataTables_length col-6" id="myTable_length">
+                                                <div class="row" style="display:inline-block;">
+                                                    <label>Show
+                                                        <select name="myTable_length" aria-controls="myTable" class="custom-select custom-select-sm">
+                                                            <option value="10">10</option>
+                                                            <option value="25">25</option>
+                                                            <option value="50">50</option>
+                                                            <option value="100">100</option>
+                                                        </select>
+                                                    </label>
+                                                </div>
+                                                
+                                            </div>
+
+                                            <div class="dataTables_filter col-6">
+                                                <label>Search:
+                                                    <input type="search" class="form-control" placeholder="Enter keyword" aria-controls="myTable">
                                                 </label>
                                             </div>
-                                            
                                         </div>
 
-                                        <div class="dataTables_filter col-6">
-                                            <label>Search:
-                                                <input type="search" class="form-control" placeholder="Enter keyword" aria-controls="myTable">
-                                            </label>
+                                        <div class="table-responsive">
+                                            <table id="table-1" class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($warehouse->staff()->paginate(2) as $staff)
+                                                    <tr>
+                                                        <td>{{ $staff->name }}</td>
+                                                        <td>{{ ($staff->status == true) ? 'Active' : 'Inactive' }}</td>
+                                                    </tr>
+                                                    
+                                                    @endforeach
+
+                                                    
+                                                    <!-- Table body content -->
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 
-                                    <div class="table-responsive">
-                                        <table id="table-1" class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($warehouse->staff()->paginate(2) as $staff)
-                                                <tr>
-                                                    <td>{{ $staff->name }}</td>
-                                                    <td>{{ ($staff->status == true) ? 'Active' : 'Inactive' }}</td>
-                                                </tr>
-                                                
-                                                @endforeach
-
-                                                
-                                                <!-- Table body content -->
-                                            </tbody>
-                                        </table>
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            {{ $warehouse->staff()->paginate(2)->links() }}
+                                        </div>
                                     </div>
+                
                                 </div>
-
-                                <div class="card-footer">
-                                    <div class="float-right">
-                                        {{ $warehouse->staff()->paginate(2)->links() }}
-                                    </div>
-                                </div>
-            
                             </div>
+                            @endempty
                         </div>
-                        @endempty
-                        </div>
-                        <div class="tab-pane fade" id="contact4" role="tabpanel" aria-labelledby="contact-tab4">
+                        <div class="tab-pane fade" id="menu3" role="tabpanel" aria-labelledby="manager-tab4">
                             <div class="card profile-widget">
                                 <div class="profile-widget-header">                     
                                     <img alt="image" src="http://localhost:8080/stisla-codeigniter/assets/img/avatar/avatar-1.png" class="rounded-circle profile-widget-picture">
@@ -194,6 +197,54 @@
                                     <p><strong>Date Created: </strong>{{ ($warehouse->manager() !== null) ? $warehouse->manager()->created_at : '' }}</p>
                                 </div>
                                 
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade {{ !empty($page) ? 'active' : '' }}" id="menu4" role="tabpanel" aria-labelledby="products-tab4">
+                        <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Warehouse Staff</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        
+
+                                        <div class="table-responsive">
+                                            <table id="table-1" class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product Name</th>
+                                                        <th>Stock</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @empty($warehouse->productsInStock())
+
+
+                                                    @else
+                                                        @foreach ($warehouse->productsInStock() as $item)
+                                                        <tr>
+                                                            <td>{{ $item->product->name }}</td>
+                                                            <td>{{ $item->stock }}</td>
+                                                        </tr>
+
+                                                            
+                                                        @endforeach
+                                                        
+                                                    @endempty
+                                                    <!-- Table body content -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <div class="float-right">
+                                            {{ $warehouse->productsInStock()->links() }}
+                                        </div>
+                                    </div>
+                
+                                </div>
                             </div>
                         </div>
                     </div>

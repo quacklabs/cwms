@@ -11,20 +11,36 @@ class StoreController extends Controller
 {
     public function stores(Request $request) {
 
+        $user = Auth::user();
+
         if($request->method() == 'POST') {
             $valid = $request->validate([
                 'name' => ['required'],
                 'address' => ['required'],
-                'notes' => ['nullable']
+                'notes' => ['nullable'],
+                'warehouse_id' => ['required']
             ]);
             Store::create($valid);
             return redirect()->route('store.stores')->with('success', 'Store Added successfully');
         }
 
-        $stores = Store::orderBy('created_at', 'desc')->paginate(25);
+        if($user->hasRole('admin')) {
+            $stores = Store::orderBy('created_at', 'desc')->paginate(25);
+            $warehouses = Warehouse::orderBy('created_at', 'desc')->paginate(50);
+        } else {
+            if($user->warehouse_id == NULL) {
+                return redirect()->route('dashboard')->with('error', 'You are not assigned to a warehouse');
+            } 
+            $stores = Store::where('warehouse_id', $user->warehouse_id)->orderBy('created_at', 'desc')->paginate(25);
+            $warehouses = Warehouse::where('manager_id', $user->warehouse_id)->orderBy('created_at', 'desc')->paginate(50);
+        }
+
+
+        
         $data = [
             'title' => 'Stores',
             'stores' => $stores,
+            'warehouses' => $warehouses
         ];
         return parent::render($data, 'store.stores');
     }

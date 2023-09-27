@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 
 use App\Models\Transfer;
@@ -99,7 +100,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
         });
     }
@@ -130,7 +131,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
             
         });
@@ -161,7 +162,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
         });
     }
@@ -191,7 +192,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
         });
     }
@@ -218,7 +219,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
             
         });
@@ -248,7 +249,7 @@ class TransferProducts implements ShouldQueue
                 $stock->save();
             } catch (\Exception $e) {
                 // Handle the exception
-                dd($e->getMessage());
+                Log::debug($e->getMessage());
             }
         });
         // return;

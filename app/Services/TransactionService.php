@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Queue;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -25,8 +26,8 @@ use Faker\Factory as Faker;
 use Faker\Provider\Barcode;
 use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
-use App\Events\UpdatePurchaseEvent;
 use App\Models\PurchaseDetails;
+use App\Jobs\UpdatePurchase;
 
 class TransactionService {
     
@@ -310,16 +311,23 @@ class TransactionService {
 
         $status = strtolower($data['status']);
         
+        if($status == 'pending') {
+            $purchase->status = $status;
+            $purchase->save();
+            return;
+        }
+
         if($status == 'received') {
-            $purchase = Purchase::find($id);
+            $purchase = Purchase::where('id', $id)->first();
             if($purchase != null) {
+                if($status == 'received' && count($details) > 0) {
+                    $job = new UpdatePurchase($purchase, $details);
+                    dispatch($job);
+                }
                 $purchase->status = $status;
                 $purchase->save();
-
-                if($status == 'received' && count($details) > 0) {
-                    event(new UpdatePurchaseEvent($id, $status, $details));
-                }
             }
+            return;
         }
     }
 

@@ -13,16 +13,16 @@ class CreateStore extends Migration
      */
     public function up()
     {
+        $this->down();
         Schema::create('store', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->longText('address');
             $table->boolean('status')->default(true);
             $table->longText('notes')->nullable();
-            // $table->unsignedBigInteger('warehouse_id')->nullable();
+            $table->unsignedBigInteger('warehouse_id');
             $table->timestamps();
-
-            // $table->foreign('warehouse_id')->references('id')->on('warehouse')->onDelete('cascade');
+            // $table->foreign('warehouse_id')->references('id')->on('warehouse');
         });
 
         Schema::create('store_user', function (Blueprint $table) {

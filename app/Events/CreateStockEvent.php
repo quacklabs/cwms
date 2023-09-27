@@ -9,27 +9,24 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\PurchaseDetails;
 
 class CreateStockEvent
 {
     use Dispatchable;
-    public int $purchase_id;
-    public int $product_id;
+    public PurchaseDetails $purchase;
     public int $quantity;
-    public array $serials;
     // public $amount;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(array $orders)
+    public function __construct(PurchaseDetails $purchase, int $quantity)
     {
         //
-        $this->purchase_id = $orders['purchase_id'];
-        $this->product_id = $orders['product_id'];
-        $this->quantity = $orders['quantity'];
-        $this->serials = $orders['serials'];
+        $this->purchase = $purchase;
+        $this->quantity = $quantity;
     }
 
     /**

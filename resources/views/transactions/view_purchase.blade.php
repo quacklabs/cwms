@@ -479,24 +479,6 @@
         }
     })
 
-    // $(document).on('input', '.received_q', function() {
-    //     // Event handler code
-    //     // var value = $(this).val();
-    //     const details = $(this).data('detail')
-    //     const total_amount = $(this).data('due')
-    //     const quantity = $(this).val()
-    //     if(quantity == '' || quantity == null || quantity == undefined || parseFloat(quantity) <= parseFloat("0.00")) {
-    //         console.log('check failed')
-    //         return
-    //     }
-
-    //     const due = $("#due")
-    //     const due_amount = due.val()
-    //     const received = parseFloat(details.price) * quantity
-    //     const value = due_amount - received
-    //     return
-    // });
-
     flatpickr("#start_date", {
         mode: "range",
         dateFormat: "d-m-Y",

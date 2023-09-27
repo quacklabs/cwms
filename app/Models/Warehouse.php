@@ -14,6 +14,10 @@ use App\Traits\ActionTakenBy;
 use App\Models\UserWarehouse;
 use App\Models\ProductStock;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
+use App\Contracts\ProductStockResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class Warehouse extends Model
 {
@@ -69,5 +73,29 @@ class Warehouse extends Model
         ->groupBy('product_id')
         ->get()->count();
         return $stock;
+    }
+
+    public function productsInStock(): LengthAwarePaginator {
+        $perPage = 25;
+        // $page = request()->query('page') ?? 1;
+        $page = Request::get('page', 1);
+        $offset = ($page - 1) * $perPage;
+
+        $stock = Product::orderBy('created_at', 'asc')->get();
+        $id = $this->id;
+        $all_stock = $stock->map(function ($item)  use ($id) {
+            $productStock = ProductStock::where('product_id', $item->id)
+            ->where('warehouse_id', $id)
+            ->where('in_transit', false)
+            ->where('sold', false)->count();
+            return new ProductStockResponse($item, $productStock);
+        })->values();
+        $collection = new Collection($all_stock);
+        $currentPageItems = $collection->slice($offset, $perPage)->all();
+        $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
+        // Set the path for the paginator
+        $paginator->setPath(Request::url());
+        
+        return $paginator;
     }
 }

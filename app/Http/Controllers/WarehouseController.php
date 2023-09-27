@@ -86,6 +86,7 @@ class WarehouseController extends Controller {
 
     public function view(Request $request) {
         $id = $request->route('id');
+        $page = $request->input('page');
         if(!$id) {
             return redirect()->route('warehouse.all_warehouses')->with('error', 'warehouse ID not found, please try again');
         }
@@ -94,12 +95,11 @@ class WarehouseController extends Controller {
             return redirect()->route('warehouse.all_warehouses')->with('error', 'Warehouse not found, please try again');
         }
 
-
         $data = [
             'title' => 'View Warehouse',
-            'warehouse' => $warehouse
+            'warehouse' => $warehouse,
+            'page' => $page
         ];
-
         return parent::render($data, 'warehouse.view_warehouse');
     }
 
