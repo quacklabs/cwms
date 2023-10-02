@@ -77,23 +77,23 @@
                                                 <img src="{{ $product->image_url ?? asset('img/avatar.png') }}" style="height: 80px; width: 80px;">
                                             </td>
                                             <td>
-                                                {{ $stock->product->name }}
+                                                {{ $stock->name }}
                                                 <span class="text-muted">
-                                                    <p>{{ $stock->product->sku }}</p>
+                                                    <p>{{ $stock->sku }}</p>
                                                 </span>
                                             </td>
                                             <td class="p-3">
-                                                {{ $stock->product->brands->name }}
+                                                {{ $stock->brands->name }}
                                             </td>
                                             <td class="p-3">
-                                            {{ $stock->product->categories->name }}
+                                            {{ $stock->categories->name }}
                                             </td>
-                                            <td>{{ $stock->stock }}</td>
+                                            <td>{{ $stock->gitStock() }}</td>
                                              
-                                            <td>{{ $stock->product->unit->name }}</td>
+                                            <td>{{ $stock->unit->name }}</td>
                                             <td>
                                                 @hasrole('admin')
-                                                <a href="{{ route('transit.transfer', ['product' => $stock->product->id]) }}" class="btn btn-primary">Transfer</a>
+                                                <a href="{{ route('transit.transfer', ['product' => $stock->id]) }}" class="btn btn-primary">Transfer</a>
                                                 @endhasrole
 
                                                 @hasrole('manager')
@@ -211,10 +211,12 @@
 
     $(document).on('click', '#receive_stock', function(e) {
         const data = $(this).data('transaction')
+        console.log(data)
         e.preventDefault()
-        $("#sent").val(data.stock)
-        $("#product_name").html(data.product.name)
-        $("#received_q").val(data.product.id)
+        // return
+        $("#sent").val(data.git)
+        $("#product_name").html(data.name)
+        $("#received_q").val(data.id)
         $("#updateStatus").modal('show');
         $("#received").focus('fast');
         

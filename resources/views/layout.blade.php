@@ -20,6 +20,13 @@
             @auth
             <div class="main-wrapper main-wrapper-1">
                 <!-- Content for authenticated users -->
+                <div class="no-data float">
+                    <i class="fas fa-caret-left fa-md arrow"></i>
+                    <p>
+                        <i class="fas fa-warning"></i>
+                        This is a warning about something happening on this element
+                    </p>
+                </div>
                 @include('partials.header')
                 @include('partials.sidebar')
             @else
@@ -49,6 +56,7 @@
         <script src="{{ asset('js/moment.min.js') }}"></script>
         <script src="{{ asset('js/stisla.js') }}"></script>
         <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+        <script src="{{ asset('js/iziToast.min.js') }}"></script>
 
         @if(session('success'))
         <script>

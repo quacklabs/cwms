@@ -4,9 +4,15 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Artisan;
+
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        // ...
+        \App\Console\Commands\ProcessQueue::class,
+    ];
     /**
      * Define the application's command schedule.
      *
@@ -15,7 +21,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('optimize:clear')->everyFiveMinutes();
+        $schedule->command('queue:retry all')->everyFiveMinutes();
+        $schedule->command('queue:work --sansdaemon --max_exec_time=25')->everyMinute();
     }
 
     /**
@@ -25,6 +33,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+        
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');

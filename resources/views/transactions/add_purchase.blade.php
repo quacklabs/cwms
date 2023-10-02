@@ -50,7 +50,7 @@
                             <div class="form-row">
                                 <input type="hidden" name="order" id="order" value="{{ old('order') }}">
                                 <input type="hidden" name="discount_amount" id="discount" value="{{ old('discount_amount') }}">
-                                <input type="hidden" name="total_price" id="order_amount" value="{{ old('total_price') }}">
+                                <input type="hidden" name="total_price" id="order_amount" value="{{ old('total') }}">
                                 <input type="hidden" name="notes" id="notes">
                                 <div class="form-group col-md-3">
                                     <label for="inputEmail4">Invoice No</label>

@@ -188,7 +188,7 @@
                                                         @if($transaction->returns != null)
                                                             @if(floatval($transaction->due) > floatval(0.00) )
                                                                 @can('receive-payment')
-                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Receive Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                <a href="#" id="btn-modal" class="btn btn-dark btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
                                                                     <i class="fas fa-money-check-alt" ></i>
                                                                 </a>
                                                                 @endcan
@@ -197,7 +197,7 @@
                                                         @else
                                                             @if (floatval($transaction->due) > floatval(0.00) )
                                                                 @can('give-payment')
-                                                                    <a href="#" id="give-payment" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Give Payment"  data-transaction="{{ json_encode($transaction) }}" >
+                                                                    <a href="#" id="give-payment" class="btn btn-primary btn-icon" data-toggle="tooltip" data-placement="top" title="" data-original-title="Receive Payment"  data-transaction="{{ json_encode($transaction) }}" >
                                                                         <i class="fas fa-money-check-alt" ></i>
                                                                     </a>
                                                                 @endcan

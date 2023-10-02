@@ -10,24 +10,26 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Collection;
 
 use App\Models\Purchase;
 use App\Models\PurchaseDetails;
-use App\Events\CreateStockEvent;
+use App\Helpers\Utils;
+// use App\Events\CreateStockEvent;
 
 class UpdatePurchase implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Purchase $purchase;
-    protected array $orders;
+    protected Collection $orders;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Purchase $purchase, array $orders = []) {
+    public function __construct(Purchase $purchase, Collection $orders) {
         $this->purchase = $purchase;
         $this->orders = $orders;
     }
@@ -39,23 +41,22 @@ class UpdatePurchase implements ShouldQueue
      */
     public function handle()
     {
-        $details = collect($this->orders);
-        $details->each(function($detail) {
-            // Log::channel('custom')->debug(dump($detail));
-            $order = PurchaseDetails::where('id', $detail->id)->get()->first();
-            // Log::channel('custom')->debug(dump($order));
+        // $chunks = $this->orders->smartChunk();
+        // Log::debug($chunks);
+        $purchase = $this->purchase;
+        // $chunks = Utils::smartChunk()
+        $this->orders->each(function($detail) use ($purchase) {
+            $order = PurchaseDetails::where('id', $detail->id)->first();
             if($order) {
-                if($detail->received > $order->quantity) {
+                $total = intval($order->received) + intval($detail->received);
+                if(intval($total) <= intval($order->quantity)) {
+                    dispatch(new CreateStock($order, $detail->received));
+                    $order->received = $total;
+                    $order->save();
                     return;
                 }
-                $event = new CreateStockEvent($order, $detail->received);
-                // Log::channel('custom')->debug($event);
-                Event::dispatch($event);
-                $order->received = $detail->received;
-                $order->save();
-                // Log::channel('custom')->debug('Order Updated');
             } else {
-                // Log::channel('custom')->debug('No Detail found');
+                Log::debug("Failed to parse detail");
             }
         });
     }

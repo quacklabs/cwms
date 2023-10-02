@@ -88,49 +88,64 @@ class StockManager {
 
     public static function getInTransit() {
         $perPage = 25;
-        $page = Request::get('page', 1);
-        $offset = ($page - 1) * $perPage;
+        // $page = Request::get('page', 1);
+        // $offset = ($page - 1) * $perPage;
 
-        $stock = ProductStock::where('ownership', 'GIT')
-        ->where('sold', false)
-        ->where('in_transit', true)
-        ->where('received', false)
-        ->get()->groupBy('product_id');
-        $all_stock = $stock->map(function($stocks, $id) {
-            $product = Product::find($id);
-            return new ProductStockResponse($product, count($stocks));
-        });
+        $stock = Product::whereHas('productStock', function ($query) {
+            $query->where('ownership', 'GIT');
+            // ->where();
+        })->paginate($perPage);
+        return $stock;
+
+
+        // $stock = ProductStock::where('ownership', 'GIT')
+        // ->where('sold', false)
+        // ->where('in_transit', true)
+        // ->where('received', false)
+        // ->get()->groupBy('product_id');
+        // $all_stock = $stock->map(function($stocks, $id) {
+        //     $product = Product::find($id);
+        //     return new ProductStockResponse($product, count($stocks));
+        // });
         
-        $collection = new Collection($all_stock);
-        $currentPageItems = $collection->slice($offset, $perPage)->all();
-        $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
-        // Set the path for the paginator
-        $paginator->setPath(Request::url());
-        return $paginator;
+        // $collection = new Collection($all_stock);
+        // $currentPageItems = $collection->slice($offset, $perPage)->all();
+        // $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
+        // // Set the path for the paginator
+        // $paginator->setPath(Request::url());
+        // return $paginator;
     }
 
     public static function getInTransitByWarehouse(int $warehouse_id) {
         $perPage = 25;
-        $page = Request::get('page', 1);
-        $offset = ($page - 1) * $perPage;
+        // $page = Request::get('page', 1);
+        // $offset = ($page - 1) * $perPage;
 
-        $stock = ProductStock::where('ownership', 'WAREHOUSE')
-        ->where('owner', $warehouse_id)
-        ->where('sold', false)
-        ->where('in_transit', true)
-        ->where('received', false)
-        ->get()->groupBy('product_id');
-        $all_stock = $stock->map(function($stocks, $id) {
-            $product = Product::find($id);
-            return new ProductStockResponse($product, count($stocks));
-        });
+        $stock = Product::whereHas('productStock', function ($query) use ($warehouse_id) {
+            $query->where('ownership', 'WAREHOUSE')
+            ->where('warehouse_id', $warehouse_id)
+            ->where('sold', false)
+            ->where('in_transit', true)
+            ->where('received', false);
+            // ->where();
+        })->paginate($perPage);
+        return $stock;
+
+        // $stock = ProductStock::where('ownership', 'WAREHOUSE')
         
-        $collection = new Collection($all_stock);
-        $currentPageItems = $collection->slice($offset, $perPage)->all();
-        $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
-        // Set the path for the paginator
-        $paginator->setPath(Request::url());
-        return $paginator;
+        
+        // ->get()->groupBy('product_id');
+        // $all_stock = $stock->map(function($stocks, $id) {
+        //     $product = Product::find($id);
+        //     return new ProductStockResponse($product, count($stocks));
+        // });
+        
+        // $collection = new Collection($all_stock);
+        // $currentPageItems = $collection->slice($offset, $perPage)->all();
+        // $paginator = new LengthAwarePaginator($currentPageItems, count($collection), $perPage, $page);
+        // // Set the path for the paginator
+        // $paginator->setPath(Request::url());
+        // return $paginator;
     }
 
     public static function getInTransitByStore(int $store_id) {

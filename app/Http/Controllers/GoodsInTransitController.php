@@ -60,6 +60,7 @@ class GoodsInTransitController extends Controller {
         $destination = $request->route('destination');
         
         $validate = Validator::make($request->all(), [
+            'from' => ['nullable', 'numeric'],
             'to' => ['required', 'numeric'],
             'notes' => ['nullable', 'string'],
             'items' => ['required'],
@@ -70,7 +71,7 @@ class GoodsInTransitController extends Controller {
             return redirect()->back()->withErrors($validate);
         } else {
             TransferService::createTransfer($validate->validated(), 'git', $destination);
-            return redirect()->route('purchase.view')->with('success', 'Stock Transfered Successfuly');
+            return redirect()->route('transit.view')->with('success', 'Stock is queued for transfer successfully.');
         }
     }
 
@@ -87,7 +88,7 @@ class GoodsInTransitController extends Controller {
         } else {
             // dd($validate->validated());
             TransferService::receiveGoods($validate->validated(), $destination);
-            return redirect()->route('purchase.view')->with('success', 'Stock Transfered Successfuly');
+            return redirect()->route('transit.view')->with('success', 'Stock Transfered Successfuly');
         }
         
     }

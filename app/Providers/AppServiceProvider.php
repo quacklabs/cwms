@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Collection;
 use App\Console\Commands\MakeServiceCommand;
+use App\Console\Commands\MakeInterfaceCommand;
+use App\Console\Commands\ProcessQueue;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->commands([
             MakeServiceCommand::class,
+            MakeInterfaceCommand::class,
+            ProcessQueue::class
         ]);
         
     }

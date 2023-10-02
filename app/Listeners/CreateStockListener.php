@@ -35,25 +35,29 @@ class CreateStockListener
     public function handle(CreateStockEvent $event) {
         $serials = collect([]);
         $purchase_serials = json_decode($event->purchase->serials);
-        if($purchase_serials != NULL) {
-            if(count($purchase_serials) > 0) {
-                if($event->quantity > count($serials)) {
-                    $serials->concat($purchase_serials);
-                    $additionalValues = $event->quantity - count($purchase_serials);
-
-                    for ($i = 0; $i < $additionalValues; $i++) {
-                        $randomString = TransactionService::newInvoice();
-                        $serials->push($randomString);
-                    }
-                }
-            } else {
-                $serials = $this->generateSerials($event->quantity);
-            }
-        } else {
-            $serials = $this->generateSerials($event->quantity);
+        if($purchase_serials != NULL && count($purchase_serials) > 0) {
+            $serials->concat($purchase_serials);
         }
 
-        $purchase = $event->purchase;
+        if($event->quantity > count($serials)) {
+            
+        }
+        dispatch(new CreateStock($serials, $event->purchase));
+        // schdule jobs for items with serial numbers
+        $data = collect([
+            "product_id" => $event->purchase->product_id,
+            "serials" => count()
+        ]);;
+        
+
+        $additionalValues = $event->quantity - count($purchase_serials);
+
+        for ($i = 0; $i < $additionalValues; $i++) {
+            $randomString = TransactionService::newInvoice();
+            $serials->push($randomString);
+        }
+
+        // $purchase = ;
         $serials->chunk(100)->each(function($batch) use ($purchase) {
             $job = new CreateStock($batch, $purchase);
             dispatch($job);

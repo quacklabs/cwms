@@ -20,7 +20,7 @@ class PurchaseDetails extends TransactionDetail
     protected $table = 'purchase_details';
 
     protected $fillable = [ 
-        'purchase_id', 'product_id','quantity','price','total'
+        'purchase_id', 'product_id','quantity','price','total', 'serials'
     ];
 
     protected $casts = [
@@ -35,7 +35,7 @@ class PurchaseDetails extends TransactionDetail
         return $this->purchase()->get();
     }
 
-    public function purchase() {
+    public function purchase(): BelongsTo {
         return $this->belongsTo(Purchase::class, 'purchase_id');
     }
     

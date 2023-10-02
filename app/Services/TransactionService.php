@@ -8,6 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Queue;
+Use Illuminate\Support\Facades\Event;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -28,20 +29,25 @@ use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
 use App\Models\PurchaseDetails;
 use App\Jobs\UpdatePurchase;
+use App\Events\CreatePurchaseEvent;
+use App\Contracts\Order;
 
 class TransactionService {
     
     public static function createPurchase(array $data): TransactionInterface {
 
-        $orders = array_map(function($order) {
-            return [
-                'product_id' => $order->id,
+        $orders = collect(json_decode($data['order']))->map(function($order) {
+            $obj = [
+                'id' => $order->id,
                 'quantity' => $order->quantity,
                 'price' => $order->price,
                 'total' => $order->total_price, 
                 'serials' => $order->serials ?? "[]"
             ];
-        }, json_decode($data['order']));
+            return new Order($obj);
+        });
+
+        // dd($orders);
 
         $transaction = Purchase::create([
             'supplier_id' => $data['partner_id'],
@@ -52,12 +58,9 @@ class TransactionService {
             'date' => Carbon::parse($data['date']),
             'note' => $data['notes'] ?? NULL
         ]);
-        $transaction->details()->createMany($orders);
-        // if($flag == 'purchase') {
-        //     event(new CreateStockEvent($orders));
-        // } else {
-        //     event(new SellStockEvent($orders, $transaction->id, $data['warehouse_id']));
-        // }
+        CreatePurchaseEvent::dispatch($transaction->id, $orders);
+        // Event::dispatch($event);
+        // CreatePurchase::dispatch();s
         return $transaction;
     }
 
@@ -310,25 +313,16 @@ class TransactionService {
         $details = json_decode($data['order_details']);
 
         $status = strtolower($data['status']);
-        
-        if($status == 'pending') {
+        $purchase = Purchase::where('id', $id)->first();
+        if($purchase != null) {
+            if($status == 'received' && count($details) > 0) {
+                $job = new UpdatePurchase($purchase, collect($details));
+                dispatch($job);
+            }
             $purchase->status = $status;
             $purchase->save();
-            return;
         }
-
-        if($status == 'received') {
-            $purchase = Purchase::where('id', $id)->first();
-            if($purchase != null) {
-                if($status == 'received' && count($details) > 0) {
-                    $job = new UpdatePurchase($purchase, $details);
-                    dispatch($job);
-                }
-                $purchase->status = $status;
-                $purchase->save();
-            }
-            return;
-        }
+        return null;
     }
 
     public static function newInvoice() {

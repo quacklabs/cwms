@@ -31,6 +31,10 @@ class Product extends Model
         'notes'
     ];
 
+    protected $appends = [
+        'git'
+    ];
+
     public function categories() {
         return $this->belongsTo(Category::class, 'category_id');
     }
@@ -73,19 +77,25 @@ class Product extends Model
         }
     }
 
+    public function getGitAttribute() {
+        return $this->gitStock();
+    }
+
     public function gitStock(User $user=NULL) {
         if($user == null) {
             $user = Auth::user();
         }
+        if($user == null) { return 0; }
         if($user->hasRole('admin')) {
             $warehouse = null;
         } else {
             $warehouse = ($user->warehouse() !== null) ? $user->warehouse()->id : null;
+            // dd($warehouse);
         }
         if($warehouse != null) {
             return ProductStock::where('warehouse_id', $warehouse)
             ->where('product_id', $this->id)
-            ->where('ownership', 'GIT')
+            ->where('ownership', 'WAREHOUSE')
             ->where('sold', false)->count();
         } else {
             return ProductStock::where('product_id', $this->id)

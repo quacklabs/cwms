@@ -8,7 +8,6 @@ use App\Contracts\BusinessIntelligence;
 
 class DashboardController extends Controller {
     //
-
     protected BusinessIntelligence $analytics;
 
     public function index(Request $request) {

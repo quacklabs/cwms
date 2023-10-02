@@ -9,15 +9,18 @@ use Illuminate\Support\Facades\Event;
 
 use App\Events\SupplierPaymentReceived;
 use App\Events\CustomerPaymentReceived;
-use App\Events\UpdatePurchaseEvent;
 use App\Events\CreateStockEvent;
 use App\Events\ReceiveStockEvent;
+use App\Events\CreatePurchaseEvent;
+use App\Events\TransferStockEvent;
 
 use App\Listeners\EnterCustomerPayment;
 use App\Listeners\EnterSupplierPayment;
 use App\Listeners\UpdatePurchaseListener;
 use App\Listeners\CreateStockListener;
 use App\Listeners\ReceiveStockListener;
+use App\Listeners\CreatePurchaseListener;
+use App\Listeners\TransferStockListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -43,6 +46,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         ReceiveStockEvent::class => [
             ReceiveStockListener::class
+        ],
+        CreatePurchaseEvent::class => [
+            CreatePurchaseListener::class
+        ],
+        TransferStockEvent::class => [
+            TransferStockListener::class
         ]
     ];
 

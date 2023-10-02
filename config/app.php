@@ -171,17 +171,13 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\PaginatorServiceProvider::class,
-        Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\CustomValidationServiceProvider::class,
-        // Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        // Barryvdh\Cors\ServiceProvider::class,
-
-
+        App\Providers\SmartListProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Queueworker\SansDaemon\SansDaemonServiceProvider::class,
     ],
 
     /*

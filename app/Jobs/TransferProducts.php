@@ -32,7 +32,7 @@ class TransferProducts implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Transfer $transfer, array $orders)
+    public function __construct()
     {
         //
         $this->transfer = $transfer;

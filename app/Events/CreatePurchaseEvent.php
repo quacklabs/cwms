@@ -9,24 +9,22 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
-class UpdatePurchaseEvent
-{
+class CreatePurchaseEvent {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public int $purchase_id;
-    public array $details;
-
+    public int $transaction_id;
+    public Collection $orders;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(int $purchase_id, array $order = [])
+    public function __construct(int $transaction_id, Collection $orders)
     {
         //
-        $this->purchase_id = $purchase_id;
-        $this->details = $order;
+        $this->transaction_id = $transaction_id;
+        $this->orders = $orders;
     }
 
     /**

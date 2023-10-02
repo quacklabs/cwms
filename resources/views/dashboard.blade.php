@@ -33,15 +33,15 @@
                         </div>
                         <div class="card-stats-items">
                             <div class="card-stats-item">
-                            <div class="card-stats-item-count">{{ $analytics->sales_statistics()->pending }}</div>
+                            <div class="card-stats-item-count">0</div>
                             <div class="card-stats-item-label">Pending</div>
                             </div>
                             <div class="card-stats-item">
-                            <div class="card-stats-item-count">{{ $analytics->sales_statistics()->completed }}</div>
+                            <div class="card-stats-item-count">0</div>
                             <div class="card-stats-item-label">Completed</div>
                             </div>
                             <div class="card-stats-item">
-                            <div class="card-stats-item-count">{{ $analytics->sales_statistics()->products }}</div>
+                            <div class="card-stats-item-count">0</div>
                             <div class="card-stats-item-label">Products</div>
                             </div>
                         </div>
@@ -54,9 +54,9 @@
                             <h4>Total Orders</h4>
                         </div>
                         <div class="card-body">
-                            {{ $analytics->sales_statistics()->total }}
+                            0
                             <span class="text-right ml-auto inline float-right text-primary">
-                            &#x20A6;{{ $analytics->sales_statistics()->amount }}
+                            &#x20A6;0
                             </span>
                         </div>
                     </div>
@@ -89,15 +89,15 @@
                     </div>
                     <div class="card-stats-items">
                         <div class="card-stats-item">
-                        <div class="card-stats-item-count">{{ $analytics->purchase_statistics()->pending }}</div>
+                        <div class="card-stats-item-count">0</div>
                         <div class="card-stats-item-label">Pending</div>
                         </div>
                         <div class="card-stats-item">
-                        <div class="card-stats-item-count">{{ $analytics->purchase_statistics()->completed }}</div>
+                        <div class="card-stats-item-count">0</div>
                         <div class="card-stats-item-label">Completed</div>
                         </div>
                         <div class="card-stats-item">
-                        <div class="card-stats-item-count">{{ $analytics->purchase_statistics()->products }}</div>
+                        <div class="card-stats-item-count">0</div>
                         <div class="card-stats-item-label">Products</div>
                         </div>
                     </div>
@@ -110,9 +110,9 @@
                         <h4>Total Orders</h4>
                     </div>
                     <div class="card-body">
-                        {{ $analytics->purchase_statistics()->total }}
+                        0
                         <span class="text-right ml-auto inline float-right text-primary">
-                        &#x20A6;{{ $analytics->purchase_statistics()->amount }}
+                        &#x20A6;0
                         </span>
                     </div>
                     </div>
@@ -134,7 +134,7 @@
                     <h4>Total Sales - {{ date('Y') }}</h4>
                   </div>
                   <div class="card-body">
-                  {{ number_format($analytics->totalSaleAmount(), 2) }}
+                  0
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@
                     <h4>Total Purchase - {{ date('Y') }}</h4>
                   </div>
                   <div class="card-body">
-                  {{ number_format($analytics->totalPurchaseAmount(), 2) }}
+                  0
                   </div>
                 </div>
               </div>
@@ -172,7 +172,7 @@
                         <h4>Total Purchases</h4>
                     </div>
                     <div class="card-body">
-                        {{ $analytics->totalPurchase() }}
+                        0
                     </div>
                     </div>
                 </div>
@@ -187,7 +187,7 @@
                         <h4>Total Sales</h4>
                     </div>
                     <div class="card-body">
-                        {{ $analytics->totalSale() }}
+                        0
                     </div>
                     </div>
                 </div>
@@ -202,7 +202,7 @@
                             <h4>Returned Purchases</h4>
                         </div>
                         <div class="card-body">
-                            {{ $analytics->totalPurchaseReturn() }}
+                            0
                         </div>
                     </div>
                 </div>
@@ -217,7 +217,7 @@
                         <h4>Returned Sale</h4>
                     </div>
                     <div class="card-body">
-                        {{ $analytics->totalSaleReturn() }}
+                        0
                     </div>
                     </div>
                 </div>
@@ -282,25 +282,7 @@
                 <div class="card-body" id="top-5-scroll" tabindex="2" style="height: 315px; overflow: hidden; outline: none;">
                     <ul class="list-unstyled list-unstyled-border">
 
-                        @foreach ($analytics->topProducts() as $product)
-                        
-                        <li class="media">
-                            <img class="mr-3 rounded" width="55" src="{{ $product->product->image_url ?? asset('img/avatar.png') }}" alt="product">
-                            <div class="media-body">
-                                <div class="float-right">
-                                    <div class="font-weight-600 text-muted text-small">{{ number_format($product->total_quantity) }} Units Sold</div>
-                                </div>
-                                <div class="media-title">{{ $product->product->name }}</div>
-                                <div class="mt-1">
-                                    <div class="budget-price">
-                                        <div class="budget-price-square bg-primary" data-width="5%" style="width: 5%;"></div>
-                                        <div class="budget-price-label">&#x20A6;{{ $analytics->shortenMoney($product->total_value) }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-
-                        @endforeach
+                       
                     </ul>
                 </div>
                 <div class="card-footer pt-3 d-flex justify-content-center">
@@ -335,15 +317,7 @@
                                     <th>Amount</th>
                                 </tr>
 
-                                @foreach ($analytics->recentSaleReturns() as $return)
-                                <tr>
-                                    <td>{{ $return->date }}</td>
-                                    <td>{{ $return->owner->invoice_no }}</td>
-                                    <td>{{ $return->partner->name }}</td>
-                                    <td>&#x20A6;{{ number_format($return->payable, 2) }}</td>
-                                </tr>
-                                    
-                                @endforeach
+                                
                             </tbody>
                         </table>
                     </div>
@@ -357,23 +331,12 @@
                   <div class="card-icon">
                   <i class="fas fa-battery-quarter"></i>
                   </div>
-                  <h4>{{ $analytics->productLow()->count() }}</h4>
+                  <h4>0</h4>
                   <div class="card-description">Products are low on stock</div>
                 </div>
                 <div class="card-body p-0">
                   <div class="tickets-list">
-                    @foreach ($analytics->productLow()->take(3) as $product)
-                    <a href="#" class="ticket-item">
-                      <div class="ticket-title">
-                        <h4>{{ $product->name }}</h4>
-                      </div>
-                      <div class="ticket-info">
-                        <div>In Stock</div>
-                        <div class="bullet"></div>
-                        <div class="text-primary">{{ $product->totalInStock() }}</div>
-                      </div>
-                    </a>
-                    @endforeach
+                    
                     
                     
                     <a href="{{ route('product.products') }}" class="ticket-item ticket-more">
@@ -398,235 +361,6 @@
 <script src="{{ asset('js/chart.min.js') }}"></script>
 <script>
 
-var balance_chart = document.getElementById("balance-chart").getContext('2d');
-var balance_chart_bg_color = balance_chart.createLinearGradient(0, 0, 0, 70);
-balance_chart_bg_color.addColorStop(0, 'rgba(63,82,227,1)');
-balance_chart_bg_color.addColorStop(1, 'rgba(63,82,227,0)');
-
-const saleLabels = JSON.parse('{!! $analytics->salesReport() !!}').map(item => {
-    return item.name
-})
-
-const saleValues = JSON.parse('{!! $analytics->salesReport() !!}').map(item => {
-    return item.value
-})
-
-const maxInt = Math.max.apply(null, saleValues) * 2
-
-var sales = new Chart(balance_chart, {
-  type: 'line',
-  data: {
-    labels: saleLabels,
-    datasets: [{
-      label: 'Sales',
-      data: saleValues,
-      backgroundColor: balance_chart_bg_color,
-      borderWidth: 3,
-      borderColor: 'rgba(63,82,227,1)',
-      pointBorderWidth: 0,
-      pointBorderColor: 'transparent',
-      pointRadius: 3,
-      pointBackgroundColor: 'transparent',
-      pointHoverBackgroundColor: 'rgba(63,82,227,1)',
-    }]
-  },
-  options: {
-    layout: {
-      padding: {
-        bottom: -1,
-        left: -1
-      }
-    },
-    legend: {
-      display: false
-    },
-    scales: {
-      yAxes: [{
-        gridLines: {
-          display: false,
-          drawBorder: false,
-        },
-        ticks: {
-          beginAtZero: true,
-          display: false,
-          stepSize: maxInt
-        }
-      }],
-      xAxes: [{
-        gridLines: {
-          drawBorder: false,
-          display: false,
-        },
-        ticks: {
-          display: false
-        }
-      }]
-    },
-  }
-});
-
-var purchase_chart = document.getElementById("sales-chart").getContext('2d');
-var purchase_chart_bg_color = purchase_chart.createLinearGradient(0, 0, 0, 70);
-purchase_chart_bg_color.addColorStop(0, 'rgba(63,82,227,1)');
-purchase_chart_bg_color.addColorStop(1, 'rgba(63,82,227,0)');
-
-const purchaseLabels = JSON.parse('{!! $analytics->purchaseReport() !!}').map(item => {
-    return item.name
-})
-
-const purchaseValues = JSON.parse('{!! $analytics->purchaseReport() !!}').map(item => {
-    return item.value
-})
-
-const maxInteger = Math.max.apply(null, purchaseValues) * 2
-
-var sales = new Chart(purchase_chart, {
-  type: 'line',
-  data: {
-    labels: purchaseLabels,
-    datasets: [{
-      label: 'Purchases',
-      data: purchaseValues,
-      backgroundColor: purchase_chart_bg_color,
-      borderWidth: 3,
-      borderColor: 'rgba(63,82,227,1)',
-      pointBorderWidth: 0,
-      pointBorderColor: 'transparent',
-      pointRadius: 3,
-      pointBackgroundColor: 'transparent',
-      pointHoverBackgroundColor: 'rgba(63,82,227,1)',
-    }]
-  },
-  options: {
-    layout: {
-      padding: {
-        bottom: -1,
-        left: -1
-      }
-    },
-    legend: {
-      display: false
-    },
-    scales: {
-      yAxes: [{
-        gridLines: {
-          display: false,
-          drawBorder: false,
-        },
-        ticks: {
-          beginAtZero: true,
-          display: false,
-          stepSize: maxInteger
-        }
-      }],
-      xAxes: [{
-        gridLines: {
-          drawBorder: false,
-          display: false,
-        },
-        ticks: {
-          display: false
-        }
-      }]
-    },
-  }
-});
-
-var statistics_chart = document.getElementById("myChart").getContext('2d');
-
-var dataSetMonths = JSON.parse('{!! $analytics->monthlyTrend() !!}').map( item => {
-    return {
-        label: item.label,
-        data: item.data,
-        backgroundColor: item.color,
-        borderColor: 'transparent',
-        borderWidth: 3
-    }
-})
-const dataSetWeeks = JSON.parse('{!! $analytics->weeklyTrend() !!}').map( item => {
-    return {
-        label: item.label,
-        data: item.data,
-        backgroundColor: item.color,
-        borderColor: 'transparent',
-        borderWidth: 3
-    }
-})
-var all = []
-const allData = dataSetWeeks.forEach(element => {
-    all = [...all, ...element.data]
-})
-const max = Math.max.apply(null, all) * 1.4
-var chart = new Chart(statistics_chart, {
-    type: 'bar',
-    data: {
-        labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        datasets: dataSetWeeks
-    },
-    options: {
-        legend: {
-            display: true,
-            position: 'bottom'
-        },
-        scales: {
-            yAxes: [
-                {
-                    gridLines: {
-                        display: false,
-                        drawBorder: true,
-                    },
-                    ticks: {
-                        stepSize: max
-                    }
-                }
-            ],
-            xAxes: [
-                {
-                    gridLines: {
-                        color: '#fbfbfb',
-                        lineWidth: 2
-                    }
-                }
-            ]
-        },
-    }
-})
-
-$(".chart-toggle").on('click', function(e) {
-    e.preventDefault()
-    const filter = $(this).data('filter');
-    const buttons = $(".chart-toggle")
-    buttons.each(function(index, element) {
-        $(element).removeClass("btn-primary")
-    })
-    $(this).addClass('btn-primary')
-    if(filter == "week") {
-        // chart.labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        chart.data = {
-            labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-            datasets: dataSetWeeks
-        }
-        var all = []
-        const allData = dataSetWeeks.forEach(element => {
-            all = [...all, ...element.data]
-        })
-        const max = Math.max.apply(null, all)
-        chart.options.scales.yAxes[0].ticks.stepSize = max * 1.6
-        chart.update()
-    } else {
-        chart.data = {
-            labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
-            datasets: dataSetMonths
-        }
-        var all = []
-        const allData = dataSetWeeks.forEach(element => {
-            all = [...all, ...element.data]
-        })
-        const max = Math.max.apply(null, all)
-        chart.options.scales.yAxes[0].ticks.stepSize = max * 1.6
-        chart.update()
-    }
-});
 </script>
 
 <!-- 

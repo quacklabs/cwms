@@ -19,7 +19,8 @@ class Controller extends BaseController
         $data['api_token'] = session('api_token') ?? '';
         $data['x_token'] = csrf_token();
         $data['user'] = Auth::user();
-        return view($page)->with($data);
+        return view($page, $data);
+        // return view($page)->with($data);
     }
 
 }

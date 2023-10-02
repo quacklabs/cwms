@@ -10,9 +10,11 @@ use App\Models\Warehouse;
 use App\Models\Transfer;
 use App\Models\TransferDetail;
 use App\Models\ProductStock;
-use App\Jobs\TransferProducts;
+// use App\Jobs\TransferProducts;
 
 use App\Events\ReceiveStockEvent;
+use App\Events\TransferStockEvent;
+use Illuminate\Support\Collection;
 
 class TransferService {
 
@@ -40,7 +42,7 @@ class TransferService {
         $faker = Faker::create();
         if($flag == 'git') {
             $transfer = Transfer::create([
-                "tracking_no" => strtoupper($faker->bothify('???########')),
+                "tracking_no" => strtoupper($faker->bothify('???#######')),
                 "to" => $valid['to'],
                 "transfer_date" => Carbon::parse($valid['transfer_date']),
                 "note" => $valid['notes'],
@@ -49,16 +51,14 @@ class TransferService {
         } else {
             $transfer = Transfer::create([
                 "from" => $valid['from'],
-                "tracking_no" => strtoupper($faker->bothify('???########')),
+                "tracking_no" => strtoupper($faker->bothify('???#########')),
                 "to" => $valid['to'],
                 "transfer_date" => Carbon::parse($valid['transfer_date']),
                 "note" => $valid['notes'],
                 "type" => strtoupper($flag)."_".strtoupper($destination),
             ]);
         }
-        
-        $job = new TransferProducts($transfer, json_decode($valid['items'], true));
-        dispatch($job);
+        TransferStockEvent::dispatch($transfer, json_decode($valid['items'], true));
         return true;
     }
 
@@ -68,7 +68,7 @@ class TransferService {
             $ownership = "WAREHOUSE";
             $data['warehouse_id'] = $destination;
             $store = false;
-        } else if($user->hasAnyRole(['storeManager', 'manager'])) {
+        } else if($user->hasAnyRole(['storeManager'])) {
             $ownership = "STORE";
             $store = true;
         }
@@ -80,6 +80,17 @@ class TransferService {
         ->get();
         ReceiveStockEvent::dispatch($stock, $destination, $store);
         return;
+    }
+
+    public static function chunk(int $number): Collection {
+        $chunkSize = 100;
+        $chunks = collect([]);
+        while($number > 0) {
+            $chunk = min($number, $chunkSize);
+            $chunks->concat($chunk);
+            $number -= $chunkSize;
+        }
+        return collect($chunks);
     }
     
 }
