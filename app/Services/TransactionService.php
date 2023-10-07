@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Queue;
 Use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -25,7 +27,6 @@ use App\Models\SaleReturnDetail;
 
 use Faker\Factory as Faker;
 use Faker\Provider\Barcode;
-use App\Events\CreateStockEvent;
 use App\Events\SellStockEvent;
 use App\Models\PurchaseDetails;
 use App\Jobs\UpdatePurchase;
@@ -33,6 +34,7 @@ use App\Events\CreatePurchaseEvent;
 use App\Contracts\Order;
 
 class TransactionService {
+    use DispatchesJobs;
     
     public static function createPurchase(array $data): TransactionInterface {
 
@@ -309,15 +311,22 @@ class TransactionService {
     }
 
 
-    public static function updatePurchase(int $id, array $data) {
+    public function updatePurchase(int $id, array $data) {
         $details = json_decode($data['order_details']);
 
         $status = strtolower($data['status']);
         $purchase = Purchase::where('id', $id)->first();
         if($purchase != null) {
             if($status == 'received' && count($details) > 0) {
-                $job = new UpdatePurchase($purchase, collect($details));
-                dispatch($job);
+                $job = new UpdatePurchase(auth()->user()->id, $purchase, collect($details));
+                $jobId = $this->dispatch($job);
+                // trackedJob = UserJob::create([
+                    //     'user_id' => $user_id,
+                    //     'trackable_id'   => $this->model->id,
+                    //     'trackable_type' => get_class($this),
+                    //     'name'           => class_basename(static::class),
+                    //  ]);
+                // Log::debug("Job id: ".$jobId);
             }
             $purchase->status = $status;
             $purchase->save();

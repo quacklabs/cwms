@@ -162,6 +162,11 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+        App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BackgroundTaskProvider::class,
+        // Imtigger\LaravelJobStatus\LaravelJobStatusServiceProvider::class,
+        // \Imtigger\LaravelJobStatus\LaravelJobStatusBusServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -232,6 +237,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Pusher' => Pusher\Pusher::class,
 
     ],
 

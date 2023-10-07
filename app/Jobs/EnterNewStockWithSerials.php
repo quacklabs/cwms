@@ -10,10 +10,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Support\Collection;
+use App\Traits\Trackable;
 
 class EnterNewStockWithSerials implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
     protected Collection $serials;
     protected int $product_id;
     protected int $purchase_id;
@@ -23,9 +24,10 @@ class EnterNewStockWithSerials implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Collection $serials, $product_id, $purchase_id)
+    public function __construct(int $user_id, Collection $serials, $product_id, $purchase_id)
     {
         //
+        $this->user_id = $user_id;
         $this->serials = $serials;
         $this->product_id = $product_id;
         $this->purchase_id = $purchase_id;

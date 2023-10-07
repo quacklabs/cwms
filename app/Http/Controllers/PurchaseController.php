@@ -57,7 +57,8 @@ class PurchaseController extends Controller
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate);
         } else {
-            TransactionService::updatePurchase($id, $validate->validated());
+            $service = new TransactionService();
+            $service->updatePurchase($id, $validate->validated());
             return redirect()->route('purchase.view')->with('success', 'Purchase Status Updated');
         }
     }

@@ -11,10 +11,11 @@ use Illuminate\Queue\SerializesModels;
 
 use App\Services\TransactionService;
 use App\Models\ProductStock;
+use App\Traits\Trackable;
 
 class EnterNewStockWithoutSerials implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
     protected int $quantity;
     protected int $product_id;
     protected int $purchase_id;
@@ -23,9 +24,10 @@ class EnterNewStockWithoutSerials implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(int $quantity, int $product_id, int $purchase_id)
+    public function __construct(int $user_id, int $quantity, int $product_id, int $purchase_id)
     {
         //
+        $this->user_id = $user_id;
         $this->quantity = $quantity;
         $this->product_id = $product_id;
         $this->purchase_id = $purchase_id;
@@ -39,6 +41,9 @@ class EnterNewStockWithoutSerials implements ShouldQueue
     public function handle()
     {
         //
+        // $this->trackedJob = Task::where('trackable_id', $this->job->getJobId())
+        // ->where('user_id', $this->user_id)->first();
+
         $quantity = $this->quantity;
         while($quantity > 0) {
             ProductStock::create([

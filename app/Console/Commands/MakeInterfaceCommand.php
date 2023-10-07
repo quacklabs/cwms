@@ -37,22 +37,22 @@ class MakeInterfaceCommand extends Command
      */
     public function handle() {
         $name = $this->argument('name');
-        $interfaceClass = $name . 'Interface';
+        $interfaceClass = $name;
 
-        $path = app_path('Interface') . '/' . $interfaceClass . '.php';
+        $path = app_path('Contracts') . '/' . $interfaceClass . '.php';
 
         if (File::exists($path)) {
             $this->error('Interface already exists!');
             return;
         }
 
-        if(!is_dir(app_path('Interface') . '/')) {
-            File::makeDirectory(app_path('Interface'));
+        if(!is_dir(app_path('Contracts') . '/')) {
+            File::makeDirectory(app_path('Contracts'));
         }
 
         $stub = str_replace(
             'YourInterfaceName',
-            $nterfaceClass,
+            $interfaceClass,
             File::get(__DIR__ . '/stubs/interface.stub')
         );
 

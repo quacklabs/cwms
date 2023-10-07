@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Events\StockCreationStarted;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::post('uploadSerial', 'APIController@parse_serials')->name('uploadSerials');
         Route::post('findStore', 'APIController@stores')->name('findStore');
         Route::post('find-product', 'APIController@productsInGIT')->name('findProductInTransit');
+        Route::get('my-jobs', 'APIController@myRunningJobs')->name('queue');
+        Route::get('test', function () {
+            event(new StockCreationStarted('Someone'));
+            return response()->json(["Event has been sent!"]);
+        });
     });
 });
 

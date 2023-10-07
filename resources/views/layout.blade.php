@@ -20,13 +20,7 @@
             @auth
             <div class="main-wrapper main-wrapper-1">
                 <!-- Content for authenticated users -->
-                <div class="no-data float">
-                    <i class="fas fa-caret-left fa-md arrow"></i>
-                    <p>
-                        <i class="fas fa-warning"></i>
-                        This is a warning about something happening on this element
-                    </p>
-                </div>
+                
                 @include('partials.header')
                 @include('partials.sidebar')
             @else
@@ -83,10 +77,53 @@
 @endif
         
         @yield('js')
+        <!--  -->
 
         <!-- Template JS File -->
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/8.3.0/pusher.min.js"></script> -->
         <script src="{{ asset('js/scripts.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}"></script>
+        <!-- <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script> -->
+        <script type="module">
+
+        // import Echo from "{{ asset('js/echo.js') }}"
+
+        import {Pusher} from "{{ asset('js/pusher.js') }}"
+
+        // window.Pusher = Pusher
+
+        var pusher = new Pusher('7faeac53b6a65e548387', {
+            encrypted: true,
+            cluster: 'eu'
+        });
+
+        var channel = pusher.subscribe('stock-create');
+        
+        channel.bind('StockCreationStarted', function(data) {
+            alert(JSON.stringify(data));
+        });
+        // window.Echo = new Echo({
+        //     broadcaster: 'pusher',
+        //     key: "7faeac53b6a65e548387",
+        //     wsHost: window.location.hostname,
+        //     // wsPort: 6001,
+        //     forceTLS: false,
+        //     disableStats: true,
+        // });
+
+        // window.Echo.channel('your-channel')
+        // .listen('your-event-class', (e) => {
+        //         console.log(e)
+        // })
+
+        // console.log("websokets in use")
+
+</script> 
+        <!-- <script src="{{ asset('js/echo.js') }}"></script> -->
+        <!-- <script src="{{ asset('js/pusher.js') }}"></script> -->
+        <!-- <script>
+            
+        </script> -->
     </body>
 </html>
 

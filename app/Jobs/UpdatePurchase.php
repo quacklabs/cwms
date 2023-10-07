@@ -11,27 +11,38 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Queue\Job;
+
+// use Junges\TrackableJobs\Concerns\Trackable;
+use App\Traits\Trackable;
 
 use App\Models\Purchase;
 use App\Models\PurchaseDetails;
 use App\Helpers\Utils;
-// use App\Events\CreateStockEvent;
+use App\Models\AppModels\Task;
+// use App\Helpers\UserJob;
 
-class UpdatePurchase implements ShouldQueue
-{
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+// use App\Helpers\StockOrder;
 
-    protected Purchase $purchase;
-    protected Collection $orders;
+class UpdatePurchase implements ShouldQueue {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
+
+    // public int $user_id;
+    public Purchase $purchase;
+    public Collection $orders;
+    public string $name = "UpdatePurchase";
+    // public $model;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Purchase $purchase, Collection $orders) {
+    public function __construct(int $user_id, Purchase $purchase, Collection $orders) {
         $this->purchase = $purchase;
         $this->orders = $orders;
+        $this->user_id = $user_id;
+        // dump($this->job->getJobId());
     }
 
     /**
@@ -41,8 +52,9 @@ class UpdatePurchase implements ShouldQueue
      */
     public function handle()
     {
-        // $chunks = $this->orders->smartChunk();
-        // Log::debug($chunks);
+        
+       $this->model = $this->job->getJobId();
+        
         $purchase = $this->purchase;
         // $chunks = Utils::smartChunk()
         $this->orders->each(function($detail) use ($purchase) {
@@ -50,7 +62,7 @@ class UpdatePurchase implements ShouldQueue
             if($order) {
                 $total = intval($order->received) + intval($detail->received);
                 if(intval($total) <= intval($order->quantity)) {
-                    dispatch(new CreateStock($order, $detail->received));
+                    dispatch(new CreateStock($this->trackedJob->user_id, $order, $detail->received));
                     $order->received = $total;
                     $order->save();
                     return;
