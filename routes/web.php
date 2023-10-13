@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +20,16 @@ Route::group(['namespace' => 'App\Http\Controllers'], function(){
     Route::match(['get', 'post'], '/login', 'AuthController@login')->name('login');
     Route::match(['get','post'], '/forgot', 'AuthController@forgot_password')->name('forgot_password');
     Route::get('/logout', 'AuthController@logout')->name('logout');
+    Route::get('/service-worker', function() {
+        $contents = File::get(public_path() . '/js/service-worker.js');
+        
+        $response = Response::make($contents, 200);
+        $response->header('Content-Type', 'application/javascript');
+        $response->header('Service-Worker-Allowed', '/');
+// $response->header('Content-Type', 'application/javascript');
+        return $response;
+        // return ;
+    })->name('serviceWorker');
 
     Route::middleware(['auth'])->group(function () {
         // Define your routes here

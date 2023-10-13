@@ -7,4 +7,6 @@ use Illuminate\Http\Request;
 class BackgroundJobsController extends Controller
 {
     //
+
+    // function serviceWorker(Request)
 }

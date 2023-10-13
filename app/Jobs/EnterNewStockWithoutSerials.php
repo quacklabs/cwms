@@ -12,13 +12,15 @@ use Illuminate\Queue\SerializesModels;
 use App\Services\TransactionService;
 use App\Models\ProductStock;
 use App\Traits\Trackable;
+use App\Traits\Notifies;
 
 class EnterNewStockWithoutSerials implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Trackable, Notifies;
     protected int $quantity;
     protected int $product_id;
     protected int $purchase_id;
+    public string $name = "New Stock Added";
     /**
      * Create a new job instance.
      *
@@ -45,6 +47,7 @@ class EnterNewStockWithoutSerials implements ShouldQueue
         // ->where('user_id', $this->user_id)->first();
 
         $quantity = $this->quantity;
+        $this->name = $quantity." New Stock Added";
         while($quantity > 0) {
             ProductStock::create([
                 'serial' => TransactionService::newInvoice(),

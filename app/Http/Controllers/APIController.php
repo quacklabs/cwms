@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+// session_start();
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use App\Models\Warehouse;
 use App\Models\Customer;
@@ -16,6 +18,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\MyDataImport;
 use App\Services\StockManager as StockService;
 use App\Models\Store;
+
+use Pusher\PushNotifications\PushNotifications;
+
 
 class APIController extends Controller
 {
@@ -282,7 +287,78 @@ class APIController extends Controller
         return response()->json($response)->header('Content-Type', 'application/json');
     }
 
-    public function myRunningJobs(Request $request) {
+    public function activeJobs(Request $request) {
+        $response = [
+
+        ];
+
+        $id = $request->route('id');
+        if(!$id){
+            return response()->json(["message" => "Unauthorized"], 400);
+        }
         
+
+        return response()->json(["message" => "Pluto is active"], 200);
+    }
+
+    public function pendingJobs(Request $request) {
+        $id = $request->route('id');
+        if(!$id){
+            return response()->json(["message" => "Unauthorized"], 400);
+        }
+        $user = User::find($id)->firstOrFail();
+        if($user) {
+            return response()->json(["message" => $user->pendingJobs->count()], 200);
+        }
+        
+    }
+
+    public function registerForPush(Request $request) {
+        $id = $request->route('user_id');
+        $user = User::find($id);
+        if($user) {
+            $pusher = new PushNotifications(
+                array(
+                  "instanceId" => env('BEAM_INSTANCE_ID'),
+                  "secretKey" => env('BEAM_SECRET_KEY'),
+                )
+            );
+            $beamsToken = $pusher->generateToken("$user->id");
+            return response()->json($beamsToken);
+        } else{
+            return response()->json(['status' => false]);
+        }
+
+
+        // $userIDInQueryParam = Input::get('user_id');
+        
+    
+        // if ($userID != $userIDInQueryParam) {
+        //     return response('Inconsistent request', 401);
+        // } else {
+        //     // $beamsToken = $beamsClient->generateToken($userID);
+        //     return response()->json($beamsToken);
+        // }
+    }
+
+    public function testNotifications(Request $request) {
+        $pusher = new PushNotifications(
+            array(
+              "instanceId" => env('BEAM_INSTANCE_ID'),
+              "secretKey" => env('BEAM_SECRET_KEY'),
+            )
+        );
+
+        $response = $pusher->publishToUsers(
+            array("1"),
+            array(
+              "web" => array(
+                "data" => array(
+                  "title" => "Hi!",
+                  "body" => "This is my first Push Notification!"
+                )
+              )
+          ));
+          return response()->json($response, 200);
     }
 }

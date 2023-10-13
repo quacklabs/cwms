@@ -11,7 +11,8 @@ trait Trackable {
     public ?int $user_id;
     public ?int $model;
     public ?Task $trackedJob;
-
+    public bool $notify = false;
+    
     public function middleware(): array {
         return [new TaskMiddleware()];
     }

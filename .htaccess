@@ -5,11 +5,16 @@
     </ifmodule>
      
     RewriteEngine On
+
+
+    # <Files "service-worker.js">
+    #     Allow from all
+    # </Files>
      
     RewriteCond %{REQUEST_FILENAME} -d [OR]
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ ^$1 [N]
- 
+
     RewriteCond %{REQUEST_URI} (\.\w+$) [NC]
     RewriteRule ^(.*)$ public/$1 
  

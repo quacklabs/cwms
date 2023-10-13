@@ -66,7 +66,7 @@ class CreateStock implements ShouldQueue
         $details = $this->details;
         $serials = json_decode($details->serials);
         $chunkSize = Utils::calculateSmartChunk($this->received);
-        Log::info("Chunk Size: {$chunkSize} - total: {$this->received} ");
+        // Log::info("Chunk Size: {$chunkSize} - total: {$this->received} ");
 
         if($serials != null) {
             if(count($serials) > 0) {

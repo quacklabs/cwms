@@ -7,6 +7,7 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Queue\Events\JobQueued;
+use Illuminate\Queue\Events\JobFailed;
 
 use App\Events\SupplierPaymentReceived;
 use App\Events\CustomerPaymentReceived;
@@ -14,6 +15,7 @@ use App\Events\CreateStockEvent;
 use App\Events\ReceiveStockEvent;
 use App\Events\CreatePurchaseEvent;
 use App\Events\TransferStockEvent;
+use App\Events\TaskCompletedEvent;
 
 use App\Listeners\EnterCustomerPayment;
 use App\Listeners\EnterSupplierPayment;
@@ -23,6 +25,7 @@ use App\Listeners\ReceiveStockListener;
 use App\Listeners\CreatePurchaseListener;
 use App\Listeners\TransferStockListener;
 use App\Listeners\JobCreatedListener;
+use App\Listeners\TaskCompletedListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -58,6 +61,12 @@ class EventServiceProvider extends ServiceProvider
         JobQueued::class =>[
             JobCreatedListener::class
         ],
+        TaskCompletedEvent::class => [
+            TaskCompletedListener::class
+        ],
+        // JobFailed::class => [
+        //     JobFailedListener::class
+        // ],
     ];
 
     /**

@@ -6,17 +6,22 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Session;
+
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+
 use App\Models\Warehouse;
 use App\Policies\UserPolicy;
 use App\Models\Store;
 use App\Models\PermissionGroup;
-use Illuminate\Support\Facades\Session;
+
 use App\Models\Expense;
 use App\Traits\ActionTakenBy;
+use App\Models\AppModels\Task;
 
 class User extends Authenticatable
 {
@@ -38,6 +43,10 @@ class User extends Authenticatable
         'username',
         'password',
         'mobile',
+    ];
+    protected $appends = [
+        'pendingJobs',
+        'activeJobs'
     ];
 
     /**
@@ -96,6 +105,10 @@ class User extends Authenticatable
         return null;
     }
 
+    public function jobs(): HasMany {
+        return $this->hasMany(Task::class, 'user_id');
+    }
+
     // public function store() {
     //     // dd($this->warehouse_id);
     //     if(isset($this->store_id)) {
@@ -137,5 +150,19 @@ class User extends Authenticatable
 
     public function expenses() {
         return $this->hasMany(Expenses::class, 'created_by');
+    }
+
+    public function getPendingJobsAttribute() {
+        $filteredPosts = $this->jobs->filter(function ($job) {
+            return $job->status == Task::STATUS_QUEUED || $job->status == Task::STATUS_RETRYING;
+        });
+        return collect($filteredPosts);
+    }
+
+    public function getActiveJobsAttribute() {
+        $filteredPosts = $this->jobs->filter(function ($job) {
+            return $job->status == Task::STATUS_STARTED;
+        });
+        return collect($filteredPosts);
     }
 }

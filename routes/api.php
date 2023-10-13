@@ -26,11 +26,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::post('uploadSerial', 'APIController@parse_serials')->name('uploadSerials');
         Route::post('findStore', 'APIController@stores')->name('findStore');
         Route::post('find-product', 'APIController@productsInGIT')->name('findProductInTransit');
-        Route::get('my-jobs', 'APIController@myRunningJobs')->name('queue');
-        Route::get('test', function () {
-            event(new StockCreationStarted('Someone'));
-            return response()->json(["Event has been sent!"]);
-        });
+        Route::get('active-jobs/{id}', 'APIController@activeJobs')->name('activeJobs');
+        Route::get('pending-jobs/{id}', 'APIController@pendingJobs')->name('pendingJobs');
+
+        Route::get('register-notifications/{user_id}', 'APIController@registerForPush')->name('register-notifications');
+        Route::get('test-notification', 'APIController@testNotifications')->name('testNotification');
+        // Route::get('test', function () {
+        //     event(new StockCreationStarted('Someone'));
+        //     return response()->json(["Event has been sent!"]);
+        // });
     });
 });
 

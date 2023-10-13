@@ -83,47 +83,85 @@
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/8.3.0/pusher.min.js"></script> -->
         <script src="{{ asset('js/scripts.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}"></script>
+        <!-- <script src=""></script> -->
+        <script src="{{ asset('js/pusher.js') }}"></script>
         <!-- <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script> -->
-        <script type="module">
-
-        // import Echo from "{{ asset('js/echo.js') }}"
-
-        import {Pusher} from "{{ asset('js/pusher.js') }}"
-
-        // window.Pusher = Pusher
-
-        var pusher = new Pusher('7faeac53b6a65e548387', {
-            encrypted: true,
-            cluster: 'eu'
-        });
-
-        var channel = pusher.subscribe('stock-create');
-        
-        channel.bind('StockCreationStarted', function(data) {
-            alert(JSON.stringify(data));
-        });
-        // window.Echo = new Echo({
-        //     broadcaster: 'pusher',
-        //     key: "7faeac53b6a65e548387",
-        //     wsHost: window.location.hostname,
-        //     // wsPort: 6001,
-        //     forceTLS: false,
-        //     disableStats: true,
-        // });
-
-        // window.Echo.channel('your-channel')
-        // .listen('your-event-class', (e) => {
-        //         console.log(e)
-        // })
-
-        // console.log("websokets in use")
-
-</script> 
-        <!-- <script src="{{ asset('js/echo.js') }}"></script> -->
-        <!-- <script src="{{ asset('js/pusher.js') }}"></script> -->
-        <!-- <script>
+        @auth
+        <script>
             
-        </script> -->
+            $(function() {
+                
+            });
+
+            const izitoastOptions = {
+                
+            }
+
+            if("serviceWorker" in navigator) {
+                navigator.serviceWorker.register(href="{{ route('serviceWorker') }}", { scope: "./"})
+                .then((registration) => {
+
+                    if (registration.installing) {
+                        console.log("Service worker installing");
+                    } else if (registration.waiting || registration.active) {
+                        
+                        const current_user = "{{ auth()->user()->id }}"
+                        const beamsTokenProvider = new PusherPushNotifications.TokenProvider({
+                            url: "{{ route('api.register-notifications', ['user_id' => auth()->user()->id]) }}",
+                            headers: {
+                                "Authorization": "Bearer {{ $api_token }}",
+                                "X-XSRF-TOKEN": "{{ $x_token }}",
+                                "Content-Type": "application/json"
+                            }
+                        })
+
+                        const beamsClient = new PusherPushNotifications.Client({
+                            instanceId: "{{ env('BEAM_INSTANCE_ID') }}",
+                            serviceWorkerRegistration: registration
+                        })
+
+                        beamsClient.start().then((beamsClient) => {
+
+                            beamsClient.getUserId().then((user_id) => {
+                                if(user_id == null) {
+                                    beamsClient.setUserId(current_user, beamsTokenProvider)
+                                } else {
+                                    if (current_user !== user_id) {
+                                        return beamsClient.stop();
+                                    }
+                                }
+                            })
+                            .catch((error) => { 
+                                console.log(error)
+                            })
+                        })
+                        .catch((error) => { 
+                            console.log(error)
+                        })                        
+                    }
+
+                }).catch((error) => {
+                    console.log("failed with error" + error)
+                })
+
+                navigator.serviceWorker.addEventListener("message", (event) => {
+                    iziToast.show({
+                        title: event.data.title,
+                        // message: event.data.message,
+                        displayMode: 'replace',
+                        timeout: 60000,
+                        icon: '<svg xmlns="http://www.w3.org/2000/svg" height="0.875em" viewBox="0 0 512 512"><style>svg{fill:#000000}</style><path d="M448 160H320V128H448v32zM48 64C21.5 64 0 85.5 0 112v64c0 26.5 21.5 48 48 48H464c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zM448 352v32H192V352H448zM48 288c-26.5 0-48 21.5-48 48v64c0 26.5 21.5 48 48 48H464c26.5 0 48-21.5 48-48V336c0-26.5-21.5-48-48-48H48z"/></svg>',
+                        progressBar: true,
+                    })
+                });
+
+                
+            } else {
+                console.log('cannot init service worker')
+            }
+        </script>
+            
+        @endauth
     </body>
 </html>
 
