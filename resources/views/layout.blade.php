@@ -147,6 +147,7 @@
                 navigator.serviceWorker.addEventListener("message", (event) => {
                     iziToast.show({
                         title: event.data.title,
+                        backgroundColor: "bg-success",
                         // message: event.data.message,
                         displayMode: 'replace',
                         timeout: 60000,
